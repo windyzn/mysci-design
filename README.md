@@ -41,7 +41,7 @@ Open `index.html` directly in a browser — no server required.
 Or if hosted via GitHub Pages:
 
 ```
-https://<your-org>.github.io/mysci-wireframe/
+[https://windyzn.github.io/mysci-design/](https://windyzn.github.io/mysci-design/)
 ```
 
 ### Login
