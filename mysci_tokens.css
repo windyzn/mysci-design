@@ -1,0 +1,80 @@
+/* =============================================================
+   MySci — Design Tokens
+   Brand: Molecular You
+   Last updated: 2026-04-28
+   ============================================================= */
+
+:root {
+
+  /* -----------------------------------------------------------
+     Brand colours
+     ----------------------------------------------------------- */
+  --color-brand-dark:      #18374B; /* Primary dark blue — headings, sidebar, nav */
+  --color-brand-bluegrey:  #61859D; /* Blue grey — secondary text, borders, icons */
+  --color-brand-teal:      #8CCFCF; /* Dusty aquamarine — accents, CTAs, highlights */
+  --color-brand-darkblue:  #3B5464; /* Dark blue grey — body text */
+  --color-brand-serenity:  #D5E6EE; /* Serenity — card backgrounds, hover states */
+  --color-brand-lightblue: #F6FCFF; /* Light blue — page background */
+
+  /* -----------------------------------------------------------
+     Background
+     ----------------------------------------------------------- */
+  --color-bg:              #ffffff;
+  --color-bg-subtle:       #F4F8FB; /* Content area background */
+  --color-bg-muted:        #D5E6EE; /* Hover states, section fills (= serenity) */
+
+  /* -----------------------------------------------------------
+     Text
+     ----------------------------------------------------------- */
+  --color-text-primary:    #18374B;
+  --color-text-secondary:  #3B5464;
+  --color-text-tertiary:   #61859D;
+
+  /* -----------------------------------------------------------
+     Borders
+     ----------------------------------------------------------- */
+  --color-border-light:    rgba(24, 55, 75, 0.12);
+  --color-border-medium:   rgba(24, 55, 75, 0.22);
+  --color-border-strong:   rgba(24, 55, 75, 0.38);
+
+  /* -----------------------------------------------------------
+     Status — green (success / live / complete)
+     ----------------------------------------------------------- */
+  --color-green-bg:        #D5EFE5;
+  --color-green-text:      #2A6B4F;
+  --color-green-border:    #7BBFA0;
+
+  /* -----------------------------------------------------------
+     Status — yellow (warning / in progress)
+     ----------------------------------------------------------- */
+  --color-yellow-bg:       #FFDEB8;
+  --color-yellow-text:     #8B4A00;
+  --color-yellow-border:   #F5A623;
+
+  /* -----------------------------------------------------------
+     Status — red (error / rejected / compromised)
+     ----------------------------------------------------------- */
+  --color-red-bg:          #F5C6C6;
+  --color-red-text:        #7A1A1A;
+  --color-red-border:      #D62929;
+
+  /* -----------------------------------------------------------
+     Status — blue (info / in review / analyzing)
+     ----------------------------------------------------------- */
+  --color-blue-bg:         #D5E6EE;
+  --color-blue-text:       #61859D;
+  --color-blue-border:     #8CCFCF;
+
+  /* -----------------------------------------------------------
+     Status — neutral (draft / inactive)
+     ----------------------------------------------------------- */
+  --color-neutral-bg:      #F6F6F6;
+  --color-neutral-text:    #61859D;
+
+  /* -----------------------------------------------------------
+     Radius
+     ----------------------------------------------------------- */
+  --radius-sm:             8px;
+  --radius-md:             12px;
+
+}
