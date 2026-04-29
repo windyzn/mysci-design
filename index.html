@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>MySci — Wireframe</title>
-<link rel="icon" type="image/svg+xml" href="logos/Molecular_You_MYLigature__BlueGray.svg"/>
+<link rel="icon" type="image/svg+xml" href="logos/Molecular_You_MYLigature__Turquoise.svg"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -225,6 +225,18 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .fc-legend{display:flex;gap:12px;margin-bottom:12px;font-size:11px;color:var(--tx2);}
 .legd{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;}
 @keyframes spin{to{transform:rotate(360deg);}}
+/* REFERENCE RANGES TABLE */
+.rr-table{border-collapse:separate;border-spacing:0;}
+.rr-table th,.rr-table td{white-space:nowrap;}
+.rr-sticky{position:sticky;left:0;z-index:2;background:var(--bg);border-right:0.5px solid var(--bd2);}
+.rr-table thead .rr-sticky{z-index:3;background:#fff;}
+.rr-table tbody tr:hover .rr-sticky{background:var(--bg3);}
+.rr-exported-yes{font-size:11px;color:var(--st);}
+.rr-exported-no{font-size:11px;color:var(--tx3);}
+.col-toggle-row{display:flex;align-items:center;gap:8px;padding:5px 12px;font-size:12px;color:var(--tx);cursor:pointer;}
+.col-toggle-row:hover{background:var(--bg3);}
+.col-toggle-row input{cursor:pointer;}
+.drawer-label{font-size:12px;color:var(--tx2);margin-bottom:4px;}
 </style>
 </head>
 <body>
@@ -570,19 +582,103 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <!-- REFERENCE RANGES -->
 <div class="panel" id="panel-refrange">
   <div class="pa"><div class="sl" style="margin:0;">Reference ranges</div><button class="btn btn-p">+ New range</button></div>
-  <div class="fb"><input class="search-box" placeholder="Search biomarker…" style="width:180px;"/><select class="fi" style="width:auto;font-size:12px;"><option>All labs</option><option>LabCorp / US</option><option>TMIC / CA</option></select><select class="fi" style="width:auto;font-size:12px;"><option>All ages</option><option>Adult</option><option>Child</option></select><select class="fi" style="width:auto;font-size:12px;"><option>All sexes</option><option>Female</option><option>Male</option></select></div>
-  <div class="card" style="padding:0;overflow:hidden;"><table class="gh-table"><thead><tr><th>Biomarker</th><th>Low</th><th>High</th><th>Units</th><th>Lab / Country</th><th>Age</th><th>Sex</th><th>Status</th></tr></thead><tbody>
-    <tr onclick="showRREdit()"><td>Vitamin D (25-OH)</td><td>30</td><td>100</td><td>ng/mL</td><td>LabCorp / US</td><td>Adult</td><td>All</td><td><span class="ds d-lv">Live</span></td></tr>
-    <tr onclick="showRREdit()"><td>LDL Cholesterol</td><td>0</td><td>2.6</td><td>mmol/L</td><td>TMIC / CA</td><td>Adult</td><td>All</td><td><span class="ds d-lv">Live</span></td></tr>
-    <tr onclick="showRREdit()"><td>Estradiol</td><td>77</td><td>921</td><td>pmol/L</td><td>LabCorp / US</td><td>Adult</td><td>Female</td><td><span class="ds d-sb">In review</span></td></tr>
-    <tr onclick="showRREdit()"><td>Progesterone</td><td>0.6</td><td>2.9</td><td>nmol/L</td><td>LabCorp / US</td><td>Adult</td><td>Female</td><td><span class="ds d-dr">Draft</span></td></tr>
-    <tr onclick="showRREdit()"><td>HbA1c</td><td>4.8</td><td>5.6</td><td>%</td><td>TMIC / CA</td><td>Adult</td><td>All</td><td><span class="ds d-lv">Live</span></td></tr>
-  </tbody></table></div>
-  <div class="card" id="rr-edit-card" style="display:none;margin-top:12px;">
-    <div style="font-weight:700;font-size:13px;margin-bottom:12px;">Edit reference range</div>
-    <div style="margin-bottom:14px;"><div style="font-size:12px;color:var(--tx2);margin-bottom:4px;">Biomarker</div><input class="fi" value="Vitamin D (25-OH)"/></div>
-    <div class="g2" style="margin-bottom:14px;"><div><div style="font-size:12px;color:var(--tx2);margin-bottom:4px;">Range low</div><input class="fi" value="30"/></div><div><div style="font-size:12px;color:var(--tx2);margin-bottom:4px;">Range high</div><input class="fi" value="100"/></div></div>
-    <div style="display:flex;gap:8px;"><button class="btn">Save as draft</button><button class="btn btn-p">Submit for review</button><button class="btn" onclick="document.getElementById('rr-edit-card').style.display='none'" style="margin-left:auto;color:var(--tx3);">Cancel</button></div>
+
+  <!-- filters -->
+  <div class="fb" style="margin-bottom:8px;">
+    <input class="fi" id="rr-search" placeholder="Search biomarker or MYCO ID…" style="width:220px;font-size:12px;padding:6px 10px;" oninput="filterRR()"/>
+    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-units" onchange="filterRR()"><option value="">All units</option><option>μM</option><option>nM</option><option>ng/mL</option><option>μg/mL</option><option>mg/L</option><option>mmol/L</option><option>%</option></select>
+    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-fluid" onchange="filterRR()"><option value="">All biofluids</option><option>Serum</option><option>Plasma</option></select>
+    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-cat" onchange="filterRR()"><option value="">All categories</option><option>Calculated</option><option>Literature</option><option>Clinical</option></select>
+    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-exp" onchange="filterRR()"><option value="">Exported: all</option><option value="true">Exported: yes</option><option value="false">Exported: no</option></select>
+    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-lot" onchange="filterRR()"><option value="">All peptide lots</option><option>MRM 1.1 HQE N20240604 &amp; S20250320</option><option>MRM 1.1 N20200717 &amp; S20200717</option></select>
+  </div>
+
+  <!-- column toggle -->
+  <div style="margin-bottom:10px;position:relative;display:inline-block;">
+    <button class="btn" onclick="toggleColMenu()" id="col-toggle-btn" style="font-size:11px;display:flex;align-items:center;gap:5px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Columns
+    </button>
+    <div id="col-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:50;min-width:190px;">
+      <div style="padding:4px 12px 6px;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Show / hide columns</div>
+      <label class="col-toggle-row"><input type="checkbox" checked disabled/> Biomarker <span style="font-size:10px;color:var(--tx3);">(locked)</span></label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="myco"/> MYCO ID</label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="range"/> Range</label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="units"/> Units</label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="age"/> Age</label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="sex"/> Sex</label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="fluid"/> Biofluid</label>
+      <label class="col-toggle-row"><input type="checkbox" data-col="reference"/> Reference</label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="category"/> Category</label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="exported"/> Exported</label>
+      <label class="col-toggle-row"><input type="checkbox" checked data-col="assay"/> Assay</label>
+      <label class="col-toggle-row"><input type="checkbox" data-col="peptidelot"/> Peptide lot</label>
+    </div>
+  </div>
+
+  <!-- table -->
+  <div style="overflow-x:auto;border:0.5px solid var(--bd);border-radius:var(--rl);background:var(--bg);">
+    <table class="gh-table rr-table" id="rr-table" style="min-width:900px;table-layout:auto;">
+      <thead>
+        <tr>
+          <th class="rr-sticky">Biomarker</th>
+          <th data-col="myco">MYCO ID</th>
+          <th data-col="range">Range</th>
+          <th data-col="units">Units</th>
+          <th data-col="age">Age</th>
+          <th data-col="sex">Sex</th>
+          <th data-col="fluid">Biofluid</th>
+          <th data-col="reference">Reference</th>
+          <th data-col="category">Category</th>
+          <th data-col="exported">Exported</th>
+          <th data-col="assay">Assay</th>
+          <th data-col="peptidelot">Peptide lot</th>
+          <th style="width:40px;"></th>
+        </tr>
+      </thead>
+      <tbody id="rr-tbody"></tbody>
+    </table>
+  </div>
+  <div style="font-size:11px;color:var(--tx3);margin-top:8px;" id="rr-count"></div>
+</div>
+
+<!-- REFERENCE RANGE SIDE DRAWER -->
+<div id="rr-drawer-overlay" style="display:none;position:fixed;inset:0;z-index:200;" onclick="closeRRDrawer()"></div>
+<div id="rr-drawer" style="display:none;position:fixed;top:0;right:0;width:400px;height:100vh;background:var(--bg);border-left:0.5px solid var(--bd2);box-shadow:-4px 0 24px rgba(0,0,0,0.10);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .2s;">
+  <div style="padding:16px 20px;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div>
+      <div style="font-size:14px;font-weight:700;" id="drawer-title">Edit reference range</div>
+      <div style="font-size:11px;color:var(--tx3);margin-top:2px;" id="drawer-sub"></div>
+    </div>
+    <button onclick="closeRRDrawer()" style="background:none;border:none;cursor:pointer;color:var(--tx3);font-size:18px;line-height:1;padding:4px;">✕</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:20px;">
+    <div style="margin-bottom:14px;"><div class="drawer-label">Biomarker</div><input class="fi" id="dr-biomarker"/></div>
+    <div style="margin-bottom:14px;"><div class="drawer-label">MYCO ID</div><input class="fi" id="dr-myco" style="font-family:monospace;"/></div>
+    <div class="g2" style="margin-bottom:14px;">
+      <div><div class="drawer-label">Range low</div><input class="fi" id="dr-low"/></div>
+      <div><div class="drawer-label">Range high</div><input class="fi" id="dr-high"/></div>
+    </div>
+    <div style="margin-bottom:14px;"><div class="drawer-label">Units</div><input class="fi" id="dr-units"/></div>
+    <div class="g2" style="margin-bottom:14px;">
+      <div><div class="drawer-label">Age</div><select class="fi" id="dr-age"><option>Adult</option><option>Child</option></select></div>
+      <div><div class="drawer-label">Sex</div><select class="fi" id="dr-sex"><option>Both</option><option>Male</option><option>Female</option></select></div>
+    </div>
+    <div style="margin-bottom:14px;"><div class="drawer-label">Biofluid</div><select class="fi" id="dr-fluid"><option>Serum</option><option>Plasma</option></select></div>
+    <div style="margin-bottom:14px;"><div class="drawer-label">Category</div><select class="fi" id="dr-cat">      <option>Calculated</option><option>Literature</option><option>Clinical</option></select></div>
+    <div style="margin-bottom:14px;"><div class="drawer-label">Assay</div><select class="fi" id="dr-assay"><option>MYCO 1.2 HQE</option><option>MRM 1.1 HQE</option><option>MYCO 1.0</option></select></div>
+    <div style="margin-bottom:14px;"><div class="drawer-label">Peptide lot</div><input class="fi" id="dr-lot"/></div>
+    <div style="margin-bottom:14px;"><div class="drawer-label">Reference</div><input class="fi" id="dr-ref"/></div>
+    <div style="margin-bottom:20px;display:flex;align-items:center;gap:8px;">
+      <div class="drawer-label" style="margin:0;">Exported</div>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;"><input type="checkbox" id="dr-exported"/> Yes</label>
+    </div>
+    <div id="drawer-save-confirm" style="display:none;margin-bottom:12px;background:var(--sb);border:0.5px solid var(--sbr);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--st);">Changes saved as draft.</div>
+  </div>
+  <div style="padding:14px 20px;border-top:0.5px solid var(--bd);display:flex;gap:8px;flex-shrink:0;">
+    <button class="btn" onclick="saveRRDraft()">Save as draft</button>
+    <button class="btn btn-p" onclick="submitRRReview()">Submit for review</button>
+    <button class="btn" onclick="closeRRDrawer()" style="margin-left:auto;color:var(--tx3);">Cancel</button>
   </div>
 </div>
 
@@ -840,7 +936,7 @@ const PAGE_META={
 };
 function setPageHeader(panel){const m=PAGE_META[panel]||{title:panel,sub:null};document.getElementById('page-title').textContent=m.title;const activePanel=document.getElementById('panel-'+panel);if(activePanel){const sl=activePanel.querySelector('.sl');if(sl){if(m.sub){sl.textContent=m.sub;sl.style.display='block';}else{sl.style.display='none';}}}}
 function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const panel=el.dataset.panel;activatePanel(panel);setPageHeader(panel);}
-function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);}
+function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);}
 function toggleGroup(id){const el=document.getElementById(id);const ch=document.getElementById('chev-'+id);const open=el.classList.contains('expanded');el.classList.toggle('collapsed',open);el.classList.toggle('expanded',!open);if(ch)ch.classList.toggle('open',!open);}
 function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
 function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
@@ -870,6 +966,190 @@ function doDiscard(){slotA=null;slotB=null;document.querySelectorAll('#profile-p
 function openSaveProfileModal(){const o=document.getElementById('save-profile-overlay');o.style.display='flex';document.getElementById('new-profile-name').value='';document.getElementById('profile-saved-msg').style.display='none';}
 function closeSaveProfileModal(){document.getElementById('save-profile-overlay').style.display='none';}
 function confirmSaveProfile(){const name=document.getElementById('new-profile-name').value.trim();if(!name)return;const sel=document.getElementById('wt-profile-sel');const opt=document.createElement('option');opt.value=name;opt.textContent=name;sel.appendChild(opt);sel.value=name;document.getElementById('profile-saved-msg').style.display='block';setTimeout(()=>closeSaveProfileModal(),1400);}
+
+// ── REFERENCE RANGES ──
+const RR_DATA=[
+  {myco:'RV00001801',biomarker:'3-Hydroxyoleoylcarnitine',low:0.01,high:0.12,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001802',biomarker:'5-Hydroxyindole-3-acetic acid',low:1.0,high:8.2,units:'mg/L',age:'Adult',sex:'Both',fluid:'Urine',reference:'MRM 1.1 N20200717 & S20200717',category:'Clinical',exported:true,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001803',biomarker:'Acetyl-Ornithine',low:0.5,high:4.1,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001804',biomarker:'Acetylcarnitine',low:3.0,high:22.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001805',biomarker:'Acylcarnitines',low:5.0,high:40.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Calculated',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001806',biomarker:'Alanine',low:200,high:580,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001807',biomarker:'Alpha-amino-N-butyric acid',low:10,high:45,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001808',biomarker:'alpha-Aminoadipic acid',low:1.0,high:9.5,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001809',biomarker:'alpha-Ketoglutaric acid',low:0.5,high:3.8,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001810',biomarker:'Arginine',low:40,high:150,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001811',biomarker:'Asparagine',low:35,high:90,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001812',biomarker:'Aspartic acid',low:5,high:30,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001813',biomarker:'Asymmetric dimethylarginine',low:0.3,high:0.9,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:true,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001814',biomarker:'Benzoic acid',low:0.5,high:5.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001815',biomarker:'Beta-alanine',low:5,high:35,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001816',biomarker:'beta-Hydroxybutyric acid',low:50,high:300,units:'μM',age:'Adult',sex:'Both',fluid:'Serum',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001817',biomarker:'Betaine',low:20,high:80,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001818',biomarker:'Butenylcarnitine',low:0.02,high:0.15,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001819',biomarker:'Butyric acid',low:5,high:40,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Calculated',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001820',biomarker:'Butyrylcarnitine',low:0.05,high:0.6,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001821',biomarker:'Carnitine',low:25,high:60,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001822',biomarker:'Carnosine',low:1,high:12,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001823',biomarker:'Choline',low:7,high:22,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001824',biomarker:'cis-OH-Proline',low:5,high:30,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001825',biomarker:'Citric acid',low:50,high:200,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001826',biomarker:'Citrulline',low:15,high:50,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001827',biomarker:'Cotinine',low:0,high:14,units:'ng/mL',age:'Adult',sex:'Both',fluid:'Serum',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001828',biomarker:'Creatine',low:20,high:80,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001829',biomarker:'Creatinine',low:44,high:115,units:'μM',age:'Adult',sex:'Male',fluid:'Serum',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001830',biomarker:'Decadienylcarnitine',low:0.01,high:0.08,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001831',biomarker:'Decanoylcarnitine',low:0.02,high:0.2,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001832',biomarker:'Decenoylcarnitine',low:0.01,high:0.1,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001833',biomarker:'Diacetylspermine',low:0.1,high:1.2,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001834',biomarker:'Dodecanedioylcarnitine',low:0.01,high:0.06,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001835',biomarker:'Dodecanoylcarnitine',low:0.02,high:0.15,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001836',biomarker:'Dodecenoylcarnitine',low:0.01,high:0.09,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001837',biomarker:'DOPA',low:0.5,high:4.5,units:'nM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Clinical',exported:true,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001838',biomarker:'Fumaric acid',low:1,high:8,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001839',biomarker:'Gamma-aminobutyric acid',low:0.2,high:2.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001998',biomarker:'Glucose',low:3.9,high:5.6,units:'mmol/L',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001840',biomarker:'Glutaconylcarnitine',low:0.01,high:0.07,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001841',biomarker:'Glutamic acid',low:20,high:120,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001842',biomarker:'Glutamine',low:400,high:780,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001843',biomarker:'Glycerophospholipids',low:600,high:1800,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001844',biomarker:'Glycine',low:150,high:420,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001845',biomarker:'Hexadecadienylcarnitine',low:0.01,high:0.06,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001846',biomarker:'Hexadecanoylcarnitine',low:0.1,high:0.6,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001847',biomarker:'Hexadecenoylcarnitine',low:0.02,high:0.18,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001872',biomarker:'Hexanoylcarnitine (Fumarylcarnitine)',low:0.02,high:0.28,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001848',biomarker:'Hexenoylcarnitine',low:0.01,high:0.1,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001849',biomarker:'Hippuric acid',low:5,high:60,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001850',biomarker:'Histamine',low:0.2,high:1.5,units:'nM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001851',biomarker:'Histidine',low:60,high:120,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001852',biomarker:'Homocysteine',low:5,high:15,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001853',biomarker:'Homovanillic acid',low:1,high:8,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001854',biomarker:'Hydroxyhexadecadienylcarnitine',low:0.01,high:0.05,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001855',biomarker:'Hydroxyhexadecanoylcarnitine',low:0.02,high:0.12,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001856',biomarker:'Hydroxyhexadecenoylcarnitine',low:0.01,high:0.09,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001857',biomarker:'Hydroxyphenylacetic acid',low:0.5,high:5.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001858',biomarker:'Hydroxypropionylcarnitine',low:0.02,high:0.2,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001859',biomarker:'Hydroxysphingomyelin C14:1',low:1,high:8,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001860',biomarker:'Hydroxysphingomyelin C16:1',low:2,high:14,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001861',biomarker:'Hydroxysphingomyelin C22:1',low:1,high:10,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001862',biomarker:'Hydroxysphingomyelin C22:2',low:0.5,high:6,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001863',biomarker:'Hydroxysphingomyelin C24:1',low:1,high:9,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+];
+
+let rrCurrentRow=null;
+function renderRR(data){
+  const tbody=document.getElementById('rr-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  data.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    tr.style.cursor='pointer';
+    tr.onclick=()=>openRRDrawer(r);
+    tr.innerHTML=`
+      <td class="rr-sticky" style="font-size:13px;">${r.biomarker}</td>
+      <td data-col="myco" style="font-family:monospace;font-size:12px;color:var(--tx3);">${r.myco}</td>
+      <td data-col="range" style="font-size:12px;font-family:monospace;">${r.low}–${r.high}</td>
+      <td data-col="units" style="font-size:12px;">${r.units}</td>
+      <td data-col="age" style="font-size:12px;">${r.age}</td>
+      <td data-col="sex" style="font-size:12px;">${r.sex}</td>
+      <td data-col="fluid" style="font-size:12px;">${r.fluid}</td>
+      <td data-col="reference" style="font-size:12px;color:var(--tx2);max-width:180px;overflow:hidden;text-overflow:ellipsis;">${r.reference}</td>
+      <td data-col="category" style="font-size:12px;">${r.category}</td>
+      <td data-col="exported"><span class="${r.exported?'rr-exported-yes':'rr-exported-no'}">${r.exported?'✓ Yes':'No'}</span></td>
+      <td data-col="assay" style="font-size:12px;">${r.assay}</td>
+      <td data-col="peptidelot" style="font-size:12px;color:var(--tx2);max-width:200px;overflow:hidden;text-overflow:ellipsis;">${r.lot}</td>
+      <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();openRRDrawer(${JSON.stringify(r).replace(/"/g,'&quot;')})">Edit</button></td>`;
+    tbody.appendChild(tr);
+  });
+  const count=document.getElementById('rr-count');
+  if(count)count.textContent=`${data.length} of ${RR_DATA.length} ranges`;
+  applyColVisibility();
+}
+function filterRR(){
+  const q=(document.getElementById('rr-search')?.value||'').toLowerCase();
+  const units=document.getElementById('rr-f-units')?.value||'';
+  const fluid=document.getElementById('rr-f-fluid')?.value||'';
+  const cat=document.getElementById('rr-f-cat')?.value||'';
+  const exp=document.getElementById('rr-f-exp')?.value||'';
+  const lot=document.getElementById('rr-f-lot')?.value||'';
+  const filtered=RR_DATA.filter(r=>{
+    if(q&&!r.biomarker.toLowerCase().includes(q)&&!r.myco.toLowerCase().includes(q))return false;
+    if(units&&r.units!==units)return false;
+    if(fluid&&r.fluid!==fluid)return false;
+    if(cat&&r.category!==cat)return false;
+    if(exp&&String(r.exported)!==exp)return false;
+    if(lot&&r.lot!==lot)return false;
+    return true;
+  });
+  renderRR(filtered);
+}
+function applyColVisibility(){
+  const checks=document.querySelectorAll('#col-menu input[data-col]');
+  checks.forEach(cb=>{
+    const col=cb.getAttribute('data-col');
+    const visible=cb.checked;
+    document.querySelectorAll(`[data-col="${col}"]`).forEach(el=>{
+      el.style.display=visible?'':'none';
+    });
+  });
+}
+function toggleColMenu(){
+  const m=document.getElementById('col-menu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+document.addEventListener('click',e=>{
+  const menu=document.getElementById('col-menu');
+  const btn=document.getElementById('col-toggle-btn');
+  if(menu&&btn&&!menu.contains(e.target)&&!btn.contains(e.target)){
+    menu.style.display='none';
+  }
+});
+document.querySelectorAll('#col-menu input[data-col]').forEach(cb=>{
+  cb.addEventListener('change',applyColVisibility);
+});
+function openRRDrawer(r){
+  if(typeof r==='string')r=JSON.parse(r);
+  rrCurrentRow=r;
+  document.getElementById('drawer-title').textContent='Edit reference range';
+  document.getElementById('drawer-sub').textContent=r.myco+' · '+r.assay;
+  document.getElementById('dr-biomarker').value=r.biomarker;
+  document.getElementById('dr-myco').value=r.myco;
+  document.getElementById('dr-low').value=r.low;
+  document.getElementById('dr-high').value=r.high;
+  document.getElementById('dr-units').value=r.units;
+  document.getElementById('dr-age').value=r.age;
+  document.getElementById('dr-sex').value=r.sex;
+  document.getElementById('dr-fluid').value=r.fluid;
+  document.getElementById('dr-cat').value=r.category;
+  document.getElementById('dr-assay').value=r.assay;
+  document.getElementById('dr-lot').value=r.lot;
+  document.getElementById('dr-ref').value=r.reference;
+  document.getElementById('dr-exported').checked=r.exported;
+  document.getElementById('drawer-save-confirm').style.display='none';
+  const drawer=document.getElementById('rr-drawer');
+  const overlay=document.getElementById('rr-drawer-overlay');
+  drawer.style.display='flex';
+  overlay.style.display='block';
+  setTimeout(()=>drawer.style.transform='translateX(0)',10);
+}
+function closeRRDrawer(){
+  const drawer=document.getElementById('rr-drawer');
+  drawer.style.transform='translateX(100%)';
+  setTimeout(()=>{
+    drawer.style.display='none';
+    document.getElementById('rr-drawer-overlay').style.display='none';
+  },200);
+}
+function saveRRDraft(){
+  document.getElementById('drawer-save-confirm').style.display='block';
+}
+function submitRRReview(){
+  document.getElementById('drawer-save-confirm').style.display='block';
+  document.getElementById('drawer-save-confirm').textContent='Submitted for review.';
+  document.getElementById('drawer-save-confirm').style.background='var(--ib)';
+  document.getElementById('drawer-save-confirm').style.borderColor='var(--ibr)';
+  document.getElementById('drawer-save-confirm').style.color='var(--it)';
+}
 </script>
 </body>
 </html>
