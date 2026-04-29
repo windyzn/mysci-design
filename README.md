@@ -1,52 +1,100 @@
-# MySci — Internal Operations Platform (Wireframe)
+# MySci — Developer Handoff
 
-A high-fidelity HTML wireframe for MySci, Molecular You's internal platform for managing biomarker data, scoring, and report operations across Science and Ops teams.
+Internal operations platform for Molecular You. Single-page HTML wireframe; no build step required.
 
-## Overview
+---
 
-MySci is a single-file interactive wireframe (`index.html`) built with vanilla HTML, CSS, and JavaScript. It simulates two team workflows — **Operations** and **Science** — with role-based access gating and realistic demo data throughout.
-
-## Features
-
-### Operations team
-- **Samples** — browse kits by timepoint, lab, and status (complete, analyzing, compromised, rerun)
-- **Build a report** — select a sample, choose proteomics/metabolomics datasets with assay conflict detection, generate scores, save or send to MYHI
-- **Compare reports** — load two saved reports side by side with system/process/biomarker score diffs
-- **Assay catalog** — view and edit assay identifiers, lot numbers, and expiry dates
-- **Data versions** — track versioned releases of the scoring data model
-
-### Science team
-- **Reference ranges** — browse, filter, and edit biomarker reference ranges by lab, sex, age, and cycle phase
-- **Associations** — view biomarker-to-system-to-process associations in table or interactive flowchart view
-- **Weight adjustments** — interactive weight tree with per-biomarker/process multiplier, colour trigger, and direction controls
-- **Compare weight profiles** — side-by-side weight diff with individual patient impact and population KDE overlay chart
-- **Scoring params** — configure global score cutoffs and colour thresholds
-- **Analytics** — summary tables and score histograms across systems, processes, and biomarkers
-
-### Governance (both teams)
-- **My drafts** — track submitted, rejected, and in-review changes
-- **Review queue** — approve or reject pending changes with diff view
-- **Audit log** — full history of approved changes with revert actions
-
-## Tech
-
-- Vanilla HTML/CSS/JS — no build step, no dependencies to install
-- [Chart.js 4.4.1](https://www.chartjs.org/) via CDN (KDE overlay chart)
-- Single file: `index.html`
-
-## Usage
-
-Open `index.html` directly in a browser — no server required.
-
-Or if hosted via GitHub Pages:
+## Project structure
 
 ```
-https://windyzn.github.io/mysci-design/
+/
+├── index.html         # Full application — all panels, styles, and logic in one file
+├── tokens.css         # Design tokens (colours, typography, spacing, radius)
+└── logos/
+    ├── Molecular_You_MYLigature__Turquoise.svg    # Sidebar logo + favicon
+    └── Molecular_You_MYLigature__Dark_BlueGray.svg  # Login card logo
 ```
 
-### Login
-Select a role (**Contributor** or **Admin**) and a team (**Ops** or **Science**). Admin role unlocks the **Send to MYHI** action in report workflows.
+---
 
-## Notes
+## Running locally
 
-This is a wireframe prototype — all data is hardcoded and no API calls are made. It is intended for internal design review and stakeholder walkthroughs only.
+Open `index.html` directly in a browser — no server or build step needed. Logo SVGs load via relative paths so keep the folder structure intact.
+
+---
+
+## What is MySci?
+
+MySci is an internal tool used by two teams at Molecular You:
+
+- **Operations** — manages sample batches, builds and compares patient reports, maintains the assay catalog
+- **Science** — manages biomarker reference ranges, system/process/biomarker associations, scoring weights, and analytics
+
+Users select their team at login. The sidebar nav and available panels change depending on which team is active.
+
+---
+
+## What is MYHI?
+
+MYHI (Molecular You Health Insights) is the patient-facing platform. MySci can push finalised reports to MYHI for publishing. This action is admin-only and gated by the `currentRole` variable set at login.
+
+---
+
+## Authentication model (wireframe)
+
+Login is simulated — no real auth. Two roles are available via the login dropdown:
+
+| Role | Permissions |
+|------|-------------|
+| Contributor | View and edit; cannot send to MYHI |
+| Admin | Full access including send to MYHI |
+
+Role gating is applied via `applyRoleGating()` and checks `currentRole`.
+
+---
+
+## Panels
+
+| Panel ID | Team | Description |
+|----------|------|-------------|
+| `batches` | Ops | Sample batch list with status and filters |
+| `buildreport` | Ops | Dataset selection + score generation for a sample |
+| `comparereports` | Ops | Side-by-side comparison of two saved reports |
+| `assaycatalog` | Ops | Assay identifiers, labs, lot numbers |
+| `refrange` | Science | Biomarker reference ranges with edit/review flow |
+| `systems` | Science | Biomarker–process–system association table and flowchart |
+| `weights` | Science | Interactive weight adjustment tree |
+| `cmpprofiles` | Science | Compare two weight profiles with population distribution chart |
+| `scoringparams` | Science | Global scoring parameters and colour cutoffs |
+| `summary` | Science | Population-level summary statistics |
+| `histograms` | Science | Score distribution histograms |
+| `drafts` | Both | Current user's draft and submitted changes |
+| `review` | Both | Pending changes awaiting approval |
+| `audit` | Both | Log of approved changes with revert option |
+| `dataversions` | Both | Data version history |
+
+---
+
+## Key design decisions
+
+- **No teal on white** — `--color-brand-teal` (`#8CCFCF`) is only used on dark backgrounds (sidebar) or as a border/accent, never as text on white
+- **Max 3 colours per component** — status pills, cards, and table rows follow this rule
+- **Monospace for data** — barcodes, version numbers, and numeric biomarker values use `--font-mono`
+- **Bold used sparingly** — `font-weight: 700` is reserved for active states, headings, and stat values; body text and table rows are regular weight
+
+---
+
+## Dependencies
+
+| Library | Version | Usage |
+|---------|---------|-------|
+| Chart.js | 4.4.1 | KDE overlay chart in Compare profiles |
+| Lato (Google Fonts) | — | Primary typeface |
+
+Both loaded via CDN — no npm install needed.
+
+---
+
+## Browser support
+
+Modern evergreen browsers. No IE support required.
