@@ -77,4 +77,49 @@
   --radius-sm:             8px;
   --radius-md:             12px;
 
+  /* -----------------------------------------------------------
+     Spacing
+     ----------------------------------------------------------- */
+  --space-1:               4px;
+  --space-2:               8px;
+  --space-3:               12px;
+  --space-4:               16px;
+  --space-5:               20px;
+  --space-6:               24px;
+  --space-7:               28px;
+  --space-8:               32px;
+
+  /* -----------------------------------------------------------
+     Typography — font sizes
+     ----------------------------------------------------------- */
+  --text-2xs:              10px; /* Uppercase labels, nav section headings */
+  --text-xs:               11px; /* Meta info, timestamps, pill text */
+  --text-sm:               12px; /* Secondary body, table headers, form labels */
+  --text-base:             13px; /* Primary body, table rows, nav items */
+  --text-md:               14px; /* Login card, team button labels */
+  --text-lg:               15px; /* Page title, sidebar app name */
+  --text-xl:               18px; /* Login heading */
+  --text-2xl:              28px; /* Stat values (e.g. kit counts) */
+
+  /* -----------------------------------------------------------
+     Typography — font weights
+     ----------------------------------------------------------- */
+  --font-normal:           400;
+  --font-semibold:         600; /* Table column headers */
+  --font-bold:             700; /* Headings, labels, active nav, stat values */
+  --font-black:            900; /* Reserved — heavy display use only */
+
+  /* -----------------------------------------------------------
+     Typography — font family
+     ----------------------------------------------------------- */
+  --font-sans:             'Lato', system-ui, sans-serif;
+  --font-mono:             monospace; /* Barcodes, version numbers, data values */
+
+  /* -----------------------------------------------------------
+     Typography — letter spacing
+     ----------------------------------------------------------- */
+  --tracking-wide:         0.04em; /* Table headers */
+  --tracking-wider:        0.06em; /* Section labels (.sl) */
+  --tracking-widest:       0.07em; /* Sidebar nav section headings */
+
 }
