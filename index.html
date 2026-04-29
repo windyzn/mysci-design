@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>MySci — Wireframe</title>
+<link rel="icon" type="image/svg+xml" href="logos/Molecular_You_MYLigature__Dark_BlueGray.svg"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -14,17 +15,11 @@
   --bg3:#D5E6EE;
   --bd:rgba(24,55,75,0.12);--bd2:rgba(24,55,75,0.22);--bd3:rgba(24,55,75,0.38);
   --tx:#18374B;--tx2:#3B5464;--tx3:#61859D;
-  /* status: green */
   --sb:#D5EFE5;--st:#2A6B4F;--sbr:#7BBFA0;
-  /* status: yellow */
   --wb:#FFDEB8;--wt:#8B4A00;--wbr:#F5A623;
-  /* status: red */
   --rb:#F5C6C6;--rt:#7A1A1A;--rbr:#D62929;
-  /* status: blue */
   --ib:#D5E6EE;--it:#61859D;--ibr:#8CCFCF;
-  /* status: neutral */
   --nb:#F6F6F6;--nt:#61859D;
-  /* brand */
   --my-dark:#18374B;--my-teal:#8CCFCF;--my-serenity:#D5E6EE;
   --r:8px;--rl:12px;
 }
@@ -47,8 +42,11 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .app{display:none;width:100vw;height:100vh;}
 .app.visible{display:flex;}
 .sidebar{width:210px;min-width:210px;background:var(--my-dark);border-right:none;display:flex;flex-direction:column;overflow-y:auto;}
-.sb-logo{padding:16px 16px 14px;border-bottom:0.5px solid rgba(255,255,255,0.12);font-size:15px;font-weight:700;color:#fff;}
-.sb-logo span{font-size:11px;color:rgba(255,255,255,0.5);font-weight:400;display:block;margin-top:1px;}
+.sb-logo{padding:14px 16px 12px;border-bottom:0.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;gap:10px;}
+.sb-logo-img{display:flex;align-items:center;flex-shrink:0;}
+.sb-logo-text{display:flex;flex-direction:column;}
+.sb-logo-title{font-size:15px;font-weight:700;color:#fff;line-height:1.2;}
+.sb-logo-sub{font-size:11px;color:rgba(255,255,255,0.5);font-weight:400;margin-top:1px;}
 .nav-sec{padding:10px 16px 3px;font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;}
 .nav-item{padding:6px 16px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.65);display:flex;align-items:center;justify-content:space-between;border-left:2px solid transparent;user-select:none;}
 .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff;}
@@ -103,14 +101,12 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .fi{border:0.5px solid var(--bd2);border-radius:var(--r);padding:7px 10px;font-size:13px;width:100%;color:var(--tx);background:var(--bg);}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-/* STATUS PILLS */
 .ds{font-size:11px;padding:2px 8px;border-radius:10px;}
 .d-dr{background:var(--nb);color:var(--nt);}
 .d-sb{background:var(--ib);color:var(--it);}
 .d-rj{background:var(--rb);color:var(--rt);}
 .d-lv{background:var(--sb);color:var(--st);}
 .d-wr{background:var(--wb);color:var(--wt);}
-/* SCORE PILLS */
 .sp{font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;}
 .sg-{background:var(--sb);color:var(--st);}
 .sy-{background:var(--wb);color:var(--wt);}
@@ -133,12 +129,11 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .pa{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .ar{display:flex;gap:8px;}
 .gh-table{width:100%;border-collapse:collapse;font-size:13px;}
-.gh-table th{text-align:left;padding:7px 10px;font-weight:700;color:var(--tx2);border-bottom:0.5px solid var(--bd);font-size:12px;}
+.gh-table th{text-align:left;padding:7px 10px;font-weight:600;color:var(--tx3);border-bottom:0.5px solid var(--bd);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
 .gh-table td{padding:7px 10px;border-bottom:0.5px solid var(--bd);}
 .gh-table tr:last-child td{border-bottom:none;}
 .gh-table tbody tr:hover td{background:var(--bg3);cursor:pointer;}
 .fb{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
-/* ACCORDION */
 .acc-system{border-bottom:0.5px solid var(--bd);}
 .acc-system:last-child{border-bottom:none;}
 .acc-sys-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;cursor:pointer;font-size:13px;}
@@ -153,7 +148,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .acc-bio-body{display:none;padding:2px 0 2px 16px;}
 .acc-bio-body.open{display:block;}
 .acc-bio-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:3px 0;color:var(--tx2);}
-/* WEIGHT TREE */
 .flow-canvas{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:16px;margin-bottom:12px;overflow-x:auto;}
 .fn{border:0.5px solid var(--bd2);border-radius:var(--r);padding:8px 12px;font-size:12px;cursor:pointer;white-space:nowrap;transition:border-color .1s,background .1s;position:relative;}
 .fn:hover{border-color:var(--bd3);}
@@ -175,7 +169,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .pop-input{border:0.5px solid var(--bd2);border-radius:6px;padding:4px 8px;font-size:13px;width:56px;color:var(--tx);background:var(--bg);}
 .pop-sel{border:0.5px solid var(--bd2);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--tx);background:var(--bg);}
 .pop-pmid{border:0.5px solid var(--bd2);border-radius:6px;padding:4px 8px;font-size:12px;flex:1;color:var(--tx);background:var(--bg);}
-/* COMPARE PROFILES */
 .picker-card{background:var(--bg);border:2px solid var(--ibr);border-radius:var(--rl);padding:16px;margin-bottom:16px;}
 .picker-label{font-size:12px;font-weight:700;color:var(--it);margin-bottom:4px;}
 .picker-hint{font-size:11px;color:var(--tx3);margin-bottom:10px;}
@@ -195,12 +188,10 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .db-up{background:var(--ib);color:var(--it);}
 .db-dn{background:var(--wb);color:var(--wt);}
 .db-same{background:var(--nb);color:var(--nt);}
-/* SUBMIT CONFIRM */
 .submit-confirm{background:var(--sb);border:0.5px solid var(--sbr);border-radius:var(--rl);padding:14px;margin-bottom:12px;display:none;}
 .submit-confirm.vis{display:block;}
 .change-item{font-size:12px;padding:4px 0;border-bottom:0.5px solid rgba(42,107,79,0.15);color:var(--tx2);}
 .change-item:last-child{border:none;}
-/* SCORING PARAMS */
 .ps-title{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:0.5px solid var(--bd);}
 .pr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--bd);font-size:13px;}
 .pr:last-child{border:none;}
@@ -211,7 +202,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .clr-r{color:var(--rt);font-size:11px;}
 .clr-y{color:var(--wt);font-size:11px;}
 .clr-g{color:var(--st);font-size:11px;}
-/* ANALYTICS TABS */
 .tab-bar{display:flex;gap:2px;margin-bottom:16px;border-bottom:0.5px solid var(--bd);}
 .tb{font-size:13px;padding:8px 16px;cursor:pointer;background:none;border:none;color:var(--tx2);border-bottom:2px solid transparent;margin-bottom:-0.5px;}
 .tb.active{color:var(--tx);border-bottom-color:var(--my-dark);font-weight:700;}
@@ -224,7 +214,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .hbw{display:flex;gap:2px;align-items:flex-end;height:120px;margin-bottom:6px;position:relative;}
 .hb{flex:1;border-radius:2px 2px 0 0;min-height:2px;}
 .hx{display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);}
-/* DATA VERSION TOOLTIP */
 .dv-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;font-family:monospace;background:var(--nb);border:0.5px solid var(--bd2);border-radius:6px;padding:2px 8px;cursor:pointer;position:relative;white-space:nowrap;}
 .dv-chip:hover{border-color:var(--ibr);background:var(--ib);color:var(--it);}
 .dv-tooltip{position:absolute;top:calc(100% + 6px);left:0;z-index:50;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,0.12);width:260px;display:none;pointer-events:auto;word-break:normal;overflow-wrap:break-word;white-space:normal;}
@@ -232,7 +221,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .dv-tooltip-ver{font-size:12px;font-weight:700;font-family:monospace;margin-bottom:4px;color:var(--tx);}
 .dv-tooltip-desc{font-size:11px;color:var(--tx2);line-height:1.5;margin-bottom:8px;}
 .dv-tooltip-date{font-size:11px;color:var(--tx3);margin-bottom:8px;}
-/* FLOWCHART */
 .flow-svg-wrap{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:16px;overflow-x:auto;}
 .fc-legend{display:flex;gap:12px;margin-bottom:12px;font-size:11px;color:var(--tx2);}
 .legd{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;}
@@ -244,8 +232,13 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <!-- LOGIN -->
 <div class="login-wrap" id="login">
   <div class="login-card">
-    <div style="font-size:18px;font-weight:700;margin-bottom:2px;color:var(--tx);">MySci</div>
-    <div style="font-size:12px;color:var(--tx2);margin-bottom:24px;">Internal operations platform</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+      <img src="logos/Molecular_You_MYLigature__Dark_BlueGray.svg" height="32" style="display:block;"/>
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--tx);">MySci</div>
+        <div style="font-size:12px;color:var(--tx2);">Internal operations platform</div>
+      </div>
+    </div>
     <div id="login-step-1">
       <div class="sl">Sign in</div>
       <div style="margin-bottom:10px;"><div style="font-size:12px;color:var(--tx2);margin-bottom:4px;">Email</div><input class="fi" id="login-email" placeholder="you@molecularyou.com" value="maria@molecularyou.com"/></div>
@@ -270,7 +263,16 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <!-- APP -->
 <div class="app" id="app">
   <div class="sidebar">
-    <div class="sb-logo">MySci <span id="sb-tl">–</span></div>
+    <div class="sb-logo">
+      <!-- MY ligature logo in white for dark sidebar -->
+      <div class="sb-logo-img">
+        <img src="logos/Molecular_You_MYLigature__Turquoise.svg" height="21" style="display:block;"/>
+      </div>
+      <div class="sb-logo-text">
+        <span class="sb-logo-title">MySci</span>
+        <span class="sb-logo-sub" id="sb-tl">–</span>
+      </div>
+    </div>
     <div id="nav-ops" style="display:none;">
       <div class="nav-sec">Operations</div>
       <div class="nav-item" data-panel="batches" onclick="nav(this)">Samples</div>
@@ -353,13 +355,13 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     <table class="gh-table" id="batches-table">
       <thead><tr><th>Barcode</th><th>Date received ↓</th><th>Timepoint</th><th>Batch name</th><th>Lab</th><th>Datasets available</th><th>Status</th><th></th></tr></thead>
       <tbody>
-        <tr data-tp="2026-03" data-status="analyzing"><td style="font-weight:700;font-family:monospace;">498F385</td><td>2026-03-06</td><td>March 2026</td><td style="font-size:12px;color:var(--tx2);">March 2026 2A_Proteomics</td><td>TMIC / BGI</td><td><span class="ds d-nb" style="background:var(--nb);color:var(--nt);">Processing…</span></td><td><span class="ds d-sb">Analyzing</span></td><td><button class="btn" style="font-size:11px;padding:3px 8px;" disabled>Not ready</button></td></tr>
-        <tr data-tp="2026-03" data-status="complete"><td style="font-weight:700;font-family:monospace;">463F345</td><td>2026-03-04</td><td>March 2026</td><td style="font-size:12px;color:var(--tx2);">March 2026 1A_Proteomics</td><td>TMIC / BGI</td><td><span class="ds d-sb">2 proteomics · 1 metabolomics</span></td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('463F345','March 2026')">Build report →</button></td></tr>
-        <tr data-tp="2026-03" data-status="complete"><td style="font-weight:700;font-family:monospace;">441C219</td><td>2026-03-04</td><td>March 2026</td><td style="font-size:12px;color:var(--tx2);">March 1A 2026_Metabolomics</td><td>TMIC / BGI</td><td><span class="ds d-sb">2 proteomics · 1 metabolomics</span></td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('441C219','March 2026')">Build report →</button></td></tr>
-        <tr data-tp="2026-03" data-status="compromised"><td style="font-weight:700;font-family:monospace;">389A104</td><td>2026-03-04</td><td>March 2026</td><td style="font-size:12px;color:var(--tx2);">March 1A 2026_Metabolomics</td><td>TMIC</td><td><span class="ds d-rj">Metabolomics only</span></td><td><span class="ds d-rj">Compromised</span></td><td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('389A104','March 2026')">Build partial →</button></td></tr>
-        <tr data-tp="2026-01" data-status="complete"><td style="font-weight:700;font-family:monospace;">312B778</td><td>2026-01-08</td><td>January 2026</td><td style="font-size:12px;color:var(--tx2);">2026-01-08 13:06:00 UTC_Proteomics</td><td>TMIC / LabCorp</td><td><span class="ds d-sb">1 proteomics · 2 metabolomics</span></td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('312B778','January 2026')">Build report →</button></td></tr>
-        <tr data-tp="2026-01" data-status="rerun"><td style="font-weight:700;font-family:monospace;">298D561</td><td>2026-01-08</td><td>January 2026</td><td style="font-size:12px;color:var(--tx2);">2026-01-27 22:35:00 UTC_Metabolomics</td><td>TMIC</td><td><span class="ds d-wr">Awaiting rerun</span></td><td><span class="ds d-wr">Rerun</span></td><td><button class="btn" style="font-size:11px;padding:3px 8px;" disabled>Not ready</button></td></tr>
-        <tr data-tp="2025-11" data-status="complete"><td style="font-weight:700;font-family:monospace;">187F033</td><td>2025-11-12</td><td>November 2025</td><td style="font-size:12px;color:var(--tx2);">January 1A 2026 Metabolomics</td><td>LabCorp / BGI</td><td><span class="ds d-sb">1 proteomics · 1 metabolomics</span></td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('187F033','November 2025')">Build report →</button></td></tr>
+        <tr data-tp="2026-03" data-status="analyzing"><td style="font-family:monospace;">498F385</td><td>2026-03-06</td><td>March 2026</td><td style="font-size:12px;color:var(--tx2);">March 2026 2A_Proteomics</td><td>TMIC / BGI</td><td style="font-size:12px;color:var(--tx3);">Processing…</td><td><span class="ds d-sb">Analyzing</span></td><td><button class="btn" style="font-size:11px;padding:3px 8px;" disabled>Not ready</button></td></tr>
+        <tr data-tp="2026-03" data-status="complete"><td style="font-family:monospace;">463F345</td><td>2026-03-04</td><td>March 2026</td><td style="font-size:12px;color:var(--tx2);">March 2026 1A_Proteomics</td><td>TMIC / BGI</td><td style="font-size:12px;color:var(--tx2);">2 proteomics · 1 metabolomics</td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('463F345','March 2026')">Build report →</button></td></tr>
+        <tr data-tp="2026-03" data-status="complete"><td style="font-family:monospace;">441C219</td><td>2026-03-04</td><td>March 2026</td><td style="font-size:12px;color:var(--tx2);">March 1A 2026_Metabolomics</td><td>TMIC / BGI</td><td style="font-size:12px;color:var(--tx2);">2 proteomics · 1 metabolomics</td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('441C219','March 2026')">Build report →</button></td></tr>
+        <tr data-tp="2026-03" data-status="compromised"><td style="font-family:monospace;">389A104</td><td>2026-03-04</td><td>March 2026</td><td style="font-size:12px;color:var(--tx2);">March 1A 2026_Metabolomics</td><td>TMIC</td><td style="font-size:12px;color:var(--tx3);">Metabolomics only</td><td><span class="ds d-rj">Compromised</span></td><td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('389A104','March 2026')">Build partial →</button></td></tr>
+        <tr data-tp="2026-01" data-status="complete"><td style="font-family:monospace;">312B778</td><td>2026-01-08</td><td>January 2026</td><td style="font-size:12px;color:var(--tx2);">2026-01-08 13:06:00 UTC_Proteomics</td><td>TMIC / LabCorp</td><td style="font-size:12px;color:var(--tx2);">1 proteomics · 2 metabolomics</td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('312B778','January 2026')">Build report →</button></td></tr>
+        <tr data-tp="2026-01" data-status="rerun"><td style="font-family:monospace;">298D561</td><td>2026-01-08</td><td>January 2026</td><td style="font-size:12px;color:var(--tx2);">2026-01-27 22:35:00 UTC_Metabolomics</td><td>TMIC</td><td style="font-size:12px;color:var(--tx3);">Awaiting rerun</td><td><span class="ds d-wr">Rerun</span></td><td><button class="btn" style="font-size:11px;padding:3px 8px;" disabled>Not ready</button></td></tr>
+        <tr data-tp="2025-11" data-status="complete"><td style="font-family:monospace;">187F033</td><td>2025-11-12</td><td>November 2025</td><td style="font-size:12px;color:var(--tx2);">January 1A 2026 Metabolomics</td><td>LabCorp / BGI</td><td style="font-size:12px;color:var(--tx2);">1 proteomics · 1 metabolomics</td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('187F033','November 2025')">Build report →</button></td></tr>
       </tbody>
     </table>
   </div>
@@ -786,7 +788,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 </div>
 
 <script>
-// ── WEIGHT TREE ──
 const TREE={'Cardiovascular Health':{processes:[{name:'Lipid metabolism',weight:2,color:'both',biomarkers:[{name:'LDL Cholesterol',weight:3,color:'red',dir:'high'},{name:'HDL Cholesterol',weight:2,color:'red',dir:'low'},{name:'Triglycerides',weight:1,color:'red',dir:'high'},{name:'Lp(a)',weight:1,color:'red',dir:'high'}]},{name:'Vascular inflammation',weight:1,color:'red',biomarkers:[{name:'hsCRP',weight:3,color:'red',dir:'high'},{name:'IL-6',weight:1,color:'red',dir:'high'}]}]},'Metabolic Health':{processes:[{name:'Glucose regulation',weight:3,color:'both',biomarkers:[{name:'HbA1c',weight:3,color:'red',dir:'high'},{name:'Fasting glucose',weight:2,color:'red',dir:'high'},{name:'Insulin',weight:1,color:'both',dir:'both'}]},{name:'Thyroid function',weight:1,color:'red',biomarkers:[{name:'TSH',weight:1,color:'both',dir:'both'},{name:'Free T4',weight:1,color:'both',dir:'both'}]}]},'Inflammation':{processes:[{name:'Oxidative stress',weight:2,color:'red',biomarkers:[{name:'hsCRP',weight:2,color:'red',dir:'high'},{name:'Ferritin',weight:1,color:'both',dir:'high'},{name:'MDA',weight:2,color:'red',dir:'high'}]}]},'Bone Health':{processes:[{name:'Bone turnover',weight:1,color:'both',biomarkers:[{name:'Vitamin D',weight:3,color:'red',dir:'low'},{name:'PTH',weight:1,color:'both',dir:'both'},{name:'Osteocalcin',weight:1,color:'red',dir:'low'}]}]}};
 let wtW={};
 function wbadge(w,color,dir){if(w<=1)return'';let h='<div class="wbadge"><span class="wb-num">'+w+'x</span>';if(color&&color!=='both')h+='<span class="wb-col '+(color==='red'?'wb-red':'wb-yel')+'">'+color+'</span>';if(dir&&dir!=='both')h+='<span class="wb-dir">'+dir+'</span>';return h+'</div>';}
@@ -800,26 +801,21 @@ function refreshBN(pi,bi,key){const el=document.getElementById('bn-'+pi+'-'+bi);
 function closeAllPops(){document.querySelectorAll('.pop').forEach(p=>p.remove());document.querySelectorAll('.fn').forEach(n=>{n.classList.remove('sel');n.style.outline='none';});}
 document.addEventListener('click',e=>{if(!e.target.closest('.fn')&&!e.target.closest('.pop'))closeAllPops();});
 
-// ── FLOWCHART ──
 const FC={'Cardiovascular Health':{processes:[{name:'Lipid metabolism',biomarkers:['LDL Cholesterol','HDL Cholesterol','Triglycerides','Lp(a)']},{name:'Vascular inflammation',biomarkers:['hsCRP','IL-6','Fibrinogen']}]},'Metabolic Health':{processes:[{name:'Glucose regulation',biomarkers:['HbA1c','Fasting glucose','Insulin','HOMA-IR']},{name:'Thyroid function',biomarkers:['TSH','Free T4','Free T3']}]},'Bone Health':{processes:[{name:'Bone turnover',biomarkers:['Vitamin D','PTH','Osteocalcin','CTX']}]},'Inflammation':{processes:[{name:'Oxidative stress',biomarkers:['hsCRP','Ferritin','MDA','8-OHdG']},{name:'Acute phase',biomarkers:['CRP','SAA','Fibrinogen']}]}};
 function renderFlowchart(){const sys=document.getElementById('fc-sys-sel').value;const data=FC[sys];const container=document.getElementById('flowchart-container');if(!data){container.innerHTML='';return;}const SW=140,SH=40,PW=138,PH=32,BW=138,BH=28,GAP=12,HGAP=60,PAD=16;const allBios=[];data.processes.forEach(p=>p.biomarkers.forEach(b=>{if(!allBios.find(x=>x.name===b))allBios.push({name:b,procs:[p.name]});else allBios.find(x=>x.name===b).procs.push(p.name);}));const procTotalH=data.processes.length*PH+(data.processes.length-1)*GAP;const bioTotalH=allBios.length*BH+(allBios.length-1)*GAP;const totalH=Math.max(SH,procTotalH,bioTotalH)+PAD*2;const col0=PAD,col1=PAD+SW+HGAP,col2=col1+PW+HGAP,totalW=col2+BW+PAD;const ns=t=>document.createElementNS('http://www.w3.org/2000/svg',t);const svg=ns('svg');svg.setAttribute('width',totalW);svg.setAttribute('height',totalH);svg.style.display='block';function drawNode(x,y,w,h,label,fill,stroke,tc,id){const g=ns('g');if(id)g.id=id;const rect=ns('rect');rect.setAttribute('x',x);rect.setAttribute('y',y);rect.setAttribute('width',w);rect.setAttribute('height',h);rect.setAttribute('rx','6');rect.setAttribute('fill',fill);rect.setAttribute('stroke',stroke);rect.setAttribute('stroke-width','0.5');const txt=ns('text');txt.setAttribute('x',x+w/2);txt.setAttribute('y',y+h/2+1);txt.setAttribute('text-anchor','middle');txt.setAttribute('dominant-baseline','middle');txt.setAttribute('font-size','11');txt.setAttribute('fill',tc);txt.setAttribute('font-family','Lato,system-ui,sans-serif');const mc=Math.floor(w/6.2);txt.textContent=label.length>mc?label.slice(0,mc-1)+'…':label;g.appendChild(rect);g.appendChild(txt);svg.appendChild(g);return{lx:x,rx:x+w,my:y+h/2};}function drawCurve(x1,y1,x2,y2,pi,bi){const path=ns('path');const mx=(x1+x2)/2;path.setAttribute('d',`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','rgba(24,55,75,0.14)');path.setAttribute('stroke-width','1.5');if(pi!==undefined){path.setAttribute('data-pi',pi);path.setAttribute('data-bi',bi);}svg.insertBefore(path,svg.firstChild);return path;}const sysY=totalH/2-SH/2;const sysN=drawNode(col0,sysY,SW,SH,sys,'#D5EFE5','#7BBFA0','#2A6B4F');const procStartY=(totalH-procTotalH)/2;const procNodes=[];data.processes.forEach((p,pi)=>{const y=procStartY+pi*(PH+GAP);const n=drawNode(col1,y,PW,PH,p.name,'#FFDEB8','#F5A623','#854f0b','fcp'+pi);procNodes.push({...n,name:p.name});drawCurve(sysN.rx,sysN.my,n.lx,n.my);});const bioStartY=(totalH-bioTotalH)/2;const bioNodes={};allBios.forEach((b,bi)=>{const y=bioStartY+bi*(BH+GAP);const n=drawNode(col2,y,BW,BH,b.name,'#D5E6EE','rgba(24,55,75,0.22)','#18374B','fcb'+bi);bioNodes[b.name]={...n,idx:bi};});const lines=[];data.processes.forEach((p,pi)=>{p.biomarkers.forEach(bName=>{const bn=bioNodes[bName];if(!bn)return;const pn=procNodes[pi];const l=drawCurve(pn.rx,pn.my,bn.lx,bn.my,pi,bn.idx);lines.push({line:l,pi,bi:bn.idx});});});function setHL(pi,bi,on){lines.forEach(l=>{const m=(pi===undefined||l.pi===pi)&&(bi===undefined||l.bi===bi);l.line.setAttribute('stroke',m&&on?'rgba(140,207,207,0.9)':'rgba(24,55,75,0.14)');l.line.setAttribute('stroke-width',m&&on?'2.5':'1.5');});if(pi!==undefined){const el=svg.getElementById('fcp'+pi);if(el)el.querySelector('rect').setAttribute('stroke-width',on?'2':'0.5');}if(bi!==undefined){const el=svg.getElementById('fcb'+bi);if(el)el.querySelector('rect').setAttribute('stroke-width',on?'2':'0.5');}}data.processes.forEach((p,pi)=>{const el=svg.getElementById('fcp'+pi);if(!el)return;el.style.cursor='pointer';el.onmouseenter=()=>setHL(pi,undefined,true);el.onmouseleave=()=>setHL(pi,undefined,false);});allBios.forEach((b,bi)=>{const el=svg.getElementById('fcb'+bi);if(!el)return;el.style.cursor='pointer';el.onmouseenter=()=>setHL(undefined,bi,true);el.onmouseleave=()=>setHL(undefined,bi,false);});container.innerHTML='';container.appendChild(svg);}
 
-// ── KDE CHART ──
 let overlayChart=null;
 const KDE_DATA={'Cardiovascular Health':{meanA:66.2,sdA:12.4,meanB:64.1,sdB:13.8},'Inflammation':{meanA:51.3,sdA:18.2,meanB:49.5,sdB:19.1}};
 function gaussianKDE(mean,sd,points){return points.map(x=>Math.exp(-0.5*Math.pow((x-mean)/sd,2))/(sd*Math.sqrt(2*Math.PI)));}
 function renderKdeChart(){const sys=document.getElementById('pop-sys-sel');if(!sys)return;const sysName=sys.value;document.getElementById('pop-chart-title').textContent='Population distribution — '+sysName;const d=KDE_DATA[sysName]||KDE_DATA['Cardiovascular Health'];const pts=[];for(let i=0;i<=100;i+=1)pts.push(i);const kdeA=gaussianKDE(d.meanA,d.sdA,pts);const kdeB=gaussianKDE(d.meanB,d.sdB,pts);const ctx=document.getElementById('overlayChart').getContext('2d');if(overlayChart)overlayChart.destroy();overlayChart=new Chart(ctx,{type:'line',data:{labels:pts,datasets:[{label:'Profile A',data:kdeA,borderColor:'#61859D',backgroundColor:'rgba(97,133,157,0.12)',borderWidth:2,pointRadius:0,fill:true,tension:0.4},{label:'Profile B',data:kdeB,borderColor:'#F5A623',backgroundColor:'rgba(245,166,35,0.10)',borderWidth:2,pointRadius:0,fill:true,tension:0.4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:11}},y:{beginAtZero:true,grid:{color:'rgba(24,55,75,0.05)'}}}}});}
 
-// ── SCORES ACCORDION ──
 const SIM={systems:[{name:'Cardiovascular Health',a:74,b:71,processes:[{name:'Lipid metabolism',a:70,b:68,biomarkers:[{name:'LDL Cholesterol',a:'2.1',b:'2.3',unit:'mmol/L',ref:'0–2.6'},{name:'HDL Cholesterol',a:'1.8',b:'1.7',unit:'mmol/L',ref:'1.0+'},{name:'Triglycerides',a:'1.1',b:'1.2',unit:'mmol/L',ref:'0–1.7'}]},{name:'Vascular inflammation',a:78,b:74,biomarkers:[{name:'hsCRP',a:'1.2',b:'0.9',unit:'mg/L',ref:'0–3.0'}]}]},{name:'Metabolic Health',a:51,b:55,processes:[{name:'Glucose regulation',a:48,b:52,biomarkers:[{name:'HbA1c',a:'5.4',b:'5.3',unit:'%',ref:'4.8–5.6'}]}]},{name:'Inflammation',a:28,b:31,processes:[{name:'Oxidative stress',a:25,b:28,biomarkers:[{name:'hsCRP',a:'3.8',b:'3.5',unit:'mg/L',ref:'0–3.0'}]}]},{name:'Bone Health',a:81,b:81,processes:[{name:'Bone turnover',a:81,b:81,biomarkers:[{name:'Vitamin D',a:'42',b:'42',unit:'ng/mL',ref:'30–100'}]}]}]};
 function sc(v){return v>=70?'sg-':v>=50?'sy-':'sr-';}
 function buildAcc(cid){const c=document.getElementById(cid);if(!c)return;c.innerHTML='';SIM.systems.forEach((sys,si)=>{const sDiv=document.createElement('div');sDiv.className='acc-system';const sRow=document.createElement('div');sRow.className='acc-sys-row';sRow.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><span class="acc-tog" id="at-${cid}-${si}">▶</span>${sys.name}</div><span class="sp ${sc(sys.a)}">${sys.a}</span>`;const sBody=document.createElement('div');sBody.className='acc-body';sBody.id=`ab-${cid}-${si}`;sRow.onclick=()=>{const o=sBody.classList.toggle('open');document.getElementById(`at-${cid}-${si}`).textContent=o?'▼':'▶';};sys.processes.forEach((proc,pi)=>{const pDiv=document.createElement('div');pDiv.className='acc-proc';const pRow=document.createElement('div');pRow.className='acc-proc-row';pRow.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><span class="acc-tog" id="pt-${cid}-${si}-${pi}">▶</span>${proc.name}</div><span class="sp ${sc(proc.a)}">${proc.a}</span>`;const bBody=document.createElement('div');bBody.className='acc-bio-body';bBody.id=`pb-${cid}-${si}-${pi}`;pRow.onclick=()=>{const o=bBody.classList.toggle('open');document.getElementById(`pt-${cid}-${si}-${pi}`).textContent=o?'▼':'▶';};proc.biomarkers.forEach(bio=>{const bioScore=Math.round(65+Math.random()*30);const bRow=document.createElement('div');bRow.className='acc-bio-row';bRow.innerHTML=`<span>${bio.name}</span><div style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="font-family:monospace;">${bio.a} ${bio.unit}</span><span style="color:var(--tx3);">ref ${bio.ref}</span><span class="sp ${sc(bioScore)}" style="font-size:10px;">${bioScore}</span></div>`;bBody.appendChild(bRow);});pDiv.appendChild(pRow);pDiv.appendChild(bBody);sBody.appendChild(pDiv);});sDiv.appendChild(sRow);sDiv.appendChild(sBody);c.appendChild(sDiv);});}
 
-// ── COMPARE REPORTS ──
 const CR_DATA=[{type:'system',label:'Cardiovascular Health',a:74,b:71},{type:'process',label:'Lipid metabolism',a:70,b:68,indent:1},{type:'biomarker',label:'LDL Cholesterol',aVal:'2.1 mmol/L',bVal:'2.3 mmol/L',aScore:78,bScore:72,indent:2},{type:'biomarker',label:'HDL Cholesterol',aVal:'1.8 mmol/L',bVal:'1.7 mmol/L',aScore:82,bScore:80,indent:2},{type:'process',label:'Vascular inflammation',a:78,b:74,indent:1},{type:'biomarker',label:'hsCRP',aVal:'1.2 mg/L',bVal:'0.9 mg/L',aScore:85,bScore:90,indent:2},{type:'system',label:'Metabolic Health',a:51,b:55},{type:'process',label:'Glucose regulation',a:48,b:52,indent:1},{type:'biomarker',label:'HbA1c',aVal:'5.4%',bVal:'5.3%',aScore:72,bScore:75,indent:2},{type:'system',label:'Inflammation',a:28,b:31},{type:'process',label:'Oxidative stress',a:25,b:28,indent:1}];
 function buildCrInlineTable(){const tbody=document.getElementById('cr-inline-tbody');if(!tbody)return;tbody.innerHTML='';CR_DATA.forEach(row=>{const tr=document.createElement('tr');const indent=(row.indent||0)*16;let labelStyle=`padding-left:${10+indent}px;font-size:13px;`;if(row.type==='system'){tr.style.background='var(--bg3)';labelStyle+='font-weight:700;';}else if(row.type==='process'){labelStyle+='color:var(--tx2);font-size:12px;';}else{labelStyle+='color:var(--tx3);font-size:12px;';}let aC,bC,dC;if(row.type==='biomarker'){const d=row.bScore-row.aScore;const dc=d>0?'dp':d<0?'dm':'dz';const ds=d>0?'+'+d:d===0?'0':String(d);aC=`<span class="sp ${sc(row.aScore)}">${row.aScore}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.aVal}</span>`;bC=`<span class="sp ${sc(row.bScore)}">${row.bScore}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.bVal}</span>`;dC=`<span class="${dc}">${ds}</span>`;}else{const d=row.b-row.a;const dc=d>0?'dp':d<0?'dm':'dz';const ds=d>0?'+'+d:d===0?'0':String(d);aC=`<span class="sp ${sc(row.a)}">${row.a}</span>`;bC=`<span class="sp ${sc(row.b)}">${row.b}</span>`;dC=`<span class="${dc}">${ds}</span>`;}tr.innerHTML=`<td style="${labelStyle}">${row.label}</td><td>${aC}</td><td>${bC}</td><td>${dC}</td>`;tbody.appendChild(tr);});}
 
-// ── NAV ──
 let currentRole='contributor';
 function goToTeamSelect(){document.getElementById('login-step-1').style.display='none';document.getElementById('login-step-2').style.display='';}
 function doLogin(team){const email=document.getElementById('login-email').value||'user@molecularyou.com';currentRole=document.getElementById('login-role').value;document.getElementById('login').style.display='none';document.getElementById('app').classList.add('visible');const initials=email.split('@')[0].slice(0,2).toUpperCase();document.getElementById('sb-av').textContent=initials;document.getElementById('sb-name').textContent=email.split('@')[0];document.getElementById('sb-td').textContent=team+' team';document.getElementById('sb-tl').textContent=team;const rb=document.getElementById('sb-role-badge');rb.textContent=currentRole==='admin'?'Admin':'Contributor';rb.style.background=currentRole==='admin'?'var(--rb)':'var(--ib)';rb.style.color=currentRole==='admin'?'var(--rt)':'var(--it)';rb.style.display='inline-block';document.getElementById('nav-ops').style.display=team==='Ops'?'block':'none';document.getElementById('nav-sci').style.display=team==='Science'?'block':'none';const first=team==='Ops'?'batches':'refrange';activatePanel(first);setPageHeader(first);const firstNav=document.querySelector('#nav-'+(team==='Ops'?'ops':'sci')+' .nav-item');if(firstNav)firstNav.classList.add('active');if(team==='Ops')applyRoleGating();}
@@ -842,21 +838,9 @@ const PAGE_META={
   'audit':         {title:'Audit Log',              sub:null},
   'dataversions':  {title:'Data Versions',          sub:null},
 };
-function setPageHeader(panel){
-  const m=PAGE_META[panel]||{title:panel,sub:null};
-  document.getElementById('page-title').textContent=m.title;
-  const activePanel=document.getElementById('panel-'+panel);
-  if(activePanel){
-    const sl=activePanel.querySelector('.sl');
-    if(sl){
-      if(m.sub){sl.textContent=m.sub;sl.style.display='block';}
-      else{sl.style.display='none';}
-    }
-  }
-}
+function setPageHeader(panel){const m=PAGE_META[panel]||{title:panel,sub:null};document.getElementById('page-title').textContent=m.title;const activePanel=document.getElementById('panel-'+panel);if(activePanel){const sl=activePanel.querySelector('.sl');if(sl){if(m.sub){sl.textContent=m.sub;sl.style.display='block';}else{sl.style.display='none';}}}}
 function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const panel=el.dataset.panel;activatePanel(panel);setPageHeader(panel);}
-
-function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);  if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);}
+function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);}
 function toggleGroup(id){const el=document.getElementById(id);const ch=document.getElementById('chev-'+id);const open=el.classList.contains('expanded');el.classList.toggle('collapsed',open);el.classList.toggle('expanded',!open);if(ch)ch.classList.toggle('open',!open);}
 function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
 function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
