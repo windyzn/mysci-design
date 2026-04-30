@@ -581,38 +581,50 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
 <!-- REFERENCE RANGES -->
 <div class="panel" id="panel-refrange">
-  <div class="pa"><div class="sl" style="margin:0;">Reference ranges</div><button class="btn btn-p">+ New range</button></div>
+  <div class="pa"><div class="sl" style="margin:0;">Reference ranges</div></div>
 
-  <!-- filters -->
-  <div class="fb" style="margin-bottom:8px;">
-    <input class="fi" id="rr-search" placeholder="Search biomarker or MYCO ID…" style="width:220px;font-size:12px;padding:6px 10px;" oninput="filterRR()"/>
-    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-units" onchange="filterRR()"><option value="">All units</option><option>μM</option><option>nM</option><option>ng/mL</option><option>μg/mL</option><option>mg/L</option><option>mmol/L</option><option>%</option></select>
-    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-fluid" onchange="filterRR()"><option value="">All biofluids</option><option>Serum</option><option>Plasma</option></select>
-    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-cat" onchange="filterRR()"><option value="">All categories</option><option>Calculated</option><option>Literature</option><option>Clinical</option></select>
-    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-exp" onchange="filterRR()"><option value="">Exported: all</option><option value="true">Exported: yes</option><option value="false">Exported: no</option></select>
-    <select class="fi" style="width:auto;font-size:12px;" id="rr-f-lot" onchange="filterRR()"><option value="">All peptide lots</option><option>MRM 1.1 HQE N20240604 &amp; S20250320</option><option>MRM 1.1 N20200717 &amp; S20200717</option></select>
-  </div>
-
-  <!-- column toggle -->
-  <div style="margin-bottom:10px;position:relative;display:inline-block;">
-    <button class="btn" onclick="toggleColMenu()" id="col-toggle-btn" style="font-size:11px;display:flex;align-items:center;gap:5px;">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      Columns
-    </button>
-    <div id="col-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:50;min-width:190px;">
-      <div style="padding:4px 12px 6px;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Show / hide columns</div>
-      <label class="col-toggle-row"><input type="checkbox" checked disabled/> Biomarker <span style="font-size:10px;color:var(--tx3);">(locked)</span></label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="myco"/> MYCO ID</label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="range"/> Range</label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="units"/> Units</label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="age"/> Age</label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="sex"/> Sex</label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="fluid"/> Biofluid</label>
-      <label class="col-toggle-row"><input type="checkbox" data-col="reference"/> Reference</label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="category"/> Category</label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="exported"/> Exported</label>
-      <label class="col-toggle-row"><input type="checkbox" checked data-col="assay"/> Assay</label>
-      <label class="col-toggle-row"><input type="checkbox" data-col="peptidelot"/> Peptide lot</label>
+  <!-- filter + action bar -->
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <!-- left: filter dropdowns -->
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <select class="fi" style="width:auto;font-size:12px;" id="rr-f-units" onchange="filterRR()"><option value="">All units</option><option>μM</option><option>nM</option><option>ng/mL</option><option>μg/mL</option><option>mg/L</option><option>mmol/L</option><option>%</option></select>
+      <select class="fi" style="width:auto;font-size:12px;" id="rr-f-fluid" onchange="filterRR()"><option value="">All biofluids</option><option>Serum</option><option>Plasma</option></select>
+      <select class="fi" style="width:auto;font-size:12px;" id="rr-f-cat" onchange="filterRR()"><option value="">All categories</option><option>Calculated</option><option>Literature</option><option>Clinical</option></select>
+      <select class="fi" style="width:auto;font-size:12px;" id="rr-f-exp" onchange="filterRR()"><option value="">Exported: all</option><option value="true">Exported: yes</option><option value="false">Exported: no</option></select>
+<select class="fi" style="width:auto;font-size:12px;" id="rr-f-lot" onchange="filterRR()"><option value="">All peptide lots</option><option>MRM 1.1 HQE N20240604 &amp; S20250320</option><option>MRM 1.1 N20200717 &amp; S20200717</option><option>MRM 1.1 N20240604 &amp; S20250320</option><option>MRM 1.1 N20240604 &amp; S20200717</option><option>MRM 1.1 HQE N20240604 &amp; S20200717</option></select>
+    </div>
+    <!-- right: icon-only action buttons -->
+    <div style="display:flex;align-items:center;gap:4px;">
+      <!-- expanding search -->
+      <input class="fi" id="rr-search" placeholder="Search biomarker or MYCO ID…" style="display:none;width:200px;font-size:12px;padding:5px 8px;" oninput="filterRR()"/>
+      <button class="btn" onclick="toggleRRSearch()" id="rr-search-btn" title="Search" style="padding:5px 8px;display:flex;align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <!-- new range -->
+      <button class="btn btn-p" onclick="openNewRangeModal()" title="New range" style="padding:5px 8px;display:flex;align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <!-- column toggle -->
+      <div style="position:relative;">
+        <button class="btn" onclick="toggleColMenu()" id="col-toggle-btn" style="padding:5px 8px;display:flex;align-items:center;" title="Show / hide columns">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+        <div id="col-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:50;min-width:190px;">
+          <div style="padding:4px 12px 6px;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Show / hide columns</div>
+          <label class="col-toggle-row"><input type="checkbox" checked disabled/> Biomarker <span style="font-size:10px;color:var(--tx3);">(locked)</span></label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="myco"/> MYCO ID</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="range"/> Range</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="units"/> Units</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="age"/> Age</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="sex"/> Sex</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="fluid"/> Biofluid</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="reference"/> Reference</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="category"/> Category</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="assay"/> Assay</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="peptidelot"/> Peptide lot</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="exported"/> Exported</label>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -628,11 +640,11 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
           <th data-col="age">Age</th>
           <th data-col="sex">Sex</th>
           <th data-col="fluid">Biofluid</th>
+          <th data-col="assay">Assay</th>
+          <th data-col="peptidelot">Peptide lot</th>
           <th data-col="reference">Reference</th>
           <th data-col="category">Category</th>
           <th data-col="exported">Exported</th>
-          <th data-col="assay">Assay</th>
-          <th data-col="peptidelot">Peptide lot</th>
           <th style="width:40px;"></th>
         </tr>
       </thead>
@@ -640,6 +652,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     </table>
   </div>
   <div style="font-size:11px;color:var(--tx3);margin-top:8px;" id="rr-count"></div>
+
 </div>
 
 <!-- REFERENCE RANGE SIDE DRAWER -->
@@ -679,6 +692,45 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     <button class="btn" onclick="saveRRDraft()">Save as draft</button>
     <button class="btn btn-p" onclick="submitRRReview()">Submit for review</button>
     <button class="btn" onclick="closeRRDrawer()" style="margin-left:auto;color:var(--tx3);">Cancel</button>
+  </div>
+</div>
+
+<!-- NEW RANGE MODAL -->
+<div id="new-range-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.25);z-index:300;align-items:center;justify-content:center;" onclick="if(event.target===this)closeNewRangeModal()">
+  <div style="background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);width:460px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,0.14);">
+    <div style="padding:16px 20px;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="font-size:14px;font-weight:700;">New reference range</div>
+      <button onclick="closeNewRangeModal()" style="background:none;border:none;cursor:pointer;color:var(--tx3);font-size:18px;line-height:1;padding:4px;">✕</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;">
+      <div style="margin-bottom:14px;"><div class="drawer-label">Biomarker</div><input class="fi" id="nr-biomarker" placeholder="e.g. Alanine"/></div>
+      <div style="margin-bottom:14px;"><div class="drawer-label">MYCO ID</div><input class="fi" id="nr-myco" style="font-family:monospace;" placeholder="e.g. RV00001900"/></div>
+      <div class="g2" style="margin-bottom:14px;">
+        <div><div class="drawer-label">Range low</div><input class="fi" id="nr-low" type="number" placeholder="0"/></div>
+        <div><div class="drawer-label">Range high</div><input class="fi" id="nr-high" type="number" placeholder="0"/></div>
+      </div>
+      <div style="margin-bottom:14px;"><div class="drawer-label">Units</div><input class="fi" id="nr-units" placeholder="e.g. μM"/></div>
+      <div class="g2" style="margin-bottom:14px;">
+        <div><div class="drawer-label">Age</div><select class="fi" id="nr-age"><option>Adult</option><option>Child</option></select></div>
+        <div><div class="drawer-label">Sex</div><select class="fi" id="nr-sex"><option>Both</option><option>Male</option><option>Female</option></select></div>
+      </div>
+      <div style="margin-bottom:14px;"><div class="drawer-label">Biofluid</div><select class="fi" id="nr-fluid"><option>Serum</option><option>Plasma</option></select></div>
+      <div style="margin-bottom:14px;"><div class="drawer-label">Category</div><select class="fi" id="nr-cat"><option>Calculated</option><option>Literature</option><option>Clinical</option></select></div>
+      <div style="margin-bottom:14px;"><div class="drawer-label">Assay</div><select class="fi" id="nr-assay"><option>MYCO 1.2 HQE</option><option>MRM 1.1 HQE</option><option>MYCO 1.0</option></select></div>
+      <div style="margin-bottom:14px;"><div class="drawer-label">Peptide lot</div><input class="fi" id="nr-lot"/></div>
+      <div style="margin-bottom:14px;"><div class="drawer-label">Reference</div><input class="fi" id="nr-ref"/></div>
+      <div style="margin-bottom:20px;display:flex;align-items:center;gap:8px;">
+        <div class="drawer-label" style="margin:0;">Exported</div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;"><input type="checkbox" id="nr-exported"/> Yes</label>
+      </div>
+      <div id="nr-save-confirm" style="display:none;margin-bottom:12px;background:var(--sb);border:0.5px solid var(--sbr);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--st);">Saved as draft.</div>
+      <div id="nr-submit-confirm" style="display:none;margin-bottom:12px;background:var(--ib);border:0.5px solid var(--ibr);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--it);">Submitted for review.</div>
+    </div>
+    <div style="padding:14px 20px;border-top:0.5px solid var(--bd);display:flex;gap:8px;flex-shrink:0;">
+      <button class="btn" onclick="saveNewRange()">Save as draft</button>
+      <button class="btn btn-p" onclick="submitNewRange()">Submit for review</button>
+      <button class="btn" onclick="closeNewRangeModal()" style="margin-left:auto;color:var(--tx3);">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -1053,11 +1105,11 @@ function renderRR(data){
       <td data-col="age" style="font-size:12px;">${r.age}</td>
       <td data-col="sex" style="font-size:12px;">${r.sex}</td>
       <td data-col="fluid" style="font-size:12px;">${r.fluid}</td>
-      <td data-col="reference" style="font-size:12px;color:var(--tx2);max-width:180px;overflow:hidden;text-overflow:ellipsis;">${r.reference}</td>
-      <td data-col="category" style="font-size:12px;">${r.category}</td>
-      <td data-col="exported"><span class="${r.exported?'rr-exported-yes':'rr-exported-no'}">${r.exported?'✓ Yes':'No'}</span></td>
       <td data-col="assay" style="font-size:12px;">${r.assay}</td>
       <td data-col="peptidelot" style="font-size:12px;color:var(--tx2);max-width:200px;overflow:hidden;text-overflow:ellipsis;">${r.lot}</td>
+      <td data-col="reference" style="font-size:12px;color:var(--tx2);max-width:180px;overflow:hidden;text-overflow:ellipsis;">${r.reference}</td>
+      <td data-col="category" style="font-size:12px;">${r.category}</td>
+      <td data-col="exported"><span class="ds ${r.exported?'d-lv':'d-dr'}">${r.exported?'True':'False'}</span></td>
       <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();openRRDrawer(${JSON.stringify(r).replace(/"/g,'&quot;')})">Edit</button></td>`;
     tbody.appendChild(tr);
   });
@@ -1149,6 +1201,36 @@ function submitRRReview(){
   document.getElementById('drawer-save-confirm').style.background='var(--ib)';
   document.getElementById('drawer-save-confirm').style.borderColor='var(--ibr)';
   document.getElementById('drawer-save-confirm').style.color='var(--it)';
+}
+function toggleRRSearch(){
+  const input=document.getElementById('rr-search');
+  const visible=input.style.display!=='none';
+  input.style.display=visible?'none':'';
+  if(!visible){input.focus();}else{input.value='';filterRR();}
+}
+function openNewRangeModal(){
+  ['nr-biomarker','nr-myco','nr-low','nr-high','nr-units','nr-lot','nr-ref'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  ['nr-age','nr-sex','nr-fluid','nr-cat','nr-assay'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.selectedIndex=0;
+  });
+  document.getElementById('nr-exported').checked=false;
+  document.getElementById('nr-save-confirm').style.display='none';
+  document.getElementById('nr-submit-confirm').style.display='none';
+  const overlay=document.getElementById('new-range-overlay');
+  overlay.style.display='flex';
+}
+function saveNewRange(){
+  document.getElementById('nr-submit-confirm').style.display='none';
+  document.getElementById('nr-save-confirm').style.display='block';
+}
+function submitNewRange(){
+  document.getElementById('nr-save-confirm').style.display='none';
+  document.getElementById('nr-submit-confirm').style.display='block';
+}
+function closeNewRangeModal(){
+  document.getElementById('new-range-overlay').style.display='none';
 }
 </script>
 </body>
