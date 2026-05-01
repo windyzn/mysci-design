@@ -290,6 +290,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <div class="nav-item" data-panel="batches" onclick="nav(this)">Samples</div>
       <div class="nav-item gh" onclick="toggleGroup('g-reports')">Reports <span class="chev open" id="chev-g-reports">▶</span></div>
       <div class="gc expanded" id="g-reports">
+        <div class="nav-item child" data-panel="allreports" onclick="nav(this)">All reports</div>
         <div class="nav-item child" data-panel="buildreport" onclick="nav(this)">Build a report</div>
         <div class="nav-item child" data-panel="comparereports" onclick="nav(this)">Compare reports</div>
       </div>
@@ -375,6 +376,22 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <tr data-tp="2026-01" data-status="rerun"><td style="font-family:monospace;">298D561</td><td>2026-01-08</td><td>January 2026</td><td style="font-size:12px;color:var(--tx2);">2026-01-27 22:35:00 UTC_Metabolomics</td><td>TMIC</td><td style="font-size:12px;color:var(--tx3);">Awaiting rerun</td><td><span class="ds d-wr">Rerun</span></td><td><button class="btn" style="font-size:11px;padding:3px 8px;" disabled>Not ready</button></td></tr>
         <tr data-tp="2025-11" data-status="complete"><td style="font-family:monospace;">187F033</td><td>2025-11-12</td><td>November 2025</td><td style="font-size:12px;color:var(--tx2);">January 1A 2026 Metabolomics</td><td>LabCorp / BGI</td><td style="font-size:12px;color:var(--tx2);">1 proteomics · 1 metabolomics</td><td><span class="ds d-lv">Complete</span></td><td><button class="btn btn-p" style="font-size:11px;padding:3px 8px;" onclick="goToBuildReport('187F033','November 2025')">Build report →</button></td></tr>
       </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ALL REPORTS -->
+<div class="panel" id="panel-allreports">
+  <div class="pa"><div class="sl" style="margin:0;">All reports</div></div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="gh-table" id="ar-table">
+      <thead><tr>
+        <th>Barcode</th>
+        <th>Comment</th>
+        <th>Data version</th>
+        <th>Reportable</th>
+      </tr></thead>
+      <tbody id="ar-tbody"></tbody>
     </table>
   </div>
 </div>
@@ -971,6 +988,7 @@ function doLogout(){document.getElementById('app').classList.remove('visible');d
 function doSwitchTeam(){document.getElementById('login-step-2').style.display='';document.getElementById('login-step-1').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('app').classList.remove('visible');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));}
 const PAGE_META={
   'batches':       {title:'Samples',                sub:null},
+  'allreports':    {title:'Reports',               sub:'All reports'},
   'buildreport':   {title:'Reports',                sub:'Build a report'},
   'comparereports':{title:'Reports',                sub:'Compare reports'},
   'assaycatalog':  {title:'Assay Catalog',          sub:null},
@@ -988,7 +1006,8 @@ const PAGE_META={
 };
 function setPageHeader(panel){const m=PAGE_META[panel]||{title:panel,sub:null};document.getElementById('page-title').textContent=m.title;const activePanel=document.getElementById('panel-'+panel);if(activePanel){const sl=activePanel.querySelector('.sl');if(sl){if(m.sub){sl.textContent=m.sub;sl.style.display='block';}else{sl.style.display='none';}}}}
 function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const panel=el.dataset.panel;activatePanel(panel);setPageHeader(panel);}
-function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);}
+function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports')renderAR();
+if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);}
 function toggleGroup(id){const el=document.getElementById(id);const ch=document.getElementById('chev-'+id);const open=el.classList.contains('expanded');el.classList.toggle('collapsed',open);el.classList.toggle('expanded',!open);if(ch)ch.classList.toggle('open',!open);}
 function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
 function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
@@ -1018,6 +1037,32 @@ function doDiscard(){slotA=null;slotB=null;document.querySelectorAll('#profile-p
 function openSaveProfileModal(){const o=document.getElementById('save-profile-overlay');o.style.display='flex';document.getElementById('new-profile-name').value='';document.getElementById('profile-saved-msg').style.display='none';}
 function closeSaveProfileModal(){document.getElementById('save-profile-overlay').style.display='none';}
 function confirmSaveProfile(){const name=document.getElementById('new-profile-name').value.trim();if(!name)return;const sel=document.getElementById('wt-profile-sel');const opt=document.createElement('option');opt.value=name;opt.textContent=name;sel.appendChild(opt);sel.value=name;document.getElementById('profile-saved-msg').style.display='block';setTimeout(()=>closeSaveProfileModal(),1400);}
+
+// ── ALL REPORTS ──
+const AR_DATA=[
+  {barcode:'463F345',comment:'March 2026 final report',data_version:'6.23.3',reportable:true},
+  {barcode:'463F345',comment:'Pre-review draft',data_version:'6.21.1',reportable:false},
+  {barcode:'441C219',comment:'',data_version:'6.23.3',reportable:true},
+  {barcode:'312B778',comment:'Sent to MYHI',data_version:'6.20.0',reportable:true},
+  {barcode:'312B778',comment:'Superseded by v6.23.3',data_version:'6.19.2',reportable:false},
+  {barcode:'389A104',comment:'Partial — metabolomics only',data_version:'6.23.3',reportable:false},
+  {barcode:'187F033',comment:'',data_version:'6.22.0',reportable:true},
+  {barcode:'298D561',comment:'Awaiting rerun',data_version:'6.21.1',reportable:false},
+];
+function renderAR(){
+  const tbody=document.getElementById('ar-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  AR_DATA.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="font-family:monospace;font-weight:700;">${r.barcode}</td>
+      <td style="font-size:12px;color:var(--tx2);">${r.comment}</td>
+      <td><span class="dv-chip" style="pointer-events:none;">${r.data_version}</span></td>
+      <td><span class="ds ${r.reportable?'d-lv':'d-dr'}">${r.reportable?'True':'False'}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
 
 // ── REFERENCE RANGES ──
 const RR_DATA=[
