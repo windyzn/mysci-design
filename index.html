@@ -295,9 +295,9 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <div class="nav-item" data-panel="batches" onclick="nav(this)">Samples</div>
       <div class="nav-item gh" onclick="toggleGroup('g-reports')">Reports <span class="chev open" id="chev-g-reports">▶</span></div>
       <div class="gc expanded" id="g-reports">
-        <div class="nav-item child" data-panel="allreports" onclick="nav(this)">All reports</div>
         <div class="nav-item child" data-panel="buildreport" onclick="nav(this)">Build a report</div>
         <div class="nav-item child" data-panel="comparereports" onclick="nav(this)">Compare reports</div>
+        <div class="nav-item child" data-panel="allreports" onclick="nav(this)">All reports</div>
       </div>
       <div class="nav-item" data-panel="assaycatalog" onclick="nav(this)">Assay catalog</div>
     </div>
@@ -468,6 +468,26 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <div style="margin-top:4px;padding:6px 8px;border:0.5px dashed var(--bd2);border-radius:var(--r);font-size:11px;color:var(--tx3);">Legacy samples may include exposomics or genetics datasets here.</div>
       </div>
     </div>
+    <!-- science version -->
+    <div style="border:0.5px solid var(--bd);border-left:3px solid var(--my-teal);border-radius:var(--rl);padding:14px 16px;margin-bottom:12px;background:var(--bg);">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;margin-bottom:2px;">Science version</div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:10px;">Weights, reference ranges, and biomarker curve settings applied during score generation. Configured in the Science section.</div>
+          <div style="display:flex;gap:16px;font-size:11px;color:var(--tx2);flex-wrap:wrap;" id="br-sci-details">
+            <span>Weights: <strong>Default v3</strong></span>
+            <span>Ref ranges: <strong>Current (2026-04-28)</strong></span>
+            <span>Curves: <strong>Linear</strong></span>
+          </div>
+        </div>
+        <select class="fi" style="width:160px;font-size:12px;flex-shrink:0;" id="br-sci-ver" onchange="updateBrSciDetails()">
+          <option value="default">Default v3</option>
+          <option value="test_a">Test profile A</option>
+          <option value="conservative">Conservative v2</option>
+          <option value="research">Research Oct</option>
+        </select>
+      </div>
+    </div>
     <div id="br-confirm-row" style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">
       <button class="btn btn-p" id="generate-btn" onclick="generateScores()">Generate scores →</button>
       <span style="font-size:11px;color:var(--tx3);">Scores will be computed for the selected datasets above.</span>
@@ -522,12 +542,12 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     <div class="picker-label">Select two reports to compare</div>
     <div class="picker-hint">Click a row to assign slot A (first click) or slot B (second click).</div>
     <table class="cmp-table" id="saved-reports-table">
-      <thead><tr><th style="width:48px;">Slot</th><th>Barcode</th><th>Data version</th><th>Combination</th><th>Saved by</th><th>Saved</th><th>Status</th></tr></thead>
+      <thead><tr><th style="width:48px;">Slot</th><th>Barcode</th><th>Data version</th><th>Combination</th><th>Science version</th><th>Saved by</th><th>Saved</th><th>Status</th></tr></thead>
       <tbody>
-        <tr data-report="r1" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
-        <tr data-report="r2" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
-        <tr data-report="r3" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
-        <tr data-report="r4" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r1" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">Default v3<div class="dv-tooltip"><div class="dv-tooltip-ver">Default v3</div><div class="dv-tooltip-desc">Weights: Default v3 · Ref ranges: 2026-03-01 · Curves: Linear</div></div></span></td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r2" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">Test profile A<div class="dv-tooltip"><div class="dv-tooltip-ver">Test profile A</div><div class="dv-tooltip-desc">Weights: Test profile A · Ref ranges: 2026-04-05 · Curves: Linear</div></div></span></td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r3" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">Default v3<div class="dv-tooltip"><div class="dv-tooltip-ver">Default v3</div><div class="dv-tooltip-desc">Weights: Default v3 · Ref ranges: 2026-01-05 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
+        <tr data-report="r4" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">Conservative v2<div class="dv-tooltip"><div class="dv-tooltip-ver">Conservative v2</div><div class="dv-tooltip-desc">Weights: Conservative v2 · Ref ranges: 2026-01-28 · Curves: Log2</div></div></span></td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -1251,6 +1271,20 @@ function submitRRReview(){
   document.getElementById('drawer-save-confirm').style.background='var(--ib)';
   document.getElementById('drawer-save-confirm').style.borderColor='var(--ibr)';
   document.getElementById('drawer-save-confirm').style.color='var(--it)';
+}
+const SCI_VERSIONS={
+  'default':      {weights:'Default v3',      refranges:'Current (2026-04-28)', curves:'Linear'},
+  'test_a':       {weights:'Test profile A',  refranges:'Current (2026-04-28)', curves:'Linear'},
+  'conservative': {weights:'Conservative v2', refranges:'Current (2026-04-28)', curves:'Log2'},
+  'research':     {weights:'Research Oct',    refranges:'Snapshot (2026-01-15)',curves:'Linear'},
+};
+function updateBrSciDetails(){
+  const sel=document.getElementById('br-sci-ver');
+  const el=document.getElementById('br-sci-details');
+  if(!sel||!el)return;
+  const v=SCI_VERSIONS[sel.value];
+  if(!v)return;
+  el.innerHTML=`<span>Weights: <strong>${v.weights}</strong></span><span>Ref ranges: <strong>${v.refranges}</strong></span><span>Curves: <strong>${v.curves}</strong></span>`;
 }
 function toggleRRSearch(){
   const input=document.getElementById('rr-search');
