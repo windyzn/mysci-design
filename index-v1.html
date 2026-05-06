@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MySci v1 — Wireframe (Ops read-only)</title>
+<link rel="icon" type="image/svg+xml" href="logos/Molecular_You_MYLigature__BlueGray.svg"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#fff;
+  --bg2:#fff;
+  --bg3:#D5E6EE;
+  --bd:rgba(24,55,75,0.12);--bd2:rgba(24,55,75,0.22);--bd3:rgba(24,55,75,0.38);
+  --tx:#18374B;--tx2:#3B5464;--tx3:#61859D;
+  --sb:#D5EFE5;--st:#2A6B4F;--sbr:#7BBFA0;
+  --wb:#FFDEB8;--wt:#8B4A00;--wbr:#F5A623;
+  --rb:#F5C6C6;--rt:#7A1A1A;--rbr:#D62929;
+  --ib:#D5E6EE;--it:#61859D;--ibr:#8CCFCF;
+  --nb:#F6F6F6;--nt:#61859D;
+  --my-dark:#18374B;--my-teal:#8CCFCF;--my-serenity:#D5E6EE;
+  --r:8px;--rl:12px;
+}
+body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);background:#fff;height:100vh;display:flex;align-items:center;justify-content:center;}
+*{font-family:'Lato',system-ui,sans-serif !important;}
+/* LOGIN */
+.login-wrap{background:#F6FCFF;display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;}
+.login-card{width:300px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:28px;}
+.team-btn{width:100%;padding:12px 14px;border:0.5px solid var(--bd2);border-radius:var(--r);margin-bottom:10px;cursor:pointer;text-align:left;background:var(--bg);color:var(--tx);display:block;}
+.team-btn:hover{background:var(--bg3);}
+.team-btn:last-child{margin-bottom:0;}
+.t-name{font-size:14px;font-weight:700;display:block;}
+.team-btn-wrap{position:relative;margin-bottom:10px;}
+.team-btn-wrap:last-of-type{margin-bottom:0;}
+.team-btn-popover{position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--r);padding:8px 12px;font-size:12px;color:var(--tx2);line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,0.10);pointer-events:none;opacity:0;transition:opacity .15s;z-index:20;width:210px;}
+.team-btn-wrap:hover .team-btn-popover{opacity:1;}
+.logout-btn{font-size:11px;color:rgba(255,255,255,0.45);cursor:pointer;background:none;border:none;padding:0;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.logout-btn:hover{color:#fff;}
+/* APP */
+.app{display:none;width:100vw;height:100vh;}
+.app.visible{display:flex;}
+.sidebar{width:210px;min-width:210px;background:var(--my-dark);border-right:none;display:flex;flex-direction:column;overflow-y:auto;}
+.sb-logo{padding:14px 16px 12px;border-bottom:0.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;gap:10px;}
+.sb-logo-img{display:flex;align-items:center;flex-shrink:0;}
+.sb-logo-text{display:flex;flex-direction:column;}
+.sb-logo-title{font-size:15px;font-weight:700;color:#fff;line-height:1.2;}
+.sb-logo-sub{font-size:11px;color:rgba(255,255,255,0.5);font-weight:400;margin-top:1px;}
+.nav-sec{padding:10px 16px 3px;font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;}
+.nav-item{padding:6px 16px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.65);display:flex;align-items:center;justify-content:space-between;border-left:2px solid transparent;user-select:none;}
+.nav-item:hover{background:rgba(255,255,255,0.07);color:#fff;}
+.nav-item.active{background:rgba(140,207,207,0.15);color:#fff;border-left-color:var(--my-teal);font-weight:700;}
+.nav-item.gh{font-weight:700;color:rgba(255,255,255,0.85);}
+.nav-item.child{padding-left:28px;font-size:12px;}
+.nav-badge{font-size:10px;background:var(--rb);color:var(--rt);padding:1px 6px;border-radius:10px;}
+.gc{overflow:hidden;transition:max-height .2s;}
+.gc.collapsed{max-height:0;}
+.gc.expanded{max-height:400px;}
+.chev{font-size:10px;color:rgba(255,255,255,0.4);transition:transform .2s;}
+.chev.open{transform:rotate(90deg);}
+.sb-bottom{margin-top:auto;border-top:0.5px solid rgba(255,255,255,0.12);padding:12px 16px;}
+.avatar{width:28px;height:28px;border-radius:50%;background:rgba(140,207,207,0.25);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--my-teal);flex-shrink:0;}
+#sb-name{color:#fff;font-weight:700;}
+#sb-td{color:rgba(255,255,255,0.5);}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{border-bottom:0.5px solid var(--bd);padding:0 20px;height:48px;display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--bg);}
+.topbar-titles{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.topbar-title{font-size:15px;font-weight:700;color:var(--tx);line-height:1.2;}
+.topbar-sub{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+.env-badge{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;cursor:pointer;}
+.env-s{background:var(--wb);color:var(--wt);}
+.env-p{background:var(--sb);color:var(--st);}
+.search-box{border:0.5px solid var(--bd2);border-radius:var(--r);padding:5px 10px;font-size:12px;width:260px;color:var(--tx);background:var(--bg);}
+.content{flex:1;overflow-y:auto;padding:20px;background:#F4F8FB;}
+.panel{display:none;}
+.panel.active{display:block;}
+/* SHARED */
+.sl{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
+.card{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:16px;margin-bottom:12px;}
+.sg4{display:flex;justify-content:space-between;margin-bottom:24px;padding:4px 0;}
+.sc{display:flex;flex-direction:column;}
+.sc-label{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.sc-val{font-size:28px;font-weight:700;color:var(--tx);}
+.sc-val.d{color:var(--rt);}
+.sc-val.w{color:var(--wt);}
+.sc-val.s{color:var(--st);}
+.tag{font-size:11px;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.tag-ops{background:var(--ib);color:var(--it);}
+.tag-sci{background:var(--sb);color:var(--st);}
+.tag-urg{background:var(--rb);color:var(--rt);}
+.btn{font-size:12px;padding:5px 12px;border-radius:var(--r);border:0.5px solid var(--bd2);cursor:pointer;background:var(--bg);color:var(--tx);white-space:nowrap;}
+.btn:hover{background:var(--bg3);}
+.btn-ok{border-color:var(--sbr);color:var(--st);}
+.btn-ok:hover{background:var(--sb);}
+.btn-rej{border-color:var(--rbr);color:var(--rt);}
+.btn-rej:hover{background:var(--rb);}
+.btn-p{border-color:var(--ibr);color:var(--it);}
+.btn-p:hover{background:var(--ib);}
+.fi{border:0.5px solid var(--bd2);border-radius:var(--r);padding:7px 10px;font-size:13px;width:100%;color:var(--tx);background:var(--bg);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.ds{font-size:11px;padding:2px 8px;border-radius:10px;}
+.d-dr{background:var(--nb);color:var(--nt);}
+.d-sb{background:var(--ib);color:var(--it);}
+.d-rj{background:var(--rb);color:var(--rt);}
+.d-lv{background:var(--sb);color:var(--st);}
+.d-wr{background:var(--wb);color:var(--wt);}
+.sp{font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;}
+.sg-{background:var(--sb);color:var(--st);}
+.sy-{background:var(--wb);color:var(--wt);}
+.sr-{background:var(--rb);color:var(--rt);}
+.dp{font-size:11px;font-weight:700;color:var(--st);}
+.dm{font-size:11px;font-weight:700;color:var(--rt);}
+.dz{font-size:11px;color:var(--nt);}
+.row-band-1 td:first-child{border-left:3px solid var(--wbr);}
+.row-band-2 td:first-child{border-left:3px solid var(--rbr);}
+.bc-mini{font-size:9px;font-weight:700;padding:1px 4px;border-radius:6px;line-height:1.4;}
+.bc-sep{font-size:9px;color:var(--tx3);margin:0 1px;}
+.qi{border:0.5px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;background:var(--bg);}
+.qi:hover{border-color:var(--bd2);}
+.qm{flex:1;min-width:0;}
+.qt{font-size:13px;font-weight:700;margin-bottom:3px;}
+.qd{font-size:12px;color:var(--tx2);}
+.qa{display:flex;gap:6px;flex-shrink:0;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+.diff-block{margin-top:8px;padding:10px;background:var(--bg3);border-radius:var(--r);}
+.diff-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:0.5px solid var(--bd);font-size:12px;}
+.diff-row:last-child{border:none;}
+.df{width:140px;color:var(--tx2);}
+.do{color:var(--rt);text-decoration:line-through;}
+.dn{color:var(--st);}
+.pa{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.ar{display:flex;gap:8px;}
+.gh-table{width:100%;border-collapse:collapse;font-size:13px;}
+.gh-table th{text-align:left;padding:7px 10px;font-weight:600;color:var(--tx3);border-bottom:0.5px solid var(--bd);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+.gh-table td{padding:7px 10px;border-bottom:0.5px solid var(--bd);}
+.gh-table tr:last-child td{border-bottom:none;}
+.gh-table tbody tr:hover td{background:var(--bg3);cursor:pointer;}
+.fb{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.acc-system{border-bottom:0.5px solid var(--bd);}
+.acc-system:last-child{border-bottom:none;}
+.acc-sys-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;cursor:pointer;font-size:13px;}
+.acc-sys-row:hover{background:var(--bg3);}
+.acc-tog{font-size:10px;color:var(--tx3);width:14px;display:inline-block;}
+.acc-body{display:none;padding:0 0 8px 22px;}
+.acc-body.open{display:block;}
+.acc-proc{border-bottom:0.5px solid var(--bd);padding:3px 0;}
+.acc-proc:last-child{border-bottom:none;}
+.acc-proc-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;cursor:pointer;padding:4px 0;}
+.acc-proc-row:hover{background:var(--bg3);}
+.acc-bio-body{display:none;padding:2px 0 2px 16px;}
+.acc-bio-body.open{display:block;}
+.acc-bio-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:3px 0;color:var(--tx2);}
+.flow-canvas{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:16px;margin-bottom:12px;overflow-x:auto;}
+.fn{border:0.5px solid var(--bd2);border-radius:var(--r);padding:8px 12px;font-size:12px;cursor:pointer;white-space:nowrap;transition:border-color .1s,background .1s;position:relative;}
+.fn:hover{border-color:var(--bd3);}
+.fn.sel{border-color:var(--ibr);background:var(--ib);color:var(--it);}
+.fn.proc{background:var(--wb);color:var(--wt);border-color:var(--wbr);}
+.fn.bm{background:var(--bg3);}
+.fn.bm.sel{border-color:var(--ibr);background:var(--ib);color:var(--it);}
+.wbadge{display:inline-flex;align-items:center;gap:3px;margin-top:4px;font-size:10px;}
+.wb-num{background:var(--tx);color:#fff;border-radius:4px;padding:1px 5px;font-weight:700;}
+.wb-col{border-radius:4px;padding:1px 5px;font-size:10px;}
+.wb-red{background:var(--rb);color:var(--rt);}
+.wb-yel{background:var(--wb);color:var(--wt);}
+.wb-dir{background:var(--ib);color:var(--it);border-radius:4px;padding:1px 5px;font-size:10px;}
+.pop{background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:14px;margin-top:6px;display:none;min-width:260px;z-index:10;}
+.pop.vis{display:block;}
+.pop-title{font-size:12px;font-weight:700;margin-bottom:10px;}
+.pop-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:12px;}
+.pop-label{font-size:12px;color:var(--tx2);}
+.pop-input{border:0.5px solid var(--bd2);border-radius:6px;padding:4px 8px;font-size:13px;width:56px;color:var(--tx);background:var(--bg);}
+.pop-sel{border:0.5px solid var(--bd2);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--tx);background:var(--bg);}
+.pop-pmid{border:0.5px solid var(--bd2);border-radius:6px;padding:4px 8px;font-size:12px;flex:1;color:var(--tx);background:var(--bg);}
+.picker-card{background:var(--bg);border:2px solid var(--ibr);border-radius:var(--rl);padding:16px;margin-bottom:16px;}
+.picker-label{font-size:12px;font-weight:700;color:var(--it);margin-bottom:4px;}
+.picker-hint{font-size:11px;color:var(--tx3);margin-bottom:10px;}
+.cmp-table{width:100%;border-collapse:collapse;font-size:13px;}
+.cmp-table th{text-align:left;padding:7px 10px;font-weight:700;color:var(--tx2);border-bottom:0.5px solid var(--bd);font-size:12px;}
+.cmp-table td{padding:7px 10px;border-bottom:0.5px solid var(--bd);}
+.cmp-table tr:last-child td{border-bottom:none;}
+.cmp-table tbody tr{cursor:pointer;}
+.cmp-table tbody tr:hover td{background:var(--bg3);}
+.cmp-table tbody tr.sel-a td{background:rgba(97,133,157,0.1);}
+.cmp-table tbody tr.sel-b td{background:rgba(245,166,35,0.08);}
+.slot-a{background:var(--it);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;}
+.slot-b{background:var(--wt);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;}
+.cmp-results{display:none;}
+.cmp-results.vis{display:block;}
+.db{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;text-align:center;}
+.db-up{background:var(--ib);color:var(--it);}
+.db-dn{background:var(--wb);color:var(--wt);}
+.db-same{background:var(--nb);color:var(--nt);}
+.submit-confirm{background:var(--sb);border:0.5px solid var(--sbr);border-radius:var(--rl);padding:14px;margin-bottom:12px;display:none;}
+.submit-confirm.vis{display:block;}
+.change-item{font-size:12px;padding:4px 0;border-bottom:0.5px solid rgba(42,107,79,0.15);color:var(--tx2);}
+.change-item:last-child{border:none;}
+.ps-title{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:0.5px solid var(--bd);}
+.pr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--bd);font-size:13px;}
+.pr:last-child{border:none;}
+.pl{color:var(--tx2);font-size:12px;}
+.pi{border:0.5px solid var(--bd2);border-radius:6px;padding:6px 10px;font-size:13px;width:180px;color:var(--tx);background:var(--bg);}
+.cr{display:flex;align-items:center;gap:6px;font-size:12px;}
+.ci{border:0.5px solid var(--bd2);border-radius:6px;padding:4px 8px;font-size:12px;width:48px;color:var(--tx);background:var(--bg);}
+.clr-r{color:var(--rt);font-size:11px;}
+.clr-y{color:var(--wt);font-size:11px;}
+.clr-g{color:var(--st);font-size:11px;}
+.tab-bar{display:flex;gap:2px;margin-bottom:16px;border-bottom:0.5px solid var(--bd);}
+.tb{font-size:13px;padding:8px 16px;cursor:pointer;background:none;border:none;color:var(--tx2);border-bottom:2px solid transparent;margin-bottom:-0.5px;}
+.tb.active{color:var(--tx);border-bottom-color:var(--my-dark);font-weight:700;}
+.tp{display:none;}
+.tp.active{display:block;}
+.hw{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.hc{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:14px;}
+.ht{font-size:13px;font-weight:700;margin-bottom:2px;}
+.hs{font-size:11px;color:var(--tx2);margin-bottom:10px;}
+.hbw{display:flex;gap:2px;align-items:flex-end;height:120px;margin-bottom:6px;position:relative;}
+.hb{flex:1;border-radius:2px 2px 0 0;min-height:2px;}
+.hx{display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);}
+.dv-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;font-family:monospace;background:var(--nb);border:0.5px solid var(--bd2);border-radius:6px;padding:2px 8px;cursor:pointer;position:relative;white-space:nowrap;}
+.dv-chip:hover{border-color:var(--ibr);background:var(--ib);color:var(--it);}
+.dv-tooltip{position:absolute;top:calc(100% + 6px);left:0;z-index:50;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,0.12);width:260px;display:none;pointer-events:auto;word-break:normal;overflow-wrap:break-word;white-space:normal;}
+.dv-chip:hover .dv-tooltip,.dv-tooltip:hover{display:block;}
+.dv-tooltip-ver{font-size:12px;font-weight:700;font-family:monospace;margin-bottom:4px;color:var(--tx);}
+.dv-tooltip-desc{font-size:11px;color:var(--tx2);line-height:1.5;margin-bottom:8px;}
+.dv-tooltip-date{font-size:11px;color:var(--tx3);margin-bottom:8px;}
+.flow-svg-wrap{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:16px;overflow-x:auto;}
+.fc-legend{display:flex;gap:12px;margin-bottom:12px;font-size:11px;color:var(--tx2);}
+.legd{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+/* REFERENCE RANGES TABLE */
+.rr-table{border-collapse:separate;border-spacing:0;}
+.rr-table th,.rr-table td{white-space:nowrap;}
+.rr-sticky{position:sticky;left:0;z-index:2;background:var(--bg);border-right:0.5px solid var(--bd2);}
+.rr-table thead .rr-sticky{z-index:3;background:#fff;}
+.rr-table tbody tr:hover .rr-sticky{background:var(--bg3);}
+.rr-exported-yes{font-size:11px;color:var(--st);}
+.rr-exported-no{font-size:11px;color:var(--tx3);}
+.col-toggle-row{display:flex;align-items:center;gap:8px;padding:5px 12px;font-size:12px;color:var(--tx);cursor:pointer;}
+.col-toggle-row:hover{background:var(--bg3);}
+.col-toggle-row input{cursor:pointer;}
+.drawer-label{font-size:12px;color:var(--tx2);margin-bottom:4px;}
+.col-tip{position:relative;display:inline-flex;align-items:center;gap:3px;cursor:default;}
+.col-tip-i{font-size:9px;font-weight:700;color:var(--tx3);background:var(--nb);border:0.5px solid var(--bd2);border-radius:50%;width:12px;height:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-style:normal;line-height:1;}
+.col-tip-text{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:300;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--r);padding:8px 10px;font-size:11px;color:var(--tx2);line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,0.12);width:200px;white-space:normal;font-weight:400;text-transform:none;letter-spacing:0;}
+.col-tip-r .col-tip-text{left:auto;right:0;}
+.col-tip:hover .col-tip-text{display:block;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login">
+  <div class="login-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+      <img src="logos/Molecular_You_MYLigature__Dark_BlueGray.svg" height="32" style="display:block;"/>
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--tx);">MySci</div>
+        <div style="font-size:12px;color:var(--tx2);">Internal operations platform</div>
+      </div>
+    </div>
+    <div id="login-step-1">
+      <div class="sl">Sign in</div>
+      <div style="margin-bottom:10px;"><div style="font-size:12px;color:var(--tx2);margin-bottom:4px;">Email</div><input class="fi" id="login-email" placeholder="you@molecularyou.com" value="maria@molecularyou.com"/></div>
+      <div style="margin-bottom:16px;"><div style="font-size:12px;color:var(--tx2);margin-bottom:4px;">Role</div><select class="fi" id="login-role"><option value="contributor">Contributor</option><option value="admin">Admin</option></select></div>
+      <button class="team-btn" style="background:var(--my-dark);color:#fff;border-color:var(--my-dark);text-align:center;" onclick="goToTeamSelect()"><span class="t-name" style="color:#fff;">Continue →</span></button>
+    </div>
+    <div id="login-step-2" style="display:none;">
+      <div class="sl">Select your team</div>
+      <div class="team-btn-wrap">
+        <button class="team-btn" onclick="doLogin('Ops')"><span class="t-name">Operations</span></button>
+        <div class="team-btn-popover">Samples, assay catalog, reference ranges, report simulation</div>
+      </div>
+      <div class="team-btn-wrap">
+        <button class="team-btn" onclick="doLogin('Science')"><span class="t-name">Science</span></button>
+        <div class="team-btn-popover">Associations, scoring, analytics</div>
+      </div>
+      <button style="background:none;border:none;font-size:11px;color:var(--tx3);cursor:pointer;margin-top:8px;padding:0;" onclick="document.getElementById('login-step-1').style.display='';document.getElementById('login-step-2').style.display='none';">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <!-- MY ligature logo in white for dark sidebar -->
+      <div class="sb-logo-img">
+        <img src="logos/Molecular_You_MYLigature__Turquoise.svg" height="21" style="display:block;"/>
+      </div>
+      <div class="sb-logo-text">
+        <span class="sb-logo-title">MySci</span>
+        <span class="sb-logo-sub" id="sb-tl">–</span>
+      </div>
+    </div>
+    <div id="nav-ops" style="display:none;">
+      <div class="nav-sec">Operations</div>
+      <div class="nav-item gh" onclick="toggleGroup('g-reports')">Reports <span class="chev open" id="chev-g-reports">▶</span></div>
+      <div class="gc expanded" id="g-reports">
+        <div class="nav-item child" data-panel="allreports-v1" onclick="nav(this)">All reports</div>
+        <div class="nav-item child" data-panel="comparereports" onclick="nav(this)">Compare reports</div>
+      </div>
+      <div class="nav-item" data-panel="assaycatalog" onclick="nav(this)">Assay catalog</div>
+      <div class="nav-item" data-panel="refrange" onclick="nav(this)">Reference ranges</div>
+    </div>
+    <div id="nav-sci" style="display:none;">
+      <div class="nav-sec">Science</div>
+      <div class="nav-item gh" onclick="toggleGroup('g-assoc')">Associations &amp; weights <span class="chev open" id="chev-g-assoc">▶</span></div>
+      <div class="gc expanded" id="g-assoc">
+        <div class="nav-item child" data-panel="systems" onclick="nav(this)">Associations</div>
+        <div class="nav-item child" data-panel="weights" onclick="nav(this)">Weight adjustments</div>
+        <div class="nav-item child" data-panel="cmpprofiles" onclick="nav(this)">Compare weight profiles</div>
+        <div class="nav-item child" data-panel="scoringparams" onclick="nav(this)">Scoring params</div>
+      </div>
+      <div class="nav-item gh" onclick="toggleGroup('g-analytics')">Analytics <span class="chev open" id="chev-g-analytics">▶</span></div>
+      <div class="gc expanded" id="g-analytics">
+        <div class="nav-item child" data-panel="summary" onclick="nav(this)">Summary tables</div>
+        <div class="nav-item child" data-panel="histograms" onclick="nav(this)">Histograms</div>
+      </div>
+    </div>
+    <div class="nav-sec" style="margin-top:8px;">Governance</div>
+    <div class="nav-item" data-panel="drafts" onclick="nav(this)">My drafts</div>
+    <div class="nav-item" data-panel="review" onclick="nav(this)">Review queue <span class="nav-badge">5</span></div>
+    <div class="nav-item" data-panel="audit" onclick="nav(this)">Audit log</div>
+    <div class="nav-item" data-panel="dataversions" onclick="nav(this)">Data versions</div>
+    <div class="sb-bottom">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="avatar" id="sb-av">–</div>
+        <div>
+          <div style="font-size:13px;" id="sb-name">–</div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:center;">
+            <span id="sb-td">–</span>
+            <span id="sb-role-badge" style="font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;display:none;"></span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;">
+        <button class="logout-btn" onclick="doLogout()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button>
+        <button class="logout-btn" onclick="doSwitchTeam()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Switch team</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-titles">
+        <div class="topbar-title" id="page-title">–</div>
+      </div>
+      <input class="search-box" placeholder="Search biomarkers, batches…"/>
+      <span class="env-badge env-s" id="env-badge" onclick="toggleEnv()">Staging</span>
+    </div>
+    <div class="content">
+
+<!-- ALL REPORTS V1 — two-level nested table -->
+<div class="panel" id="panel-allreports-v1">
+  <div class="sl" style="margin:0;">All reports</div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="gh-table" id="arv1-table" style="table-layout:auto;">
+      <thead>
+        <tr>
+          <th style="width:30px;"></th>
+          <th>Barcode</th>
+          <th>Comment</th>
+          <th>Science version</th>
+          <th>Reportable</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="arv1-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- COMPARE REPORTS -->
+<div class="panel" id="panel-comparereports">
+  <div class="pa" style="margin-bottom:16px;"><div class="sl" style="margin:0;">Compare reports</div></div>
+  <div class="picker-card" style="margin-bottom:16px;">
+    <div class="picker-label">Select two reports to compare</div>
+    <div class="picker-hint">Click a row to assign slot A (first click) or slot B (second click).</div>
+    <table class="cmp-table" id="saved-reports-table">
+      <thead><tr><th style="width:48px;">Slot</th><th>Barcode</th><th>Data version</th><th>Combination</th><th>Science version</th><th>Saved by</th><th>Saved</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr data-report="r1" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.0_linear<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.0_linear</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-03-01 · Curves: Linear</div></div></span></td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r2" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.1_log2<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.1_log2</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-04-05 · Curves: Log2</div></div></span></td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r3" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.0_linear<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.0_linear</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-01-05 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
+        <tr data-report="r4" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.2_cardio<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.2_cardio</div><div class="dv-tooltip-desc">Weights: Cardio-adjusted · Ref ranges: 2026-01-28 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="cr-empty-prompt" style="text-align:center;padding:32px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">Select two reports above to compare them side by side.</div>
+  <div class="cmp-results" id="cr-results">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-size:13px;font-weight:700;">Comparing — 463F345</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
+      <table class="gh-table" id="cr-inline-table">
+        <thead><tr style="background:var(--bg3);">
+          <th style="width:40%;">System / Process / Biomarker</th>
+          <th style="width:26%;"><span class="slot-a">A</span> <span id="cr-a-label" style="font-weight:400;font-size:11px;color:var(--tx2);">1A_Prot + 1A_Meta</span></th>
+          <th style="width:26%;"><span class="slot-b">B</span> <span id="cr-b-label" style="font-weight:400;font-size:11px;color:var(--tx2);">2A_Prot + 1A_Meta</span></th>
+          <th style="width:8%;">Diff</th>
+        </tr></thead>
+        <tbody id="cr-inline-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- DATA VERSIONS -->
+<div class="panel" id="panel-dataversions">
+  <div class="pa"><div class="sl" style="margin:0;">Data versions</div><button class="btn btn-p">+ New version</button></div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="gh-table">
+      <thead><tr><th>Version</th><th>Release date</th><th>Description</th><th>Approved by</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr style="height:44px;"><td style="font-weight:700;font-family:monospace;">6.23.3</td><td style="white-space:nowrap;">2026-02-23</td><td style="font-size:12px;color:var(--tx2);">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</td><td>Maria</td><td><span class="ds d-lv">Active</span></td></tr>
+        <tr style="height:44px;"><td style="font-weight:700;font-family:monospace;">6.22.0</td><td style="white-space:nowrap;">2026-02-01</td><td style="font-size:12px;color:var(--tx2);">Revised scoring cutoffs for Bone Health system. New biomarker-to-process associations for Thyroid function.</td><td>Jordan</td><td><span class="ds d-dr">Archived</span></td></tr>
+        <tr style="height:44px;"><td style="font-weight:700;font-family:monospace;">6.21.1</td><td style="white-space:nowrap;">2026-03-01</td><td style="font-size:12px;color:var(--tx2);">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</td><td>Maria</td><td><span class="ds d-dr">Archived</span></td></tr>
+        <tr style="height:44px;"><td style="font-weight:700;font-family:monospace;">6.20.0</td><td style="white-space:nowrap;">2026-01-05</td><td style="font-size:12px;color:var(--tx2);">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</td><td>Alex</td><td><span class="ds d-dr">Archived</span></td></tr>
+        <tr style="height:44px;"><td style="font-weight:700;font-family:monospace;">6.19.2</td><td style="white-space:nowrap;">2025-12-10</td><td style="font-size:12px;color:var(--tx2);">Bug fix: corrected weight propagation for 2-tier biomarker-to-system associations.</td><td>Jordan</td><td><span class="ds d-dr">Archived</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ASSAY CATALOG -->
+<div class="panel" id="panel-assaycatalog">
+  <div class="pa"><div class="sl" style="margin:0;">Assay catalog</div></div>
+  <div id="ac-accordion"></div>
+</div>
+
+<!-- REFERENCE RANGES -->
+<div class="panel" id="panel-refrange">
+  <div class="pa"><div class="sl" style="margin:0;">Reference ranges</div></div>
+
+  <!-- filter + action bar -->
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <!-- left: filter dropdowns -->
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <select class="fi" style="width:auto;font-size:12px;" id="rr-f-units" onchange="filterRR()"><option value="">All units</option><option>μM</option><option>nM</option><option>ng/mL</option><option>μg/mL</option><option>mg/L</option><option>mmol/L</option><option>%</option></select>
+      <select class="fi" style="width:auto;font-size:12px;" id="rr-f-fluid" onchange="filterRR()"><option value="">All biofluids</option><option>Serum</option><option>Plasma</option></select>
+      <select class="fi" style="width:auto;font-size:12px;" id="rr-f-cat" onchange="filterRR()"><option value="">All categories</option><option>Calculated</option><option>Literature</option><option>Clinical</option></select>
+      <select class="fi" style="width:auto;font-size:12px;" id="rr-f-exp" onchange="filterRR()"><option value="">Exported: all</option><option value="true">Exported: yes</option><option value="false">Exported: no</option></select>
+<select class="fi" style="width:auto;font-size:12px;" id="rr-f-lot" onchange="filterRR()"><option value="">All peptide lots</option><option>MRM 1.1 HQE N20240604 &amp; S20250320</option><option>MRM 1.1 N20200717 &amp; S20200717</option><option>MRM 1.1 N20240604 &amp; S20250320</option><option>MRM 1.1 N20240604 &amp; S20200717</option><option>MRM 1.1 HQE N20240604 &amp; S20200717</option></select>
+    </div>
+    <!-- right: icon-only action buttons -->
+    <div style="display:flex;align-items:center;gap:4px;">
+      <!-- expanding search -->
+      <input class="fi" id="rr-search" placeholder="Search biomarker…" style="display:none;width:200px;font-size:12px;padding:5px 8px;" oninput="filterRR()"/>
+      <button class="btn" onclick="toggleRRSearch()" id="rr-search-btn" title="Search" style="padding:5px 8px;display:flex;align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <!-- column toggle -->
+      <div style="position:relative;">
+        <button class="btn" onclick="toggleColMenu()" id="col-toggle-btn" style="padding:5px 8px;display:flex;align-items:center;" title="Show / hide columns">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+        <div id="col-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:50;min-width:190px;">
+          <div style="padding:4px 12px 6px;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Show / hide columns</div>
+          <label class="col-toggle-row"><input type="checkbox" checked disabled/> Biomarker <span style="font-size:10px;color:var(--tx3);">(locked)</span></label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="range"/> Range</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="units"/> Units</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="age"/> Age</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="sex"/> Sex</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="fluid"/> Biofluid</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="reference"/> Reference</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="category"/> Category</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="assay"/> Assay</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="peptidelot"/> Peptide lot</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-col="exported"/> Exported</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- table -->
+  <div style="overflow-x:auto;border:0.5px solid var(--bd);border-radius:var(--rl);background:var(--bg);">
+    <table class="gh-table rr-table" id="rr-table" style="min-width:900px;table-layout:auto;">
+      <thead>
+        <tr>
+          <th class="rr-sticky">Biomarker</th>
+          <th data-col="range"><span class="col-tip">Range<i class="col-tip-i">i</i><span class="col-tip-text">Low–high reference interval. Values outside this range are flagged in reports.</span></span></th>
+          <th data-col="units">Units</th>
+          <th data-col="age">Age</th>
+          <th data-col="sex">Sex</th>
+          <th data-col="fluid">Biofluid</th>
+          <th data-col="assay"><span class="col-tip">Assay<i class="col-tip-i">i</i><span class="col-tip-text">The assay kit this reference range applies to.</span></span></th>
+          <th data-col="peptidelot"><span class="col-tip">Peptide lot<i class="col-tip-i">i</i><span class="col-tip-text">Specific reagent lot this range was validated against.</span></span></th>
+          <th data-col="reference"><span class="col-tip">Reference<i class="col-tip-i">i</i><span class="col-tip-text">Source publication or method used to define this range.</span></span></th>
+          <th data-col="category"><span class="col-tip">Category<i class="col-tip-i">i</i><span class="col-tip-text">How the range was established: Calculated, Literature, or Clinical.</span></span></th>
+          <th data-col="exported"><span class="col-tip col-tip-r">Exported<i class="col-tip-i">i</i><span class="col-tip-text">True = eligible for reports, but a higher-priority biofluid match for the same biomarker may take precedence. False = excluded from current reports.</span></span></th>
+        </tr>
+      </thead>
+      <tbody id="rr-tbody"></tbody>
+    </table>
+  </div>
+  <div style="font-size:11px;color:var(--tx3);margin-top:8px;" id="rr-count"></div>
+
+</div>
+
+<!-- RR drawer and new-range modal removed in v1 (read-only) -->
+
+<!-- ASSOCIATIONS -->
+<div class="panel" id="panel-systems">
+  <div class="pa"><div class="sl" style="margin:0;">Associations</div><button class="btn btn-p">+ Add association</button></div>
+  <div class="tab-bar">
+    <button class="tb active" onclick="switchAssocTab('table',this)">Table</button>
+    <button class="tb" onclick="switchAssocTab('flowchart',this)">Flowchart</button>
+  </div>
+  <div id="assoc-tab-table">
+    <div class="card" style="padding:0;overflow:hidden;"><table class="gh-table"><thead><tr><th>System</th><th>Process</th><th>Biomarker</th><th>System type</th><th>Status</th></tr></thead><tbody>
+      <tr><td>Cardiovascular Health</td><td>Lipid metabolism</td><td>LDL Cholesterol</td><td>Health System</td><td><span class="ds d-lv">Live</span></td></tr>
+      <tr><td>Metabolic Health</td><td>Glucose regulation</td><td>HbA1c</td><td>Health System</td><td><span class="ds d-lv">Live</span></td></tr>
+      <tr><td>Inflammation</td><td>—</td><td>hsCRP</td><td>Health System</td><td><span class="ds d-sb">In review</span></td></tr>
+      <tr><td>Bone Health</td><td>Bone turnover</td><td>Vitamin D</td><td>Health System</td><td><span class="ds d-lv">Live</span></td></tr>
+      <tr><td>Cancer Hallmarks</td><td>—</td><td>PSA</td><td>Cancer Hallmark</td><td><span class="ds d-dr">Draft</span></td></tr>
+    </tbody></table></div>
+  </div>
+  <div id="assoc-tab-flowchart" style="display:none;">
+    <div class="card" style="margin-bottom:12px;padding:10px 14px;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:12px;color:var(--tx2);">System</span><select class="fi" style="width:auto;font-size:12px;" id="fc-sys-sel" onchange="renderFlowchart()"><option>Cardiovascular Health</option><option>Metabolic Health</option><option>Bone Health</option><option>Inflammation</option></select></div></div>
+    <div class="fc-legend"><span><span class="legd" style="background:var(--sb);border:1px solid var(--sbr);"></span>System</span><span><span class="legd" style="background:var(--wb);border:1px solid var(--wbr);"></span>Process</span><span><span class="legd" style="background:var(--bg3);border:1px solid var(--bd2);"></span>Biomarker</span></div>
+    <div class="flow-svg-wrap" id="flowchart-container"></div>
+  </div>
+</div>
+
+<!-- WEIGHT ADJUSTMENTS -->
+<div class="panel" id="panel-weights">
+  <div class="pa"><div class="sl" style="margin:0;">Weight adjustments</div><div class="ar"><button class="btn">Save as draft</button><button class="btn btn-p">Submit for review</button></div></div>
+  <div class="flow-canvas">
+    <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:12px;color:var(--tx2);">System</span>
+      <select class="fi" style="width:auto;font-size:12px;" id="wt-sys-sel" onchange="renderWeightTree()"><option>Cardiovascular Health</option><option>Metabolic Health</option><option>Inflammation</option><option>Bone Health</option></select>
+      <span style="font-size:12px;color:var(--tx2);margin-left:8px;">Weight profile</span>
+      <select class="fi" style="width:auto;font-size:12px;" id="wt-profile-sel"><option>v1.0_linear</option><option>v1.1_log2</option><option>v1.2_cardio</option><option>v2.0_research</option></select>
+      <button class="btn" style="font-size:12px;padding:7px 12px;" onclick="openSaveProfileModal()">Save as new weight profile</button>
+    </div>
+    <div id="weight-tree-container" style="overflow-x:auto;margin-top:40px;"></div>
+  </div>
+  <div id="save-profile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.25);z-index:100;align-items:center;justify-content:center;">
+    <div style="background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:20px;width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.12);">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Save as new weight profile</div>
+      <div style="font-size:12px;color:var(--tx2);margin-bottom:14px;">Give this weight profile a name.</div>
+      <input class="fi" id="new-profile-name" placeholder="e.g. Cardio focus v1" style="margin-bottom:14px;"/>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn" onclick="closeSaveProfileModal()">Cancel</button>
+        <button class="btn btn-ok" onclick="confirmSaveProfile()">Save profile</button>
+      </div>
+      <div id="profile-saved-msg" style="display:none;margin-top:10px;font-size:12px;color:var(--st);background:var(--sb);padding:8px 10px;border-radius:var(--r);">Weight profile saved successfully.</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARE PROFILES -->
+<div class="panel" id="panel-cmpprofiles">
+  <div class="submit-confirm" id="submit-confirm">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;"><div style="font-size:13px;font-weight:700;color:var(--st);">Submitted for review — v1.1_log2</div><button class="btn btn-ok" onclick="nav(document.querySelector('[data-panel=review]'))">View in review queue →</button></div>
+    <div class="change-item">LDL Cholesterol in Lipid metabolism: weight 2 to 3, colour red, direction high</div>
+    <div class="change-item">hsCRP in Vascular inflammation: weight 2 to 3, colour red, direction high</div>
+    <div class="change-item">Triglycerides in Lipid metabolism: weight 2 to 1</div>
+  </div>
+  <div class="pa">
+    <div class="sl" style="margin:0;">Compare profiles</div>
+    <div class="ar" id="cp-actions" style="display:none;">
+      <button class="btn btn-p" onclick="doSubmitProfile()">Submit for review</button>
+      <button class="btn" onclick="doDiscard()">Discard</button>
+    </div>
+  </div>
+  <div class="picker-card">
+    <div class="picker-label">Select two profiles to compare</div>
+    <div class="picker-hint">Click a row to assign slot A (first click) or slot B (second click).</div>
+    <table class="cmp-table" id="profile-picker-table">
+      <thead><tr><th style="width:48px;">Slot</th><th>Profile name</th><th>Status</th><th>Last modified</th><th>Modified by</th></tr></thead>
+      <tbody>
+        <tr data-profile="v1.0_linear" onclick="cycleSlot(this)"><td><span class="cp-slot-box" id="cp-box-v1.0_linear" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;font-size:12px;">v1.0_linear</td><td><span class="ds d-lv">Live</span></td><td>2024-10-01</td><td>Jordan</td></tr>
+        <tr data-profile="v1.1_log2" onclick="cycleSlot(this)"><td><span class="cp-slot-box" id="cp-box-v1.1_log2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;font-size:12px;">v1.1_log2</td><td><span class="ds d-dr">Draft</span></td><td>2024-11-12</td><td>Maria</td></tr>
+        <tr data-profile="v1.2_cardio" onclick="cycleSlot(this)"><td><span class="cp-slot-box" id="cp-box-v1.2_cardio" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;font-size:12px;">v1.2_cardio</td><td><span class="ds d-lv">Live</span></td><td>2024-08-15</td><td>Alex</td></tr>
+        <tr data-profile="v2.0_research" onclick="cycleSlot(this)"><td><span class="cp-slot-box" id="cp-box-v2.0_research" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;font-size:12px;">v2.0_research</td><td><span class="ds d-dr">Draft</span></td><td>2024-11-08</td><td>Maria</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="cmp-empty-prompt" style="text-align:center;padding:32px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">Select two profiles above to compare weights and see their impact.</div>
+  <div class="cmp-results" id="cmp-results">
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
+      <table class="gh-table">
+        <thead><tr>
+          <th style="width:42%;">System / Process / Biomarker</th>
+          <th><span class="slot-a">A</span> <span id="cp-a-label" style="font-weight:400;font-size:11px;color:var(--tx2);">v1.0_linear</span></th>
+          <th><span class="slot-b">B</span> <span id="cp-b-label" style="font-weight:400;font-size:11px;color:var(--tx2);">v1.1_log2</span></th>
+          <th>Diff</th>
+        </tr></thead>
+        <tbody>
+          <tr style="background:var(--bg3);"><td colspan="4" style="font-size:11px;font-weight:700;color:var(--tx2);padding:6px 10px;">Process weights</td></tr>
+          <tr><td style="padding-left:20px;">Lipid metabolism</td><td>1</td><td>2</td><td><span class="db db-up">+1</span></td></tr>
+          <tr><td style="padding-left:20px;">Vascular inflammation</td><td>1</td><td>1</td><td><span class="db db-same">0</span></td></tr>
+          <tr style="background:var(--bg3);"><td colspan="4" style="font-size:11px;font-weight:700;color:var(--tx2);padding:6px 10px;">Biomarker weights</td></tr>
+          <tr><td style="padding-left:20px;">LDL Cholesterol</td><td>2</td><td>3</td><td><span class="db db-up">+1</span></td></tr>
+          <tr><td style="padding-left:20px;">HDL Cholesterol</td><td>2</td><td>2</td><td><span class="db db-same">0</span></td></tr>
+          <tr><td style="padding-left:20px;">Triglycerides</td><td>2</td><td>1</td><td><span class="db db-dn">-1</span></td></tr>
+          <tr><td style="padding-left:20px;">hsCRP</td><td>2</td><td>3</td><td><span class="db db-up">+1</span></td></tr>
+          <tr><td style="padding-left:20px;">Lp(a)</td><td>1</td><td>1</td><td><span class="db db-same">0</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:10px 14px;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:13px;font-weight:700;">Individual impact</span>
+        <select class="fi" style="width:220px;font-size:12px;"><option>PT-8812 — Jane Smith</option><option>PT-7741 — John Doe</option></select>
+      </div>
+      <table class="gh-table">
+        <thead><tr><th style="width:42%;">System</th><th><span class="slot-a">A</span> v1.0_linear</th><th><span class="slot-b">B</span> v1.1_log2</th><th>Diff</th></tr></thead>
+        <tbody>
+          <tr><td>Cardiovascular Health</td><td><span class="sp sg-">74</span></td><td><span class="sp sg-">71</span></td><td><span class="db db-dn">-3</span></td></tr>
+          <tr><td>Inflammation</td><td><span class="sp sr-">28</span></td><td><span class="sp sr-">26</span></td><td><span class="db db-dn">-2</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <div style="font-size:13px;font-weight:700;" id="pop-chart-title">Population distribution — Cardiovascular Health</div>
+        <select class="fi" style="width:auto;font-size:12px;" id="pop-sys-sel" onchange="renderKdeChart()"><option>Cardiovascular Health</option><option>Inflammation</option></select>
+      </div>
+      <div style="position:relative;height:160px;"><canvas id="overlayChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCORING PARAMS -->
+<div class="panel" id="panel-scoringparams">
+  <div class="pa"><div class="sl" style="margin:0;">Scoring parameters</div><div class="ar"><button class="btn">Save as draft</button><button class="btn btn-p">Submit for review</button></div></div>
+  <div class="card">
+    <div style="margin-bottom:20px;">
+      <div class="ps-title">Global parameters</div>
+      <div class="pr"><span class="pl">Score cutoff %</span><input class="pi" value="50" type="number"/></div>
+      <div class="pr"><span class="pl">Biomarker curve type</span><select class="pi" style="appearance:auto;"><option>Linear</option><option>Log2</option></select></div>
+      <div class="pr"><span class="pl">Global yellow weight</span><input class="pi" value="2" type="number" step="1"/></div>
+      <div class="pr"><span class="pl">Global red weight</span><input class="pi" value="4" type="number" step="1"/></div>
+    </div>
+    <div>
+      <div class="ps-title">Colour cutoffs</div>
+      <div class="pr"><span class="pl">All systems</span><div class="cr"><span class="clr-r">Red</span><input class="ci" value="0"/><span style="color:var(--tx3);">–</span><input class="ci" value="69"/><span class="clr-y" style="margin-left:6px;">Yellow</span><input class="ci" value="70"/><span style="color:var(--tx3);">–</span><input class="ci" value="90"/><span class="clr-g" style="margin-left:6px;">Green</span><span style="font-size:12px;color:var(--tx2);">91+</span></div></div>
+      <div class="pr"><span class="pl">All processes</span><div class="cr"><span class="clr-r">Red</span><input class="ci" value="0"/><span style="color:var(--tx3);">–</span><input class="ci" value="64"/><span class="clr-y" style="margin-left:6px;">Yellow</span><input class="ci" value="65"/><span style="color:var(--tx3);">–</span><input class="ci" value="88"/><span class="clr-g" style="margin-left:6px;">Green</span><span style="font-size:12px;color:var(--tx2);">89+</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY TABLES -->
+<div class="panel" id="panel-summary">
+  <div class="pa"><div class="sl" style="margin:0;">Summary tables</div><button class="btn">↓ Export CSV</button></div>
+  <div class="card" style="margin-bottom:16px;"><div style="font-size:13px;font-weight:700;margin-bottom:12px;">Systems — 27 total</div>
+    <table class="gh-table"><thead><tr><th>System</th><th>Type</th><th>Mean</th><th>Median</th><th>SD</th><th>Range</th><th>N</th></tr></thead><tbody>
+      <tr><td>Cardiovascular Health</td><td>Health System</td><td>66.2</td><td>68</td><td>12.4</td><td>18–94</td><td>312</td></tr>
+      <tr><td>Metabolic Health</td><td>Health System</td><td>58.7</td><td>61</td><td>14.1</td><td>12–96</td><td>312</td></tr>
+      <tr><td>Inflammation</td><td>Health System</td><td>51.3</td><td>53</td><td>18.2</td><td>8–97</td><td>312</td></tr>
+      <tr><td>Bone Health</td><td>Health System</td><td>72.8</td><td>74</td><td>10.6</td><td>30–98</td><td>312</td></tr>
+      <tr><td>Cancer Hallmarks</td><td>Cancer Hallmark</td><td>44.2</td><td>45</td><td>20.1</td><td>5–91</td><td>312</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- HISTOGRAMS -->
+<div class="panel" id="panel-histograms">
+  <div class="tab-bar"><button class="tb active" onclick="switchTab(this,'tab-sys')">Systems</button><button class="tb" onclick="switchTab(this,'tab-proc')">Processes</button><button class="tb" onclick="switchTab(this,'tab-bio')">Biomarkers</button></div>
+  <div class="tp active" id="tab-sys"><div class="hw">
+    <div class="hc"><div class="ht">Cardiovascular Health</div><div class="hs">N=312 · Mean 66.2 · SD 12.4</div><div class="hbw"><div class="hb" style="height:15%;background:var(--rb);"></div><div class="hb" style="height:28%;background:var(--rb);"></div><div class="hb" style="height:42%;background:var(--wb);"></div><div class="hb" style="height:60%;background:var(--wb);"></div><div class="hb" style="height:88%;background:var(--sb);"></div><div class="hb" style="height:100%;background:var(--sb);"></div><div class="hb" style="height:80%;background:var(--sb);"></div><div class="hb" style="height:55%;background:var(--sb);"></div><div class="hb" style="height:30%;background:var(--sb);"></div><div class="hb" style="height:12%;background:var(--sb);"></div></div><div class="hx"><span>0</span><span>50</span><span>100</span></div></div>
+    <div class="hc"><div class="ht">Inflammation</div><div class="hs">N=312 · Mean 51.3 · SD 18.2</div><div class="hbw"><div class="hb" style="height:28%;background:var(--rb);"></div><div class="hb" style="height:52%;background:var(--rb);"></div><div class="hb" style="height:74%;background:var(--rb);"></div><div class="hb" style="height:100%;background:var(--wb);"></div><div class="hb" style="height:88%;background:var(--wb);"></div><div class="hb" style="height:58%;background:var(--sb);"></div><div class="hb" style="height:32%;background:var(--sb);"></div><div class="hb" style="height:14%;background:var(--sb);"></div><div class="hb" style="height:6%;background:var(--sb);"></div><div class="hb" style="height:3%;background:var(--sb);"></div></div><div class="hx"><span>0</span><span>50</span><span>100</span></div></div>
+  </div></div>
+  <div class="tp" id="tab-proc"><div class="hw">
+    <div class="hc"><div class="ht">Lipid metabolism</div><div class="hs">N=312 · Mean 64.4</div><div class="hbw"><div class="hb" style="height:12%;background:var(--rb);"></div><div class="hb" style="height:25%;background:var(--rb);"></div><div class="hb" style="height:50%;background:var(--wb);"></div><div class="hb" style="height:75%;background:var(--wb);"></div><div class="hb" style="height:100%;background:var(--sb);"></div><div class="hb" style="height:85%;background:var(--sb);"></div><div class="hb" style="height:55%;background:var(--sb);"></div><div class="hb" style="height:28%;background:var(--sb);"></div><div class="hb" style="height:12%;background:var(--sb);"></div><div class="hb" style="height:5%;background:var(--sb);"></div></div><div class="hx"><span>0</span><span>50</span><span>100</span></div></div>
+  </div></div>
+  <div class="tp" id="tab-bio"><div class="hw">
+    <div class="hc"><div class="ht">LDL Cholesterol</div><div class="hs">N=312 · Mean 2.1 mmol/L</div><div class="hbw"><div class="hb" style="height:5%;background:var(--sb);"></div><div class="hb" style="height:18%;background:var(--sb);"></div><div class="hb" style="height:55%;background:var(--sb);"></div><div class="hb" style="height:100%;background:var(--sb);"></div><div class="hb" style="height:88%;background:var(--wb);"></div><div class="hb" style="height:60%;background:var(--wb);"></div><div class="hb" style="height:35%;background:var(--rb);"></div><div class="hb" style="height:18%;background:var(--rb);"></div><div class="hb" style="height:8%;background:var(--rb);"></div><div class="hb" style="height:3%;background:var(--rb);"></div></div><div class="hx"><span>0</span><span>2.6</span><span>5+</span></div></div>
+  </div></div>
+</div>
+
+<!-- DRAFTS -->
+<div class="panel" id="panel-drafts">
+  <div class="sl">My drafts</div>
+  <div class="qi"><div class="qm"><div class="qt">Update Vitamin D reference range</div><div class="qd">Last edited 2 days ago · <span class="ds d-dr">Draft</span></div></div><div class="qa"><span class="tag tag-sci">Science</span><button class="btn">Edit</button><button class="btn btn-p">Submit</button></div></div>
+  <div class="qi"><div class="qm"><div class="qt">Add hsCRP to Inflammation association</div><div class="qd">Submitted 3 days ago · <span class="ds d-rj">Rejected</span></div><div style="margin-top:6px;font-size:12px;color:var(--rt);background:var(--rb);padding:6px 10px;border-radius:var(--r);">Reviewer: "Please clarify population scope before resubmitting."</div></div><div class="qa"><span class="tag tag-sci">Science</span><button class="btn">Revise &amp; resubmit</button></div></div>
+  <div class="qi"><div class="qm"><div class="qt">Update ControlLot CL-2024-11A</div><div class="qd">Submitted 5 days ago · <span class="ds d-sb">In review</span></div></div><div class="qa"><span class="tag tag-ops">Ops</span></div></div>
+</div>
+
+<!-- REVIEW QUEUE -->
+<div class="panel" id="panel-review">
+  <div class="sl">Review queue — pending approval</div>
+  <div class="qi"><div class="qm"><div class="qt">Update Vitamin D range: 20–40 to 30–100 ng/mL</div><div class="qd">Submitted by Maria · 4 days ago</div><div class="diff-block"><div class="diff-row"><div class="df">Range low</div><span class="do">20</span><span>→</span><span class="dn">30</span></div><div class="diff-row"><div class="df">Range high</div><span class="do">40</span><span>→</span><span class="dn">100</span></div></div><div style="margin-top:8px;"><textarea class="fi" rows="2" placeholder="Add comment (required if rejecting)…"></textarea></div></div><div class="qa" style="flex-direction:column;align-items:flex-end;gap:6px;"><div style="display:flex;gap:4px;"><span class="tag tag-sci">Science</span><span class="tag tag-urg">Urgent</span></div><button class="btn btn-ok">Approve</button><button class="btn btn-rej">Reject</button></div></div>
+  <div class="qi"><div class="qm"><div class="qt">Weight: Creatinine in Renal — high weight 2 to 3, red</div><div class="qd">Submitted by Jordan · 6 days ago</div></div><div class="qa" style="flex-direction:column;align-items:flex-end;gap:6px;"><span class="tag tag-sci">Science</span><button class="btn btn-ok">Approve</button><button class="btn btn-rej">Reject</button></div></div>
+</div>
+
+<!-- AUDIT -->
+<div class="panel" id="panel-audit">
+  <div class="sl">Audit log</div>
+  <div class="card" style="padding:0;overflow:hidden;"><table class="gh-table"><thead><tr><th>Date</th><th>Change</th><th>Type</th><th>Author</th><th>Approver</th><th></th></tr></thead><tbody>
+    <tr><td style="color:var(--tx2);white-space:nowrap;">2024-11-14</td><td>LDL to Cardiovascular association added</td><td><span class="tag tag-sci">Science</span></td><td>Maria</td><td>Jordan</td><td><button class="btn" style="font-size:11px;padding:3px 8px;">Revert</button></td></tr>
+    <tr><td style="color:var(--tx2);white-space:nowrap;">2024-11-12</td><td>ControlLot CL-2024-09B updated</td><td><span class="tag tag-ops">Ops</span></td><td>Alex</td><td>Maria</td><td><button class="btn" style="font-size:11px;padding:3px 8px;">Revert</button></td></tr>
+    <tr><td style="color:var(--tx2);white-space:nowrap;">2024-11-10</td><td>HbA1c range 5.0–5.6 to 4.8–5.6 %</td><td><span class="tag tag-sci">Science</span></td><td>Jordan</td><td>Alex</td><td><button class="btn" style="font-size:11px;padding:3px 8px;">Revert</button></td></tr>
+  </tbody></table></div>
+</div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const TREE={'Cardiovascular Health':{processes:[{name:'Lipid metabolism',weight:2,color:'both',biomarkers:[{name:'LDL Cholesterol',weight:3,color:'red',dir:'high'},{name:'HDL Cholesterol',weight:2,color:'red',dir:'low'},{name:'Triglycerides',weight:1,color:'red',dir:'high'},{name:'Lp(a)',weight:1,color:'red',dir:'high'}]},{name:'Vascular inflammation',weight:1,color:'red',biomarkers:[{name:'hsCRP',weight:3,color:'red',dir:'high'},{name:'IL-6',weight:1,color:'red',dir:'high'}]}]},'Metabolic Health':{processes:[{name:'Glucose regulation',weight:3,color:'both',biomarkers:[{name:'HbA1c',weight:3,color:'red',dir:'high'},{name:'Fasting glucose',weight:2,color:'red',dir:'high'},{name:'Insulin',weight:1,color:'both',dir:'both'}]},{name:'Thyroid function',weight:1,color:'red',biomarkers:[{name:'TSH',weight:1,color:'both',dir:'both'},{name:'Free T4',weight:1,color:'both',dir:'both'}]}]},'Inflammation':{processes:[{name:'Oxidative stress',weight:2,color:'red',biomarkers:[{name:'hsCRP',weight:2,color:'red',dir:'high'},{name:'Ferritin',weight:1,color:'both',dir:'high'},{name:'MDA',weight:2,color:'red',dir:'high'}]}]},'Bone Health':{processes:[{name:'Bone turnover',weight:1,color:'both',biomarkers:[{name:'Vitamin D',weight:3,color:'red',dir:'low'},{name:'PTH',weight:1,color:'both',dir:'both'},{name:'Osteocalcin',weight:1,color:'red',dir:'low'}]}]}};
+let wtW={};
+function wbadge(w,color,dir){if(w<=1)return'';let h='<div class="wbadge"><span class="wb-num">'+w+'x</span>';if(color&&color!=='both')h+='<span class="wb-col '+(color==='red'?'wb-red':'wb-yel')+'">'+color+'</span>';if(dir&&dir!=='both')h+='<span class="wb-dir">'+dir+'</span>';return h+'</div>';}
+function renderWeightTree(){const sys=document.getElementById('wt-sys-sel').value;const data=TREE[sys];if(!data)return;data.processes.forEach(p=>{const pk='p:'+p.name;if(!wtW[pk])wtW[pk]={weight:p.weight,color:p.color};p.biomarkers.forEach(b=>{const bk='b:'+p.name+':'+b.name;if(!wtW[bk])wtW[bk]={weight:b.weight,color:b.color,dir:b.dir};});});const container=document.getElementById('weight-tree-container');container.innerHTML='';const wrap=document.createElement('div');wrap.style.cssText='display:flex;align-items:flex-start;gap:0;min-width:560px;';const procCol=document.createElement('div');procCol.style.cssText='display:flex;flex-direction:column;gap:20px;min-width:160px;';const bioCol=document.createElement('div');bioCol.style.cssText='display:flex;flex-direction:column;gap:0;min-width:170px;margin-left:60px;';const svgWrap=document.createElement('div');svgWrap.id='svg-c';svgWrap.style.cssText='position:relative;width:60px;flex-shrink:0;';data.processes.forEach((p,pi)=>{const pk='p:'+p.name;const pw=wtW[pk];const pNode=document.createElement('div');pNode.className='fn proc';pNode.id='pn-'+pi;pNode.innerHTML='<div>'+p.name+'</div>'+wbadge(pw.weight,pw.color,null);pNode.onclick=()=>openPopProc(pNode,pk,p.name,pi,sys);procCol.appendChild(pNode);const ppW=document.createElement('div');ppW.id='pp-'+pi;procCol.appendChild(ppW);const bioGroup=document.createElement('div');bioGroup.style.cssText='display:flex;flex-direction:column;gap:8px;margin-bottom:20px;';p.biomarkers.forEach((b,bi)=>{const bk='b:'+p.name+':'+b.name;const bw=wtW[bk];const bNode=document.createElement('div');bNode.className='fn bm';bNode.id='bn-'+pi+'-'+bi;bNode.innerHTML='<div>'+b.name+'</div>'+wbadge(bw.weight,bw.color,bw.dir);bNode.onclick=()=>openPopBio(bNode,bk,b.name,pi,bi,p.name);bioGroup.appendChild(bNode);const bpW=document.createElement('div');bpW.id='bp-'+pi+'-'+bi;bioGroup.appendChild(bpW);});bioCol.appendChild(bioGroup);});wrap.appendChild(procCol);wrap.appendChild(svgWrap);wrap.appendChild(bioCol);container.appendChild(wrap);setTimeout(()=>drawLines(data,procCol,bioCol,svgWrap),40);}
+function drawLines(data,procCol,bioCol,svgWrap){const pr=procCol.getBoundingClientRect();const h=Math.max(pr.height,bioCol.getBoundingClientRect().height)+40;svgWrap.style.height=h+'px';const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('width','60');svg.setAttribute('height',h);svg.style.cssText='position:absolute;top:0;left:0;overflow:visible;';const svgLeft=svgWrap.getBoundingClientRect().left;data.processes.forEach((p,pi)=>{const pEl=document.getElementById('pn-'+pi);if(!pEl)return;const pR=pEl.getBoundingClientRect();const pY=pR.top-pr.top+pR.height/2;const pRightEdge=pR.right-svgLeft;p.biomarkers.forEach((b,bi)=>{const bEl=document.getElementById('bn-'+pi+'-'+bi);if(!bEl)return;const bR=bEl.getBoundingClientRect();const bY=bR.top-pr.top+bR.height/2;const bLeftEdge=bR.left-svgLeft;const path=document.createElementNS('http://www.w3.org/2000/svg','path');const mx=(pRightEdge+bLeftEdge)/2;path.setAttribute('d',`M${pRightEdge},${pY} C${mx},${pY} ${mx},${bY} ${bLeftEdge},${bY}`);path.setAttribute('fill','none');path.setAttribute('stroke','rgba(24,55,75,0.15)');path.setAttribute('stroke-width','1.5');path.setAttribute('data-pi',pi);path.setAttribute('data-bi',bi);path.onmouseenter=()=>hlPath(pi,bi,true);path.onmouseleave=()=>hlPath(pi,bi,false);svg.appendChild(path);});});svgWrap.appendChild(svg);data.processes.forEach((p,pi)=>{const pEl=document.getElementById('pn-'+pi);if(pEl){pEl.onmouseenter=()=>{p.biomarkers.forEach((_,bi)=>hlPath(pi,bi,true));};pEl.onmouseleave=()=>{p.biomarkers.forEach((_,bi)=>hlPath(pi,bi,false));};}p.biomarkers.forEach((b,bi)=>{const bEl=document.getElementById('bn-'+pi+'-'+bi);if(bEl){bEl.onmouseenter=()=>hlPath(pi,bi,true);bEl.onmouseleave=()=>hlPath(pi,bi,false);}});});}
+function hlPath(pi,bi,on){const svg=document.querySelector('#svg-c svg');if(!svg)return;svg.querySelectorAll('path').forEach(p=>{const m=p.getAttribute('data-pi')==String(pi)&&p.getAttribute('data-bi')==String(bi);p.setAttribute('stroke',m&&on?'rgba(140,207,207,0.9)':'rgba(24,55,75,0.15)');p.setAttribute('stroke-width',m&&on?'2.5':'1.5');});const pEl=document.getElementById('pn-'+pi);const bEl=document.getElementById('bn-'+pi+'-'+bi);if(pEl)pEl.style.outline=on?'2px solid rgba(140,207,207,0.6)':'none';if(bEl)bEl.style.outline=on?'2px solid rgba(140,207,207,0.6)':'none';}
+function openPopProc(nodeEl,key,name,pi,sys){closeAllPops();nodeEl.classList.add('sel');const pw=wtW[key];const wrap=document.getElementById('pp-'+pi);const pop=document.createElement('div');pop.className='pop vis';pop.innerHTML=`<div class="pop-title">${name}</div><div class="pop-row"><span class="pop-label">Multiplier (1–10)</span><input class="pop-input" type="number" min="1" max="10" value="${pw.weight}" oninput="wtW['${key}'].weight=parseInt(this.value)||1;refreshPN(${pi},'${key}')"/></div><div class="pop-row"><span class="pop-label">Colour trigger</span><select class="pop-sel" onchange="wtW['${key}'].color=this.value;refreshPN(${pi},'${key}')"><option ${pw.color==='red'?'selected':''}>red</option><option ${pw.color==='yellow'?'selected':''}>yellow</option><option ${pw.color==='both'?'selected':''}>both</option></select></div>`;wrap.appendChild(pop);}
+function openPopBio(nodeEl,key,name,pi,bi,proc){closeAllPops();nodeEl.classList.add('sel');const bw=wtW[key];const wrap=document.getElementById('bp-'+pi+'-'+bi);const pop=document.createElement('div');pop.className='pop vis';pop.innerHTML=`<div class="pop-title">${name}</div><div class="pop-row"><span class="pop-label">Multiplier (1–10)</span><input class="pop-input" type="number" min="1" max="10" value="${bw.weight}" oninput="wtW['${key}'].weight=parseInt(this.value)||1;refreshBN(${pi},${bi},'${key}')"/></div><div class="pop-row"><span class="pop-label">Colour trigger</span><select class="pop-sel" onchange="wtW['${key}'].color=this.value;refreshBN(${pi},${bi},'${key}')"><option ${bw.color==='red'?'selected':''}>red</option><option ${bw.color==='yellow'?'selected':''}>yellow</option><option ${bw.color==='both'?'selected':''}>both</option></select></div><div class="pop-row"><span class="pop-label">Direction trigger</span><select class="pop-sel" onchange="wtW['${key}'].dir=this.value;refreshBN(${pi},${bi},'${key}')"><option ${bw.dir==='high'?'selected':''}>high</option><option ${bw.dir==='low'?'selected':''}>low</option><option ${bw.dir==='both'?'selected':''}>both</option></select></div>`;wrap.appendChild(pop);}
+function refreshPN(pi,key){const el=document.getElementById('pn-'+pi);if(!el)return;const pw=wtW[key];const name=key.replace('p:','');el.innerHTML='<div>'+name+'</div>'+wbadge(pw.weight,pw.color,null);el.onclick=()=>openPopProc(el,key,name,pi,document.getElementById('wt-sys-sel').value);}
+function refreshBN(pi,bi,key){const el=document.getElementById('bn-'+pi+'-'+bi);if(!el)return;const bw=wtW[key];const parts=key.replace('b:','').split(':');el.innerHTML='<div>'+parts[1]+'</div>'+wbadge(bw.weight,bw.color,bw.dir);el.onclick=()=>openPopBio(el,key,parts[1],pi,bi,parts[0]);}
+function closeAllPops(){document.querySelectorAll('.pop').forEach(p=>p.remove());document.querySelectorAll('.fn').forEach(n=>{n.classList.remove('sel');n.style.outline='none';});}
+document.addEventListener('click',e=>{if(!e.target.closest('.fn')&&!e.target.closest('.pop'))closeAllPops();});
+
+const FC={'Cardiovascular Health':{processes:[{name:'Lipid metabolism',biomarkers:['LDL Cholesterol','HDL Cholesterol','Triglycerides','Lp(a)']},{name:'Vascular inflammation',biomarkers:['hsCRP','IL-6','Fibrinogen']}]},'Metabolic Health':{processes:[{name:'Glucose regulation',biomarkers:['HbA1c','Fasting glucose','Insulin','HOMA-IR']},{name:'Thyroid function',biomarkers:['TSH','Free T4','Free T3']}]},'Bone Health':{processes:[{name:'Bone turnover',biomarkers:['Vitamin D','PTH','Osteocalcin','CTX']}]},'Inflammation':{processes:[{name:'Oxidative stress',biomarkers:['hsCRP','Ferritin','MDA','8-OHdG']},{name:'Acute phase',biomarkers:['CRP','SAA','Fibrinogen']}]}};
+function renderFlowchart(){const sys=document.getElementById('fc-sys-sel').value;const data=FC[sys];const container=document.getElementById('flowchart-container');if(!data){container.innerHTML='';return;}const SW=140,SH=40,PW=138,PH=32,BW=138,BH=28,GAP=12,HGAP=60,PAD=16;const allBios=[];data.processes.forEach(p=>p.biomarkers.forEach(b=>{if(!allBios.find(x=>x.name===b))allBios.push({name:b,procs:[p.name]});else allBios.find(x=>x.name===b).procs.push(p.name);}));const procTotalH=data.processes.length*PH+(data.processes.length-1)*GAP;const bioTotalH=allBios.length*BH+(allBios.length-1)*GAP;const totalH=Math.max(SH,procTotalH,bioTotalH)+PAD*2;const col0=PAD,col1=PAD+SW+HGAP,col2=col1+PW+HGAP,totalW=col2+BW+PAD;const ns=t=>document.createElementNS('http://www.w3.org/2000/svg',t);const svg=ns('svg');svg.setAttribute('width',totalW);svg.setAttribute('height',totalH);svg.style.display='block';function drawNode(x,y,w,h,label,fill,stroke,tc,id){const g=ns('g');if(id)g.id=id;const rect=ns('rect');rect.setAttribute('x',x);rect.setAttribute('y',y);rect.setAttribute('width',w);rect.setAttribute('height',h);rect.setAttribute('rx','6');rect.setAttribute('fill',fill);rect.setAttribute('stroke',stroke);rect.setAttribute('stroke-width','0.5');const txt=ns('text');txt.setAttribute('x',x+w/2);txt.setAttribute('y',y+h/2+1);txt.setAttribute('text-anchor','middle');txt.setAttribute('dominant-baseline','middle');txt.setAttribute('font-size','11');txt.setAttribute('fill',tc);txt.setAttribute('font-family','Lato,system-ui,sans-serif');const mc=Math.floor(w/6.2);txt.textContent=label.length>mc?label.slice(0,mc-1)+'…':label;g.appendChild(rect);g.appendChild(txt);svg.appendChild(g);return{lx:x,rx:x+w,my:y+h/2};}function drawCurve(x1,y1,x2,y2,pi,bi){const path=ns('path');const mx=(x1+x2)/2;path.setAttribute('d',`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','rgba(24,55,75,0.14)');path.setAttribute('stroke-width','1.5');if(pi!==undefined){path.setAttribute('data-pi',pi);path.setAttribute('data-bi',bi);}svg.insertBefore(path,svg.firstChild);return path;}const sysY=totalH/2-SH/2;const sysN=drawNode(col0,sysY,SW,SH,sys,'#D5EFE5','#7BBFA0','#2A6B4F');const procStartY=(totalH-procTotalH)/2;const procNodes=[];data.processes.forEach((p,pi)=>{const y=procStartY+pi*(PH+GAP);const n=drawNode(col1,y,PW,PH,p.name,'#FFDEB8','#F5A623','#854f0b','fcp'+pi);procNodes.push({...n,name:p.name});drawCurve(sysN.rx,sysN.my,n.lx,n.my);});const bioStartY=(totalH-bioTotalH)/2;const bioNodes={};allBios.forEach((b,bi)=>{const y=bioStartY+bi*(BH+GAP);const n=drawNode(col2,y,BW,BH,b.name,'#D5E6EE','rgba(24,55,75,0.22)','#18374B','fcb'+bi);bioNodes[b.name]={...n,idx:bi};});const lines=[];data.processes.forEach((p,pi)=>{p.biomarkers.forEach(bName=>{const bn=bioNodes[bName];if(!bn)return;const pn=procNodes[pi];const l=drawCurve(pn.rx,pn.my,bn.lx,bn.my,pi,bn.idx);lines.push({line:l,pi,bi:bn.idx});});});function setHL(pi,bi,on){lines.forEach(l=>{const m=(pi===undefined||l.pi===pi)&&(bi===undefined||l.bi===bi);l.line.setAttribute('stroke',m&&on?'rgba(140,207,207,0.9)':'rgba(24,55,75,0.14)');l.line.setAttribute('stroke-width',m&&on?'2.5':'1.5');});if(pi!==undefined){const el=svg.getElementById('fcp'+pi);if(el)el.querySelector('rect').setAttribute('stroke-width',on?'2':'0.5');}if(bi!==undefined){const el=svg.getElementById('fcb'+bi);if(el)el.querySelector('rect').setAttribute('stroke-width',on?'2':'0.5');}}data.processes.forEach((p,pi)=>{const el=svg.getElementById('fcp'+pi);if(!el)return;el.style.cursor='pointer';el.onmouseenter=()=>setHL(pi,undefined,true);el.onmouseleave=()=>setHL(pi,undefined,false);});allBios.forEach((b,bi)=>{const el=svg.getElementById('fcb'+bi);if(!el)return;el.style.cursor='pointer';el.onmouseenter=()=>setHL(undefined,bi,true);el.onmouseleave=()=>setHL(undefined,bi,false);});container.innerHTML='';container.appendChild(svg);}
+
+let overlayChart=null;
+const KDE_DATA={'Cardiovascular Health':{meanA:66.2,sdA:12.4,meanB:64.1,sdB:13.8},'Inflammation':{meanA:51.3,sdA:18.2,meanB:49.5,sdB:19.1}};
+function gaussianKDE(mean,sd,points){return points.map(x=>Math.exp(-0.5*Math.pow((x-mean)/sd,2))/(sd*Math.sqrt(2*Math.PI)));}
+function renderKdeChart(){const sys=document.getElementById('pop-sys-sel');if(!sys)return;const sysName=sys.value;document.getElementById('pop-chart-title').textContent='Population distribution — '+sysName;const d=KDE_DATA[sysName]||KDE_DATA['Cardiovascular Health'];const pts=[];for(let i=0;i<=100;i+=1)pts.push(i);const kdeA=gaussianKDE(d.meanA,d.sdA,pts);const kdeB=gaussianKDE(d.meanB,d.sdB,pts);const ctx=document.getElementById('overlayChart').getContext('2d');if(overlayChart)overlayChart.destroy();overlayChart=new Chart(ctx,{type:'line',data:{labels:pts,datasets:[{label:'Profile A',data:kdeA,borderColor:'#61859D',backgroundColor:'rgba(97,133,157,0.12)',borderWidth:2,pointRadius:0,fill:true,tension:0.4},{label:'Profile B',data:kdeB,borderColor:'#F5A623',backgroundColor:'rgba(245,166,35,0.10)',borderWidth:2,pointRadius:0,fill:true,tension:0.4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:11}},y:{beginAtZero:true,grid:{color:'rgba(24,55,75,0.05)'}}}}});}
+
+const SIM={systems:[{name:'Cardiovascular Health',a:74,b:71,processes:[{name:'Lipid metabolism',a:70,b:68,biomarkers:[{name:'LDL Cholesterol',a:'2.1',b:'2.3',unit:'mmol/L',ref:'0–2.6'},{name:'HDL Cholesterol',a:'1.8',b:'1.7',unit:'mmol/L',ref:'1.0+'},{name:'Triglycerides',a:'1.1',b:'1.2',unit:'mmol/L',ref:'0–1.7'}]},{name:'Vascular inflammation',a:78,b:74,biomarkers:[{name:'hsCRP',a:'1.2',b:'0.9',unit:'mg/L',ref:'0–3.0'}]}]},{name:'Metabolic Health',a:51,b:55,processes:[{name:'Glucose regulation',a:48,b:52,biomarkers:[{name:'HbA1c',a:'5.4',b:'5.3',unit:'%',ref:'4.8–5.6'}]}]},{name:'Inflammation',a:28,b:31,processes:[{name:'Oxidative stress',a:25,b:28,biomarkers:[{name:'hsCRP',a:'3.8',b:'3.5',unit:'mg/L',ref:'0–3.0'}]}]},{name:'Bone Health',a:81,b:81,processes:[{name:'Bone turnover',a:81,b:81,biomarkers:[{name:'Vitamin D',a:'42',b:'42',unit:'ng/mL',ref:'30–100'}]}]}]};
+function sc(v){return v>=91?'sg-':v>=70?'sy-':'sr-';}
+function bandLabel(cls){return cls==='sg-'?'G':cls==='sy-'?'Y':'R';}
+function bandRank(cls){return cls==='sg-'?2:cls==='sy-'?1:0;}
+function bandDiffCell(numSpan,aCls,bCls){if(aCls===bCls)return numSpan;const pill=`<span class="bc-mini ${aCls}">${bandLabel(aCls)}</span><span class="bc-sep">→</span><span class="bc-mini ${bCls}">${bandLabel(bCls)}</span>`;return `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;">${numSpan}<span style="display:flex;align-items:center;">${pill}</span></div>`;}
+function bandRowClass(aCls,bCls){const steps=Math.abs(bandRank(bCls)-bandRank(aCls));if(steps===0)return '';return steps===2?'row-band-2':'row-band-1';}
+
+const CR_DATA=[{type:'system',label:'Cardiovascular Health',a:74,b:71},{type:'process',label:'Lipid metabolism',a:70,b:68,indent:1},{type:'biomarker',label:'LDL Cholesterol',aVal:'2.1 mmol/L',bVal:'2.8 mmol/L',aScore:78,bScore:65,indent:2},{type:'biomarker',label:'HDL Cholesterol',aVal:'1.8 mmol/L',bVal:'1.7 mmol/L',aScore:82,bScore:80,indent:2},{type:'process',label:'Vascular inflammation',a:78,b:74,indent:1},{type:'biomarker',label:'hsCRP',aVal:'1.2 mg/L',bVal:'0.6 mg/L',aScore:85,bScore:95,indent:2},{type:'system',label:'Metabolic Health',a:51,b:55},{type:'process',label:'Glucose regulation',a:48,b:52,indent:1},{type:'biomarker',label:'HbA1c',aVal:'5.4%',bVal:'5.3%',aScore:72,bScore:75,indent:2},{type:'system',label:'Inflammation',a:28,b:31},{type:'process',label:'Oxidative stress',a:25,b:28,indent:1}];
+function buildCrInlineTable(){const tbody=document.getElementById('cr-inline-tbody');if(!tbody)return;tbody.innerHTML='';CR_DATA.forEach(row=>{const tr=document.createElement('tr');const indent=(row.indent||0)*16;let labelStyle=`padding-left:${10+indent}px;font-size:13px;`;if(row.type==='system'){labelStyle+='font-weight:700;';}else if(row.type==='process'){labelStyle+='color:var(--tx2);font-size:12px;';}else{labelStyle+='color:var(--tx3);font-size:12px;';}let aC,bC,dC;if(row.type==='biomarker'){const d=row.bScore-row.aScore;const dc=d>0?'dp':d<0?'dm':'dz';const ds=d>0?'+'+d:d===0?'0':String(d);const ba=sc(row.aScore),bb=sc(row.bScore);aC=`<span class="sp ${ba}">${row.aScore}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.aVal}</span>`;bC=`<span class="sp ${bb}">${row.bScore}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.bVal}</span>`;dC=bandDiffCell(`<span class="${dc}">${ds}</span>`,ba,bb);const rc=bandRowClass(ba,bb);if(rc)tr.classList.add(rc);}else{const d=row.b-row.a;const dc=d>0?'dp':d<0?'dm':'dz';const ds=d>0?'+'+d:d===0?'0':String(d);const ba=sc(row.a),bb=sc(row.b);aC=`<span class="sp ${ba}">${row.a}</span>`;bC=`<span class="sp ${bb}">${row.b}</span>`;dC=bandDiffCell(`<span class="${dc}">${ds}</span>`,ba,bb);const rc=bandRowClass(ba,bb);if(rc)tr.classList.add(rc);}tr.innerHTML=`<td style="${labelStyle}">${row.label}</td><td>${aC}</td><td>${bC}</td><td>${dC}</td>`;tbody.appendChild(tr);});}
+
+let currentRole='contributor';
+function goToTeamSelect(){document.getElementById('login-step-1').style.display='none';document.getElementById('login-step-2').style.display='';}
+function doLogin(team){const email=document.getElementById('login-email').value||'user@molecularyou.com';currentRole=document.getElementById('login-role').value;document.getElementById('login').style.display='none';document.getElementById('app').classList.add('visible');const initials=email.split('@')[0].slice(0,2).toUpperCase();document.getElementById('sb-av').textContent=initials;document.getElementById('sb-name').textContent=email.split('@')[0];document.getElementById('sb-td').textContent=team+' team';document.getElementById('sb-tl').textContent=team;const rb=document.getElementById('sb-role-badge');rb.textContent=currentRole==='admin'?'Admin':'Contributor';rb.style.background=currentRole==='admin'?'var(--rb)':'var(--ib)';rb.style.color=currentRole==='admin'?'var(--rt)':'var(--it)';rb.style.display='inline-block';document.getElementById('nav-ops').style.display=team==='Ops'?'block':'none';document.getElementById('nav-sci').style.display=team==='Science'?'block':'none';const first=team==='Ops'?'allreports-v1':'systems';activatePanel(first);setPageHeader(first);const firstNav=document.querySelector('#nav-'+(team==='Ops'?'ops':'sci')+' .nav-item[data-panel="'+first+'"]');if(firstNav)firstNav.classList.add('active');}
+function doLogout(){document.getElementById('app').classList.remove('visible');document.getElementById('login').style.display='flex';document.getElementById('login-step-1').style.display='';document.getElementById('login-step-2').style.display='none';document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));currentRole='contributor';}
+function doSwitchTeam(){document.getElementById('login-step-2').style.display='';document.getElementById('login-step-1').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('app').classList.remove('visible');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));}
+const PAGE_META={
+  'allreports-v1': {title:'Reports',               sub:'All reports'},
+  'comparereports':{title:'Reports',                sub:'Compare reports'},
+  'assaycatalog':  {title:'Assay Catalog',          sub:null},
+  'refrange':      {title:'Reference Ranges',       sub:null},
+  'systems':       {title:'Associations & Weights', sub:'Associations'},
+  'weights':       {title:'Associations & Weights', sub:'Weight adjustments'},
+  'cmpprofiles':   {title:'Associations & Weights', sub:'Compare profiles'},
+  'scoringparams': {title:'Associations & Weights', sub:'Scoring params'},
+  'summary':       {title:'Analytics',              sub:'Summary tables'},
+  'histograms':    {title:'Analytics',              sub:'Histograms'},
+  'drafts':        {title:'My Drafts',              sub:null},
+  'review':        {title:'Review Queue',           sub:null},
+  'audit':         {title:'Audit Log',              sub:null},
+  'dataversions':  {title:'Data Versions',          sub:null},
+};
+function setPageHeader(panel){const m=PAGE_META[panel]||{title:panel,sub:null};document.getElementById('page-title').textContent=m.title;const activePanel=document.getElementById('panel-'+panel);if(activePanel){const sl=activePanel.querySelector('.sl');if(sl){if(m.sub){sl.textContent=m.sub;sl.style.display='block';}else{sl.style.display='none';}}}}
+function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const panel=el.dataset.panel;activatePanel(panel);setPageHeader(panel);}
+function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){buildCrInlineTable();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();}
+function toggleGroup(id){const el=document.getElementById(id);const ch=document.getElementById('chev-'+id);const open=el.classList.contains('expanded');el.classList.toggle('collapsed',open);el.classList.toggle('expanded',!open);if(ch)ch.classList.toggle('open',!open);}
+function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
+function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function switchTab(btn,id){document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById(id).classList.add('active');}
+function switchAssocTab(which,btn){document.querySelectorAll('#panel-systems .tb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('assoc-tab-table').style.display=which==='table'?'':'none';document.getElementById('assoc-tab-flowchart').style.display=which==='flowchart'?'':'none';if(which==='flowchart')setTimeout(renderFlowchart,50);}
+function exportCSV(){alert('CSV export (wireframe — simulated download)');}
+let crSlotA=null,crSlotB=null;
+function crCycleSlot(row){const id=row.getAttribute('data-report');if(crSlotA===id)crSlotA=null;else if(crSlotB===id)crSlotB=null;else if(!crSlotA)crSlotA=id;else if(!crSlotB)crSlotB=id;else crSlotB=id;document.querySelectorAll('#saved-reports-table tbody tr').forEach(r=>{const n=r.getAttribute('data-report');r.classList.remove('sel-a','sel-b');const box=document.getElementById('cr-box-'+n);if(!box)return;if(n===crSlotA){r.classList.add('sel-a');box.textContent='A';box.style.background='var(--it)';box.style.color='#fff';box.style.borderColor='var(--it)';}else if(n===crSlotB){r.classList.add('sel-b');box.textContent='B';box.style.background='var(--wt)';box.style.color='#fff';box.style.borderColor='var(--wt)';}else{box.textContent='';box.style.background='transparent';box.style.color='var(--tx3)';box.style.borderColor='var(--bd2)';}});const ready=!!(crSlotA&&crSlotB);document.getElementById('cr-empty-prompt').style.display=ready?'none':'';document.getElementById('cr-results').classList.toggle('vis',ready);if(ready){buildCrInlineTable();}}
+let slotA=null,slotB=null;
+function updateResults(){const ready=slotA&&slotB;document.getElementById('cmp-empty-prompt').style.display=ready?'none':'';document.getElementById('cmp-results').classList.toggle('vis',ready);const actions=document.getElementById('cp-actions');if(actions)actions.style.display=ready?'flex':'none';if(ready)setTimeout(renderKdeChart,50);}
+function cycleSlot(row){const name=row.getAttribute('data-profile');if(slotA===name)slotA=null;else if(slotB===name)slotB=null;else if(!slotA)slotA=name;else if(!slotB)slotB=name;else slotB=name;document.querySelectorAll('#profile-picker-table tbody tr').forEach(r=>{const n=r.getAttribute('data-profile');r.classList.remove('sel-a','sel-b');const box=document.getElementById('cp-box-'+n.replace(/\s+/g,'_'));if(!box)return;if(n===slotA){r.classList.add('sel-a');box.textContent='A';box.style.background='var(--it)';box.style.color='#fff';box.style.borderColor='var(--it)';}else if(n===slotB){r.classList.add('sel-b');box.textContent='B';box.style.background='var(--wt)';box.style.color='#fff';box.style.borderColor='var(--wt)';}else{box.textContent='';box.style.background='transparent';box.style.color='var(--tx3)';box.style.borderColor='var(--bd2)';}});document.getElementById('cp-a-label').textContent=slotA||'—';document.getElementById('cp-b-label').textContent=slotB||'—';updateResults();}
+function doSubmitProfile(){document.getElementById('submit-confirm').classList.add('vis');document.getElementById('submit-confirm').scrollIntoView({behavior:'smooth',block:'nearest'});}
+function doDiscard(){slotA=null;slotB=null;document.querySelectorAll('#profile-picker-table tbody tr').forEach(r=>{r.classList.remove('sel-a','sel-b');const n=r.getAttribute('data-profile');const box=document.getElementById('cp-box-'+n.replace(/\s+/g,'_'));if(box){box.textContent='';box.style.background='transparent';box.style.color='var(--tx3)';box.style.borderColor='var(--bd2)';}});document.getElementById('submit-confirm').classList.remove('vis');updateResults();}
+function openSaveProfileModal(){const o=document.getElementById('save-profile-overlay');o.style.display='flex';document.getElementById('new-profile-name').value='';document.getElementById('profile-saved-msg').style.display='none';}
+function closeSaveProfileModal(){document.getElementById('save-profile-overlay').style.display='none';}
+function confirmSaveProfile(){const name=document.getElementById('new-profile-name').value.trim();if(!name)return;const sel=document.getElementById('wt-profile-sel');const opt=document.createElement('option');opt.value=name;opt.textContent=name;sel.appendChild(opt);sel.value=name;document.getElementById('profile-saved-msg').style.display='block';setTimeout(()=>closeSaveProfileModal(),1400);}
+
+// ── ALL REPORTS V1 ──
+const ARV1_DATA=[
+  {barcode:'463F345',comment:'March 2026 final report',sci_version:'v1.0_linear',reportable:true,status:'Published',
+   datasets:[
+     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',lab:'TMIC (CA)',run_date:'2026-03-04'},
+     {name:'1A_Metabolomics (MYCO 1.2)',assay:'Metabolomics',lab:'TMIC (CA)',run_date:'2026-03-04'},
+     {name:'2A_Proteomics (MRM 1.1)',assay:'Proteomics',lab:'BGI (CN)',run_date:'2026-03-05'},
+   ]},
+  {barcode:'463F345',comment:'Pre-review draft',sci_version:'v1.1_log2',reportable:false,status:'Saved',
+   datasets:[
+     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',lab:'TMIC (CA)',run_date:'2026-03-04'},
+   ]},
+  {barcode:'312B778',comment:'Sent to MYHI',sci_version:'v1.0_linear',reportable:true,status:'Published',
+   datasets:[
+     {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',lab:'LabCorp (US)',run_date:'2026-01-08'},
+     {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',lab:'LabCorp (US)',run_date:'2026-01-08'},
+     {name:'Jan 2026_Metabolomics (MYMet 2.0)',assay:'Metabolomics',lab:'BGI (CN)',run_date:'2026-01-27'},
+   ]},
+  {barcode:'312B778',comment:'Superseded by v1.2_cardio',sci_version:'v1.2_cardio',reportable:false,status:'Saved',
+   datasets:[
+     {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',lab:'LabCorp (US)',run_date:'2026-01-08'},
+     {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',lab:'LabCorp (US)',run_date:'2026-01-08'},
+   ]},
+];
+
+function renderARV1(){
+  const tbody=document.getElementById('arv1-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  ARV1_DATA.forEach((r,idx)=>{
+    const openId='arv1-detail-'+idx;
+    const chevId='arv1-chev-'+idx;
+    // parent row
+    const parentTr=document.createElement('tr');
+    parentTr.style.cursor='pointer';
+    parentTr.onclick=()=>{
+      const detail=document.getElementById(openId);
+      const chev=document.getElementById(chevId);
+      const isOpen=detail.style.display!=='none';
+      detail.style.display=isOpen?'none':'';
+      chev.textContent=isOpen?'▶':'▼';
+    };
+    const statusCls=r.status==='Published'?'d-lv':r.status==='Saved'?'d-dr':'d-sb';
+    parentTr.innerHTML=`
+      <td style="width:30px;font-size:11px;color:var(--tx3);" id="${chevId}">▶</td>
+      <td style="font-family:monospace;font-weight:700;">${r.barcode}</td>
+      <td style="font-size:12px;color:var(--tx2);">${r.comment}</td>
+      <td><span class="dv-chip" style="pointer-events:none;">${r.sci_version}</span></td>
+      <td><span class="ds ${r.reportable?'d-lv':'d-dr'}">${r.reportable?'True':'False'}</span></td>
+      <td><span class="ds ${statusCls}">${r.status}</span></td>`;
+    tbody.appendChild(parentTr);
+    // detail rows container
+    const detailTr=document.createElement('tr');
+    detailTr.id=openId;
+    detailTr.style.display='none';
+    const detailTd=document.createElement('td');
+    detailTd.colSpan=6;
+    detailTd.style.padding='0';
+    // inner table
+    let inner=`<table class="gh-table" style="background:var(--bg3);margin:0;">
+      <thead><tr style="background:var(--bg3);">
+        <th style="padding-left:36px;">Dataset name</th>
+        <th>Assay type</th>
+        <th>Lab</th>
+        <th>Run date</th>
+      </tr></thead><tbody>`;
+    r.datasets.forEach(ds=>{
+      const assayCls=ds.assay==='Proteomics'?'tag-ops':'tag-sci';
+      inner+=`<tr style="background:var(--bg3);">
+        <td style="padding-left:36px;font-size:12px;color:var(--tx2);">${ds.name}</td>
+        <td><span class="tag ${assayCls}">${ds.assay}</span></td>
+        <td style="font-size:12px;color:var(--tx2);">${ds.lab}</td>
+        <td style="font-size:12px;color:var(--tx2);">${ds.run_date}</td>
+      </tr>`;
+    });
+    inner+='</tbody></table>';
+    detailTd.innerHTML=inner;
+    detailTr.appendChild(detailTd);
+    tbody.appendChild(detailTr);
+  });
+}
+
+// ── ASSAY CATALOG ACCORDION ──
+const AC_DATA=[
+  {id:'mrm11',name:'MRM 1.1',type:'Proteomics',lab:'TMIC (CA)',version:'1.1',biomarkers:312,
+   control_lots:[{lot:'CL-2026-03A',expiry:'Sep 2026'},{lot:'CL-2025-09A',expiry:'Mar 2026'},{lot:'CL-2025-03A',expiry:'Sep 2025'}],
+   peptide_lots:[{lot:'PEP-0091',expiry:'Sep 2026'},{lot:'PEP-0088',expiry:'Mar 2026'},{lot:'PEP-0085',expiry:'Oct 2025'}]},
+  {id:'mrm11hqe',name:'MRM 1.1 HQE',type:'Proteomics',lab:'LabCorp (US)',version:'1.1 HQE',biomarkers:318,
+   control_lots:[{lot:'CL-2026-01B',expiry:'Jul 2026'},{lot:'CL-2025-07B',expiry:'Jan 2026'}],
+   peptide_lots:[{lot:'PEP-0094',expiry:'Jul 2026'},{lot:'PEP-0091',expiry:'Jan 2026'},{lot:'PEP-0087',expiry:'Jul 2025'}]},
+  {id:'myco12',name:'MYCO 1.2',type:'Metabolomics',lab:'TMIC (CA)',version:'1.2',biomarkers:248,
+   control_lots:[{lot:'CL-2026-03C',expiry:'Aug 2026'},{lot:'CL-2025-08C',expiry:'Feb 2026'},{lot:'CL-2025-02C',expiry:'Aug 2025'}],
+   peptide_lots:[]},
+  {id:'myco12hqe',name:'MYCO 1.2 HQE',type:'Metabolomics',lab:'LabCorp (US)',version:'1.2 HQE',biomarkers:261,
+   control_lots:[{lot:'CL-2026-01D',expiry:'Jun 2026'},{lot:'CL-2025-06D',expiry:'Dec 2025'}],
+   peptide_lots:[]},
+];
+
+function renderAssayCatalog(){
+  const container=document.getElementById('ac-accordion');
+  if(!container||container.dataset.rendered)return;
+  container.dataset.rendered='1';
+  AC_DATA.forEach(assay=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.marginBottom='8px';
+    const detailId='ac-detail-'+assay.id;
+    const chevId='ac-chev-'+assay.id;
+    const typeCls=assay.type==='Proteomics'?'tag-ops':'tag-sci';
+    // header row
+    const header=document.createElement('div');
+    header.style.cssText='display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:4px 0;';
+    header.innerHTML=`<div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:13px;font-weight:700;">${assay.name}</span>
+      <span class="tag ${typeCls}">${assay.type}</span>
+      <span style="font-size:12px;color:var(--tx2);">${assay.lab}</span>
+      <span style="font-size:11px;color:var(--tx3);">${assay.biomarkers} biomarkers</span>
+    </div>
+    <span id="${chevId}" style="font-size:12px;color:var(--tx3);padding:0 4px;">▶</span>`;
+    header.onclick=()=>{
+      const detail=document.getElementById(detailId);
+      const chev=document.getElementById(chevId);
+      const isOpen=detail.style.display!=='none';
+      detail.style.display=isOpen?'none':'';
+      chev.textContent=isOpen?'▶':'▼';
+    };
+    // detail section
+    const detail=document.createElement('div');
+    detail.id=detailId;
+    detail.style.display='none';
+    detail.style.marginTop='12px';
+    // Control Lots table
+    let controlHtml=`<div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--tx2);">Control Lots</div>
+    <table class="gh-table" style="margin-bottom:12px;">
+      <thead><tr><th>Lot #</th><th>Expiry</th></tr></thead><tbody>`;
+    assay.control_lots.forEach(l=>{controlHtml+=`<tr><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td></tr>`;});
+    controlHtml+='</tbody></table>';
+    detail.innerHTML=controlHtml;
+    // Peptide Lots (Proteomics only)
+    if(assay.type==='Proteomics'&&assay.peptide_lots.length){
+      let pepHtml=`<div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--tx2);">Peptide Lots</div>
+      <table class="gh-table">
+        <thead><tr><th>Lot #</th><th>Expiry</th></tr></thead><tbody>`;
+      assay.peptide_lots.forEach(l=>{pepHtml+=`<tr><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td></tr>`;});
+      pepHtml+='</tbody></table>';
+      detail.innerHTML+=pepHtml;
+    }
+    card.appendChild(header);
+    card.appendChild(detail);
+    container.appendChild(card);
+  });
+}
+
+// ── ALL REPORTS (legacy, kept for renderAR ref) ──
+const AR_DATA=[
+  {barcode:'463F345',comment:'March 2026 final report',data_version:'6.23.3',reportable:true},
+  {barcode:'463F345',comment:'Pre-review draft',data_version:'6.21.1',reportable:false},
+  {barcode:'441C219',comment:'',data_version:'6.23.3',reportable:true},
+  {barcode:'312B778',comment:'Sent to MYHI',data_version:'6.20.0',reportable:true},
+  {barcode:'312B778',comment:'Superseded by v6.23.3',data_version:'6.19.2',reportable:false},
+  {barcode:'389A104',comment:'Partial — metabolomics only',data_version:'6.23.3',reportable:false},
+  {barcode:'187F033',comment:'',data_version:'6.22.0',reportable:true},
+  {barcode:'298D561',comment:'Awaiting rerun',data_version:'6.21.1',reportable:false},
+];
+function renderAR(){
+  const tbody=document.getElementById('ar-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  AR_DATA.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="font-family:monospace;font-weight:700;">${r.barcode}</td>
+      <td style="font-size:12px;color:var(--tx2);">${r.comment}</td>
+      <td><span class="dv-chip" style="pointer-events:none;">${r.data_version}</span></td>
+      <td><span class="ds ${r.reportable?'d-lv':'d-dr'}">${r.reportable?'True':'False'}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── REFERENCE RANGES ──
+const RR_DATA=[
+  {myco:'RV00001801',biomarker:'3-Hydroxyoleoylcarnitine',low:0.01,high:0.12,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001802',biomarker:'5-Hydroxyindole-3-acetic acid',low:1.0,high:8.2,units:'mg/L',age:'Adult',sex:'Both',fluid:'Urine',reference:'MRM 1.1 N20200717 & S20200717',category:'Clinical',exported:true,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001803',biomarker:'Acetyl-Ornithine',low:0.5,high:4.1,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001804',biomarker:'Acetylcarnitine',low:3.0,high:22.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001805',biomarker:'Acylcarnitines',low:5.0,high:40.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Calculated',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001806',biomarker:'Alanine',low:200,high:580,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001807',biomarker:'Alpha-amino-N-butyric acid',low:10,high:45,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001808',biomarker:'alpha-Aminoadipic acid',low:1.0,high:9.5,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001809',biomarker:'alpha-Ketoglutaric acid',low:0.5,high:3.8,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001810',biomarker:'Arginine',low:40,high:150,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001811',biomarker:'Asparagine',low:35,high:90,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001812',biomarker:'Aspartic acid',low:5,high:30,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001813',biomarker:'Asymmetric dimethylarginine',low:0.3,high:0.9,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:true,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001814',biomarker:'Benzoic acid',low:0.5,high:5.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001815',biomarker:'Beta-alanine',low:5,high:35,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001816',biomarker:'beta-Hydroxybutyric acid',low:50,high:300,units:'μM',age:'Adult',sex:'Both',fluid:'Serum',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001817',biomarker:'Betaine',low:20,high:80,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001818',biomarker:'Butenylcarnitine',low:0.02,high:0.15,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001819',biomarker:'Butyric acid',low:5,high:40,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Calculated',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001820',biomarker:'Butyrylcarnitine',low:0.05,high:0.6,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001821',biomarker:'Carnitine',low:25,high:60,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001822',biomarker:'Carnosine',low:1,high:12,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001823',biomarker:'Choline',low:7,high:22,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001824',biomarker:'cis-OH-Proline',low:5,high:30,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001825',biomarker:'Citric acid',low:50,high:200,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001826',biomarker:'Citrulline',low:15,high:50,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001827',biomarker:'Cotinine',low:0,high:14,units:'ng/mL',age:'Adult',sex:'Both',fluid:'Serum',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001828',biomarker:'Creatine',low:20,high:80,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001829',biomarker:'Creatinine',low:44,high:115,units:'μM',age:'Adult',sex:'Male',fluid:'Serum',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001830',biomarker:'Decadienylcarnitine',low:0.01,high:0.08,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001831',biomarker:'Decanoylcarnitine',low:0.02,high:0.2,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001832',biomarker:'Decenoylcarnitine',low:0.01,high:0.1,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001833',biomarker:'Diacetylspermine',low:0.1,high:1.2,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001834',biomarker:'Dodecanedioylcarnitine',low:0.01,high:0.06,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001835',biomarker:'Dodecanoylcarnitine',low:0.02,high:0.15,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001836',biomarker:'Dodecenoylcarnitine',low:0.01,high:0.09,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001837',biomarker:'DOPA',low:0.5,high:4.5,units:'nM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Clinical',exported:true,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001838',biomarker:'Fumaric acid',low:1,high:8,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001839',biomarker:'Gamma-aminobutyric acid',low:0.2,high:2.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001998',biomarker:'Glucose',low:3.9,high:5.6,units:'mmol/L',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001840',biomarker:'Glutaconylcarnitine',low:0.01,high:0.07,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001841',biomarker:'Glutamic acid',low:20,high:120,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001842',biomarker:'Glutamine',low:400,high:780,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001843',biomarker:'Glycerophospholipids',low:600,high:1800,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001844',biomarker:'Glycine',low:150,high:420,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001845',biomarker:'Hexadecadienylcarnitine',low:0.01,high:0.06,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001846',biomarker:'Hexadecanoylcarnitine',low:0.1,high:0.6,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001847',biomarker:'Hexadecenoylcarnitine',low:0.02,high:0.18,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001872',biomarker:'Hexanoylcarnitine (Fumarylcarnitine)',low:0.02,high:0.28,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001848',biomarker:'Hexenoylcarnitine',low:0.01,high:0.1,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001849',biomarker:'Hippuric acid',low:5,high:60,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001850',biomarker:'Histamine',low:0.2,high:1.5,units:'nM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001851',biomarker:'Histidine',low:60,high:120,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001852',biomarker:'Homocysteine',low:5,high:15,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Clinical',exported:true,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001853',biomarker:'Homovanillic acid',low:1,high:8,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001854',biomarker:'Hydroxyhexadecadienylcarnitine',low:0.01,high:0.05,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001855',biomarker:'Hydroxyhexadecanoylcarnitine',low:0.02,high:0.12,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001856',biomarker:'Hydroxyhexadecenoylcarnitine',low:0.01,high:0.09,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Literature',exported:false,assay:'MYCO 1.0',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001857',biomarker:'Hydroxyphenylacetic acid',low:0.5,high:5.0,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001858',biomarker:'Hydroxypropionylcarnitine',low:0.02,high:0.2,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Literature',exported:false,assay:'MRM 1.1 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001859',biomarker:'Hydroxysphingomyelin C14:1',low:1,high:8,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 N20200717 & S20200717',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001860',biomarker:'Hydroxysphingomyelin C16:1',low:2,high:14,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001861',biomarker:'Hydroxysphingomyelin C22:1',low:1,high:10,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+  {myco:'RV00001862',biomarker:'Hydroxysphingomyelin C22:2',low:0.5,high:6,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'MRM 1.1 HQE N20240604 & S20200717 (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 N20200717 & S20200717'},
+  {myco:'RV00001863',biomarker:'Hydroxysphingomyelin C24:1',low:1,high:9,units:'μM',age:'Adult',sex:'Both',fluid:'Plasma',reference:'Conversion Factor (units converted)',category:'Calculated',exported:true,assay:'MYCO 1.2 HQE',lot:'MRM 1.1 HQE N20240604 & S20250320'},
+];
+
+function renderRR(data){
+  const tbody=document.getElementById('rr-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  data.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    tr.style.cursor='default';
+    tr.innerHTML=`
+      <td class="rr-sticky" style="font-size:13px;">${r.biomarker}</td>
+      <td data-col="range" style="font-size:12px;font-family:monospace;">${r.low}–${r.high}</td>
+      <td data-col="units" style="font-size:12px;">${r.units}</td>
+      <td data-col="age" style="font-size:12px;">${r.age}</td>
+      <td data-col="sex" style="font-size:12px;">${r.sex}</td>
+      <td data-col="fluid" style="font-size:12px;">${r.fluid}</td>
+      <td data-col="assay" style="font-size:12px;">${r.assay}</td>
+      <td data-col="peptidelot" style="font-size:12px;color:var(--tx2);max-width:200px;overflow:hidden;text-overflow:ellipsis;">${r.lot}</td>
+      <td data-col="reference" style="font-size:12px;color:var(--tx2);max-width:180px;overflow:hidden;text-overflow:ellipsis;">${r.reference}</td>
+      <td data-col="category" style="font-size:12px;">${r.category}</td>
+      <td data-col="exported"><span class="ds ${r.exported?'d-lv':'d-dr'}">${r.exported?'True':'False'}</span></td>`;
+    tbody.appendChild(tr);
+  });
+  const count=document.getElementById('rr-count');
+  if(count)count.textContent=`${data.length} of ${RR_DATA.length} ranges`;
+  applyColVisibility();
+}
+function filterRR(){
+  const q=(document.getElementById('rr-search')?.value||'').toLowerCase();
+  const units=document.getElementById('rr-f-units')?.value||'';
+  const fluid=document.getElementById('rr-f-fluid')?.value||'';
+  const cat=document.getElementById('rr-f-cat')?.value||'';
+  const exp=document.getElementById('rr-f-exp')?.value||'';
+  const lot=document.getElementById('rr-f-lot')?.value||'';
+  const filtered=RR_DATA.filter(r=>{
+    if(q&&!r.biomarker.toLowerCase().includes(q))return false;
+    if(units&&r.units!==units)return false;
+    if(fluid&&r.fluid!==fluid)return false;
+    if(cat&&r.category!==cat)return false;
+    if(exp&&String(r.exported)!==exp)return false;
+    if(lot&&r.lot!==lot)return false;
+    return true;
+  });
+  renderRR(filtered);
+}
+function applyColVisibility(){
+  const checks=document.querySelectorAll('#col-menu input[data-col]');
+  checks.forEach(cb=>{
+    const col=cb.getAttribute('data-col');
+    const visible=cb.checked;
+    document.querySelectorAll(`[data-col="${col}"]`).forEach(el=>{
+      el.style.display=visible?'':'none';
+    });
+  });
+}
+function toggleColMenu(){
+  const m=document.getElementById('col-menu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+document.addEventListener('click',e=>{
+  const menu=document.getElementById('col-menu');
+  const btn=document.getElementById('col-toggle-btn');
+  if(menu&&btn&&!menu.contains(e.target)&&!btn.contains(e.target)){
+    menu.style.display='none';
+  }
+});
+document.querySelectorAll('#col-menu input[data-col]').forEach(cb=>{
+  cb.addEventListener('change',applyColVisibility);
+});
+function toggleRRSearch(){
+  const input=document.getElementById('rr-search');
+  const visible=input.style.display!=='none';
+  input.style.display=visible?'none':'';
+  if(!visible){input.focus();}else{input.value='';filterRR();}
+}
+</script>
+</body>
+</html>
