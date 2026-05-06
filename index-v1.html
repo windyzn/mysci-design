@@ -361,10 +361,11 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <tr>
           <th style="width:30px;"></th>
           <th>Barcode</th>
-          <th>Comment</th>
-          <th>Science version</th>
+          <th>Dataset</th>
+          <th>Date received</th>
           <th>Reportable</th>
           <th>Status</th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="arv1-tbody"></tbody>
@@ -430,7 +431,12 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <!-- ASSAY CATALOG -->
 <div class="panel" id="panel-assaycatalog">
   <div class="pa"><div class="sl" style="margin:0;">Assay catalog</div></div>
-  <div id="ac-accordion"></div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="gh-table" id="ac-table">
+      <thead><tr><th style="width:30px;"></th><th>Assay</th><th>Type</th></tr></thead>
+      <tbody id="ac-tbody"></tbody>
+    </table>
+  </div>
 </div>
 
 <!-- REFERENCE RANGES -->
@@ -780,26 +786,26 @@ function confirmSaveProfile(){const name=document.getElementById('new-profile-na
 
 // ── ALL REPORTS V1 ──
 const ARV1_DATA=[
-  {barcode:'463F345',comment:'March 2026 final report',sci_version:'v1.0_linear',reportable:true,status:'Published',
+  {barcode:'463F345',reportable:true,status:'Published',
    datasets:[
-     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',lab:'TMIC (CA)',run_date:'2026-03-04'},
-     {name:'1A_Metabolomics (MYCO 1.2)',assay:'Metabolomics',lab:'TMIC (CA)',run_date:'2026-03-04'},
-     {name:'2A_Proteomics (MRM 1.1)',assay:'Proteomics',lab:'BGI (CN)',run_date:'2026-03-05'},
+     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-03-04'},
+     {name:'1A_Metabolomics (MYCO 1.2)',assay:'Metabolomics',date_received:'2026-03-04'},
+     {name:'2A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-03-05'},
    ]},
-  {barcode:'463F345',comment:'Pre-review draft',sci_version:'v1.1_log2',reportable:false,status:'Saved',
+  {barcode:'463F345',reportable:false,status:'Saved',
    datasets:[
-     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',lab:'TMIC (CA)',run_date:'2026-03-04'},
+     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-03-04'},
    ]},
-  {barcode:'312B778',comment:'Sent to MYHI',sci_version:'v1.0_linear',reportable:true,status:'Published',
+  {barcode:'312B778',reportable:true,status:'Published',
    datasets:[
-     {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',lab:'LabCorp (US)',run_date:'2026-01-08'},
-     {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',lab:'LabCorp (US)',run_date:'2026-01-08'},
-     {name:'Jan 2026_Metabolomics (MYMet 2.0)',assay:'Metabolomics',lab:'BGI (CN)',run_date:'2026-01-27'},
+     {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',date_received:'2026-01-08'},
+     {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',date_received:'2026-01-08'},
+     {name:'Jan 2026_Metabolomics (MYMet 2.0)',assay:'Metabolomics',date_received:'2026-01-27'},
    ]},
-  {barcode:'312B778',comment:'Superseded by v1.2_cardio',sci_version:'v1.2_cardio',reportable:false,status:'Saved',
+  {barcode:'312B778',reportable:false,status:'Saved',
    datasets:[
-     {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',lab:'LabCorp (US)',run_date:'2026-01-08'},
-     {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',lab:'LabCorp (US)',run_date:'2026-01-08'},
+     {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',date_received:'2026-01-08'},
+     {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',date_received:'2026-01-08'},
    ]},
 ];
 
@@ -808,55 +814,45 @@ function renderARV1(){
   if(!tbody)return;
   tbody.innerHTML='';
   ARV1_DATA.forEach((r,idx)=>{
-    const openId='arv1-detail-'+idx;
+    const grp='arv1-c-'+idx;
     const chevId='arv1-chev-'+idx;
-    // parent row
+    const latestDate=r.datasets.map(d=>d.date_received).sort().reverse()[0]||'';
+    const statusCls=r.status==='Published'?'d-lv':r.status==='Saved'?'d-dr':'d-sb';
+    // Parent row
     const parentTr=document.createElement('tr');
     parentTr.style.cursor='pointer';
     parentTr.onclick=()=>{
-      const detail=document.getElementById(openId);
+      const children=tbody.querySelectorAll('.'+grp);
       const chev=document.getElementById(chevId);
-      const isOpen=detail.style.display!=='none';
-      detail.style.display=isOpen?'none':'';
+      const isOpen=children.length&&children[0].style.display!=='none';
+      children.forEach(c=>c.style.display=isOpen?'none':'');
       chev.textContent=isOpen?'▶':'▼';
     };
-    const statusCls=r.status==='Published'?'d-lv':r.status==='Saved'?'d-dr':'d-sb';
     parentTr.innerHTML=`
       <td style="width:30px;font-size:11px;color:var(--tx3);" id="${chevId}">▶</td>
       <td style="font-family:monospace;font-weight:700;">${r.barcode}</td>
-      <td style="font-size:12px;color:var(--tx2);">${r.comment}</td>
-      <td><span class="dv-chip" style="pointer-events:none;">${r.sci_version}</span></td>
+      <td style="font-size:12px;color:var(--tx3);">${r.datasets.length} dataset${r.datasets.length!==1?'s':''}</td>
+      <td style="font-size:12px;color:var(--tx2);">${latestDate}</td>
       <td><span class="ds ${r.reportable?'d-lv':'d-dr'}">${r.reportable?'True':'False'}</span></td>
-      <td><span class="ds ${statusCls}">${r.status}</span></td>`;
+      <td><span class="ds ${statusCls}">${r.status}</span></td>
+      <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation()">Build report</button></td>`;
     tbody.appendChild(parentTr);
-    // detail rows container
-    const detailTr=document.createElement('tr');
-    detailTr.id=openId;
-    detailTr.style.display='none';
-    const detailTd=document.createElement('td');
-    detailTd.colSpan=6;
-    detailTd.style.padding='0';
-    // inner table
-    let inner=`<table class="gh-table" style="background:var(--bg3);margin:0;">
-      <thead><tr style="background:var(--bg3);">
-        <th style="padding-left:36px;">Dataset name</th>
-        <th>Assay type</th>
-        <th>Lab</th>
-        <th>Run date</th>
-      </tr></thead><tbody>`;
+    // Child rows — same columns, blank where not applicable
     r.datasets.forEach(ds=>{
+      const childTr=document.createElement('tr');
+      childTr.className=grp;
+      childTr.style.cssText='display:none;background:var(--bg3);';
       const assayCls=ds.assay==='Proteomics'?'tag-ops':'tag-sci';
-      inner+=`<tr style="background:var(--bg3);">
-        <td style="padding-left:36px;font-size:12px;color:var(--tx2);">${ds.name}</td>
-        <td><span class="tag ${assayCls}">${ds.assay}</span></td>
-        <td style="font-size:12px;color:var(--tx2);">${ds.lab}</td>
-        <td style="font-size:12px;color:var(--tx2);">${ds.run_date}</td>
-      </tr>`;
+      childTr.innerHTML=`
+        <td></td>
+        <td></td>
+        <td style="padding-left:16px;font-size:12px;color:var(--tx2);">${ds.name}&ensp;<span class="tag ${assayCls}">${ds.assay}</span></td>
+        <td style="font-size:12px;color:var(--tx2);">${ds.date_received}</td>
+        <td></td>
+        <td></td>
+        <td></td>`;
+      tbody.appendChild(childTr);
     });
-    inner+='</tbody></table>';
-    detailTd.innerHTML=inner;
-    detailTr.appendChild(detailTd);
-    tbody.appendChild(detailTr);
   });
 }
 
@@ -877,57 +873,52 @@ const AC_DATA=[
 ];
 
 function renderAssayCatalog(){
-  const container=document.getElementById('ac-accordion');
-  if(!container||container.dataset.rendered)return;
-  container.dataset.rendered='1';
+  const tbody=document.getElementById('ac-tbody');
+  if(!tbody||tbody.dataset.rendered)return;
+  tbody.dataset.rendered='1';
   AC_DATA.forEach(assay=>{
-    const card=document.createElement('div');
-    card.className='card';
-    card.style.marginBottom='8px';
     const detailId='ac-detail-'+assay.id;
     const chevId='ac-chev-'+assay.id;
     const typeCls=assay.type==='Proteomics'?'tag-ops':'tag-sci';
-    // header row
-    const header=document.createElement('div');
-    header.style.cssText='display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:4px 0;';
-    header.innerHTML=`<div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:13px;font-weight:700;">${assay.name}</span>
-      <span class="tag ${typeCls}">${assay.type}</span>
-      <span style="font-size:12px;color:var(--tx2);">${assay.lab}</span>
-      <span style="font-size:11px;color:var(--tx3);">${assay.biomarkers} biomarkers</span>
-    </div>
-    <span id="${chevId}" style="font-size:12px;color:var(--tx3);padding:0 4px;">▶</span>`;
-    header.onclick=()=>{
+    // Main assay row
+    const mainTr=document.createElement('tr');
+    mainTr.style.cursor='pointer';
+    mainTr.onclick=()=>{
       const detail=document.getElementById(detailId);
       const chev=document.getElementById(chevId);
       const isOpen=detail.style.display!=='none';
       detail.style.display=isOpen?'none':'';
       chev.textContent=isOpen?'▶':'▼';
     };
-    // detail section
-    const detail=document.createElement('div');
-    detail.id=detailId;
-    detail.style.display='none';
-    detail.style.marginTop='12px';
-    // Control Lots table
-    let controlHtml=`<div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--tx2);">Control Lots</div>
-    <table class="gh-table" style="margin-bottom:12px;">
-      <thead><tr><th>Lot #</th><th>Expiry</th></tr></thead><tbody>`;
-    assay.control_lots.forEach(l=>{controlHtml+=`<tr><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td></tr>`;});
-    controlHtml+='</tbody></table>';
-    detail.innerHTML=controlHtml;
-    // Peptide Lots (Proteomics only)
-    if(assay.type==='Proteomics'&&assay.peptide_lots.length){
-      let pepHtml=`<div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--tx2);">Peptide Lots</div>
-      <table class="gh-table">
+    mainTr.innerHTML=`
+      <td style="font-size:11px;color:var(--tx3);" id="${chevId}">▶</td>
+      <td style="font-weight:700;">${assay.name}</td>
+      <td><span class="tag ${typeCls}">${assay.type}</span></td>`;
+    tbody.appendChild(mainTr);
+    // Detail sub-row (spans all columns)
+    const detailTr=document.createElement('tr');
+    detailTr.id=detailId;
+    detailTr.style.display='none';
+    const detailTd=document.createElement('td');
+    detailTd.colSpan=3;
+    detailTd.style.cssText='padding:12px 16px 16px 36px;background:var(--bg3);';
+    // Control lots
+    let html=`<div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Control lots</div>
+      <table class="gh-table" style="margin-bottom:14px;">
         <thead><tr><th>Lot #</th><th>Expiry</th></tr></thead><tbody>`;
-      assay.peptide_lots.forEach(l=>{pepHtml+=`<tr><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td></tr>`;});
-      pepHtml+='</tbody></table>';
-      detail.innerHTML+=pepHtml;
+    assay.control_lots.forEach(l=>{html+=`<tr><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td></tr>`;});
+    html+='</tbody></table>';
+    // Peptide lots (Proteomics only)
+    if(assay.type==='Proteomics'&&assay.peptide_lots.length){
+      html+=`<div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Peptide lots</div>
+        <table class="gh-table">
+          <thead><tr><th>Lot #</th><th>Expiry</th></tr></thead><tbody>`;
+      assay.peptide_lots.forEach(l=>{html+=`<tr><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td></tr>`;});
+      html+='</tbody></table>';
     }
-    card.appendChild(header);
-    card.appendChild(detail);
-    container.appendChild(card);
+    detailTd.innerHTML=html;
+    detailTr.appendChild(detailTd);
+    tbody.appendChild(detailTr);
   });
 }
 
