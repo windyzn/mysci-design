@@ -116,6 +116,8 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .dz{font-size:11px;color:var(--nt);}
 .row-band-1 td:first-child{border-left:3px solid var(--wbr);}
 .row-band-2 td:first-child{border-left:3px solid var(--rbr);}
+.cr-disabled{opacity:0.3;pointer-events:none;}
+.cr-group-hd td{background:var(--bg3);font-size:11px;font-weight:700;color:var(--tx2);padding:5px 12px;letter-spacing:.02em;border-bottom:0.5px solid var(--bd);}
 .bc-mini{font-size:9px;font-weight:700;padding:1px 4px;border-radius:6px;line-height:1.4;}
 .bc-sep{font-size:9px;color:var(--tx3);margin:0 1px;}
 .qi{border:0.5px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;background:var(--bg);}
@@ -356,14 +358,23 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <div class="panel" id="panel-allreports-v1">
   <div class="sl" style="margin:0;">All reports</div>
   <div class="card" style="padding:0;overflow:hidden;">
-    <table class="gh-table" id="arv1-table" style="table-layout:auto;">
+    <table class="gh-table" id="arv1-table" style="table-layout:fixed;width:100%;">
+      <colgroup>
+        <col style="width:32px;">
+        <col style="width:110px;">
+        <col>
+        <col style="width:120px;">
+        <col style="width:95px;">
+        <col style="width:90px;">
+        <col style="width:120px;">
+      </colgroup>
       <thead>
         <tr>
-          <th style="width:30px;"></th>
-          <th>Barcode</th>
-          <th>Dataset</th>
-          <th>Date received</th>
-          <th>Reportable</th>
+          <th></th>
+          <th><span class="col-tip">Barcode<i class="col-tip-i">i</i><span class="col-tip-text">Sample kit identifier. Each barcode can have multiple reports built from different dataset combinations.</span></span></th>
+          <th><span class="col-tip">Dataset<i class="col-tip-i">i</i><span class="col-tip-text">Assay datasets included in this report. Expand the row to see all individual batches.</span></span></th>
+          <th><span class="col-tip">Date received<i class="col-tip-i">i</i><span class="col-tip-text">The most recent batch received date across all datasets for this barcode. Expand to see per-dataset dates.</span></span></th>
+          <th><span class="col-tip">Reportable<i class="col-tip-i">i</i><span class="col-tip-text">True = this report is eligible for patient delivery. Only one report per barcode should be reportable.</span></span></th>
           <th>Status</th>
           <th></th>
         </tr>
@@ -373,19 +384,89 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
   </div>
 </div>
 
+<!-- BUILD REPORT (v1 — view only, no science version, no save) -->
+<div class="panel" id="panel-buildreport">
+  <div id="br-step2">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;" id="br-kit-title">Building report for 463F345</div>
+        <div style="font-size:11px;color:var(--tx2);" id="br-kit-sub">Select datasets below, then generate scores</div>
+      </div>
+      <button class="btn" onclick="backToAllReports()" style="font-size:11px;">← Back to all reports</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div class="card" style="margin-bottom:0;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:2px;">Proteomics</div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:10px;">Select one or more — one per assay</div>
+        <label style="display:flex;align-items:flex-start;gap:8px;padding:8px;border:0.5px solid var(--bd);border-radius:var(--r);margin-bottom:6px;cursor:pointer;">
+          <input type="checkbox" checked data-assay="MRM 1.1" data-group="prot" style="margin-top:2px;" onchange="checkAssayConflict('prot')"/>
+          <div><div style="font-size:12px;font-weight:700;">March 2026 1A_Proteomics</div><div style="font-size:11px;color:var(--tx2);">MRM 1.1 · TMIC · received 2026-03-04</div></div>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:8px;padding:8px;border:0.5px solid var(--bd);border-radius:var(--r);margin-bottom:6px;cursor:pointer;">
+          <input type="checkbox" data-assay="MRM 1.1" data-group="prot" style="margin-top:2px;" onchange="checkAssayConflict('prot')"/>
+          <div><div style="font-size:12px;font-weight:700;">March 2026 2A_Proteomics</div><div style="font-size:11px;color:var(--tx2);">MRM 1.1 · BGI · received 2026-03-05</div></div>
+        </label>
+        <div id="conflict-prot" style="display:none;margin-bottom:6px;padding:7px 10px;background:var(--rb);border:0.5px solid var(--rbr);border-radius:var(--r);font-size:11px;color:var(--rt);">Both selected batches use MRM 1.1. A report can only include one batch per assay.</div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:2px;">Metabolomics</div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:10px;">Select one or more — one per assay</div>
+        <label style="display:flex;align-items:flex-start;gap:8px;padding:8px;border:0.5px solid var(--bd);border-radius:var(--r);margin-bottom:6px;cursor:pointer;">
+          <input type="checkbox" checked data-assay="MYCO 1.2" data-group="meta" style="margin-top:2px;" onchange="checkAssayConflict('meta')"/>
+          <div><div style="font-size:12px;font-weight:700;">March 1A 2026_Metabolomics</div><div style="font-size:11px;color:var(--tx2);">MYCO 1.2 · TMIC · received 2026-03-04</div></div>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:8px;padding:8px;border:0.5px solid var(--bd);border-radius:var(--r);margin-bottom:6px;cursor:pointer;">
+          <input type="checkbox" data-assay="MYCO 1.2" data-group="meta" style="margin-top:2px;" onchange="checkAssayConflict('meta')"/>
+          <div><div style="font-size:12px;font-weight:700;">April 1A 2026_Metabolomics</div><div style="font-size:11px;color:var(--tx2);">MYCO 1.2 · TMIC · received 2026-04-02</div></div>
+        </label>
+        <div id="conflict-meta" style="display:none;margin-bottom:6px;padding:7px 10px;background:var(--rb);border:0.5px solid var(--rbr);border-radius:var(--r);font-size:11px;color:var(--rt);">Both selected batches use MYCO 1.2. Deselect one to continue.</div>
+      </div>
+      <div class="card" style="margin-bottom:0;opacity:0.5;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:2px;">Other panels</div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:10px;">Exposomics, genetics, hormones, etc.</div>
+        <div style="padding:8px;border:0.5px solid var(--bd);border-radius:var(--r);font-size:12px;color:var(--tx2);">No other datasets available for this sample.</div>
+      </div>
+    </div>
+    <div id="br-confirm-row" style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+      <button class="btn btn-p" id="generate-btn" onclick="generateScores()">Generate scores →</button>
+      <span style="font-size:11px;color:var(--tx3);">Scores will be computed for the selected datasets above.</span>
+    </div>
+    <div id="br-loading" style="display:none;margin-bottom:12px;">
+      <div class="card" style="display:flex;align-items:center;gap:12px;padding:14px 16px;">
+        <div style="width:16px;height:16px;border:2px solid var(--ibr);border-top-color:var(--it);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;"></div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--it);">Generating scores…</div><div style="font-size:11px;color:var(--tx2);">Running scoring pipeline for selected datasets.</div></div>
+      </div>
+    </div>
+    <div id="br-scores-section" style="display:none;">
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:12px;font-weight:700;">Scores</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
+            <button class="btn" onclick="resetScores()">Reset</button>
+          </div>
+        </div>
+        <div id="acc-build"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- COMPARE REPORTS -->
 <div class="panel" id="panel-comparereports">
   <div class="pa" style="margin-bottom:16px;"><div class="sl" style="margin:0;">Compare reports</div></div>
   <div class="picker-card" style="margin-bottom:16px;">
     <div class="picker-label">Select two reports to compare</div>
-    <div class="picker-hint">Click a row to assign slot A (first click) or slot B (second click).</div>
+    <div class="picker-hint">Reports can only be compared within the same barcode. Select slot A first — other barcodes will be dimmed.</div>
     <table class="cmp-table" id="saved-reports-table">
       <thead><tr><th style="width:48px;">Slot</th><th>Barcode</th><th>Data version</th><th>Combination</th><th>Science version</th><th>Saved by</th><th>Saved</th><th>Status</th></tr></thead>
       <tbody>
-        <tr data-report="r1" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.0_linear<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.0_linear</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-03-01 · Curves: Linear</div></div></span></td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
-        <tr data-report="r2" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.1_log2<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.1_log2</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-04-05 · Curves: Log2</div></div></span></td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
-        <tr data-report="r3" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.0_linear<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.0_linear</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-01-05 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
-        <tr data-report="r4" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.2_cardio<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.2_cardio</div><div class="dv-tooltip-desc">Weights: Cardio-adjusted · Ref ranges: 2026-01-28 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr class="cr-group-hd"><td colspan="8">463F345</td></tr>
+        <tr data-report="r1" data-barcode="463F345" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.0_linear<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.0_linear</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-03-01 · Curves: Linear</div></div></span></td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r2" data-barcode="463F345" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.1_log2<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.1_log2</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-04-05 · Curves: Log2</div></div></span></td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr class="cr-group-hd"><td colspan="8">312B778</td></tr>
+        <tr data-report="r3" data-barcode="312B778" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.0_linear<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.0_linear</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-01-05 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
+        <tr data-report="r4" data-barcode="312B778" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.2_cardio<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.2_cardio</div><div class="dv-tooltip-desc">Weights: Cardio-adjusted · Ref ranges: 2026-01-28 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -432,8 +513,16 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <div class="panel" id="panel-assaycatalog">
   <div class="pa"><div class="sl" style="margin:0;">Assay catalog</div></div>
   <div class="card" style="padding:0;overflow:hidden;">
-    <table class="gh-table" id="ac-table">
-      <thead><tr><th style="width:30px;"></th><th>Assay</th><th>Type</th></tr></thead>
+    <table class="gh-table" id="ac-table" style="table-layout:fixed;width:100%;">
+      <colgroup>
+        <col style="width:32px;">
+        <col>
+        <col style="width:110px;">
+        <col style="width:140px;">
+        <col style="width:140px;">
+        <col style="width:90px;">
+      </colgroup>
+      <thead><tr><th></th><th>Assay</th><th>Type</th><th>Control lot</th><th>Peptide lot</th><th>Expiry</th></tr></thead>
       <tbody id="ac-tbody"></tbody>
     </table>
   </div>
@@ -750,6 +839,7 @@ function doLogout(){document.getElementById('app').classList.remove('visible');d
 function doSwitchTeam(){document.getElementById('login-step-2').style.display='';document.getElementById('login-step-1').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('app').classList.remove('visible');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));}
 const PAGE_META={
   'allreports-v1': {title:'Reports',               sub:'All reports'},
+  'buildreport':   {title:'Reports',               sub:'Build a report'},
   'comparereports':{title:'Reports',                sub:'Compare reports'},
   'assaycatalog':  {title:'Assay Catalog',          sub:null},
   'refrange':      {title:'Reference Ranges',       sub:null},
@@ -766,15 +856,83 @@ const PAGE_META={
 };
 function setPageHeader(panel){const m=PAGE_META[panel]||{title:panel,sub:null};document.getElementById('page-title').textContent=m.title;const activePanel=document.getElementById('panel-'+panel);if(activePanel){const sl=activePanel.querySelector('.sl');if(sl){if(m.sub){sl.textContent=m.sub;sl.style.display='block';}else{sl.style.display='none';}}}}
 function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const panel=el.dataset.panel;activatePanel(panel);setPageHeader(panel);}
-function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){buildCrInlineTable();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();}
+function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='buildreport')setTimeout(()=>buildAcc('acc-build'),50);if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){buildCrInlineTable();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();}
 function toggleGroup(id){const el=document.getElementById(id);const ch=document.getElementById('chev-'+id);const open=el.classList.contains('expanded');el.classList.toggle('collapsed',open);el.classList.toggle('expanded',!open);if(ch)ch.classList.toggle('open',!open);}
 function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
 function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
 function switchTab(btn,id){document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById(id).classList.add('active');}
 function switchAssocTab(which,btn){document.querySelectorAll('#panel-systems .tb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('assoc-tab-table').style.display=which==='table'?'':'none';document.getElementById('assoc-tab-flowchart').style.display=which==='flowchart'?'':'none';if(which==='flowchart')setTimeout(renderFlowchart,50);}
 function exportCSV(){alert('CSV export (wireframe — simulated download)');}
+function loadKitIntoBuild(bc){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  activatePanel('buildreport');setPageHeader('buildreport');
+  document.getElementById('br-kit-title').textContent='Building report for '+bc;
+  document.getElementById('br-kit-sub').textContent='Select datasets below, then generate scores';
+  document.getElementById('br-scores-section').style.display='none';
+  document.getElementById('br-loading').style.display='none';
+  document.getElementById('br-confirm-row').style.display='flex';
+  document.getElementById('acc-build').innerHTML='';
+}
+function backToAllReports(){
+  activatePanel('allreports-v1');setPageHeader('allreports-v1');
+  const navEl=document.querySelector('[data-panel="allreports-v1"]');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(navEl)navEl.classList.add('active');
+}
+function generateScores(){
+  document.getElementById('br-confirm-row').style.display='none';
+  document.getElementById('br-loading').style.display='';
+  setTimeout(()=>{
+    document.getElementById('br-loading').style.display='none';
+    document.getElementById('br-scores-section').style.display='';
+    buildAcc('acc-build');
+    document.getElementById('br-scores-section').scrollIntoView({behavior:'smooth',block:'start'});
+  },1800);
+}
+function resetScores(){
+  document.getElementById('br-scores-section').style.display='none';
+  document.getElementById('br-confirm-row').style.display='flex';
+  document.getElementById('acc-build').innerHTML='';
+}
+function checkAssayConflict(grp){
+  const boxes=document.querySelectorAll(`input[data-group="${grp}"]`);
+  const checked=[...boxes].filter(b=>b.checked);
+  const assays=checked.map(b=>b.dataset.assay);
+  const conflict=assays.length>new Set(assays).size;
+  const el=document.getElementById('conflict-'+grp);
+  if(el)el.style.display=conflict?'':'none';
+}
+function buildAcc(cid){const c=document.getElementById(cid);if(!c)return;c.innerHTML='';SIM.systems.forEach((sys,si)=>{const sDiv=document.createElement('div');sDiv.className='acc-system';const sRow=document.createElement('div');sRow.className='acc-sys-row';sRow.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><span class="acc-tog" id="at-${cid}-${si}">▶</span>${sys.name}</div><span class="sp ${sc(sys.a)}">${sys.a}</span>`;const sBody=document.createElement('div');sBody.className='acc-body';sBody.id=`ab-${cid}-${si}`;sRow.onclick=()=>{const o=sBody.classList.toggle('open');document.getElementById(`at-${cid}-${si}`).textContent=o?'▼':'▶';};sys.processes.forEach((proc,pi)=>{const pDiv=document.createElement('div');pDiv.className='acc-proc';const pRow=document.createElement('div');pRow.className='acc-proc-row';pRow.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><span class="acc-tog" id="pt-${cid}-${si}-${pi}">▶</span>${proc.name}</div><span class="sp ${sc(proc.a)}">${proc.a}</span>`;const bBody=document.createElement('div');bBody.className='acc-bio-body';bBody.id=`pb-${cid}-${si}-${pi}`;pRow.onclick=()=>{const o=bBody.classList.toggle('open');document.getElementById(`pt-${cid}-${si}-${pi}`).textContent=o?'▼':'▶';};proc.biomarkers.forEach(bio=>{const bioScore=Math.round(65+Math.random()*30);const bRow=document.createElement('div');bRow.className='acc-bio-row';bRow.innerHTML=`<span>${bio.name}</span><div style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="font-family:monospace;">${bio.a} ${bio.unit}</span><span style="color:var(--tx3);">ref ${bio.ref}</span><span class="sp ${sc(bioScore)}" style="font-size:10px;">${bioScore}</span></div>`;bBody.appendChild(bRow);});pDiv.appendChild(pRow);pDiv.appendChild(bBody);sBody.appendChild(pDiv);});sDiv.appendChild(sRow);sDiv.appendChild(sBody);c.appendChild(sDiv);});}
 let crSlotA=null,crSlotB=null;
-function crCycleSlot(row){const id=row.getAttribute('data-report');if(crSlotA===id)crSlotA=null;else if(crSlotB===id)crSlotB=null;else if(!crSlotA)crSlotA=id;else if(!crSlotB)crSlotB=id;else crSlotB=id;document.querySelectorAll('#saved-reports-table tbody tr').forEach(r=>{const n=r.getAttribute('data-report');r.classList.remove('sel-a','sel-b');const box=document.getElementById('cr-box-'+n);if(!box)return;if(n===crSlotA){r.classList.add('sel-a');box.textContent='A';box.style.background='var(--it)';box.style.color='#fff';box.style.borderColor='var(--it)';}else if(n===crSlotB){r.classList.add('sel-b');box.textContent='B';box.style.background='var(--wt)';box.style.color='#fff';box.style.borderColor='var(--wt)';}else{box.textContent='';box.style.background='transparent';box.style.color='var(--tx3)';box.style.borderColor='var(--bd2)';}});const ready=!!(crSlotA&&crSlotB);document.getElementById('cr-empty-prompt').style.display=ready?'none':'';document.getElementById('cr-results').classList.toggle('vis',ready);if(ready){buildCrInlineTable();}}
+function crCycleSlot(row){
+  if(row.classList.contains('cr-disabled'))return;
+  const id=row.getAttribute('data-report');
+  const barcode=row.getAttribute('data-barcode');
+  if(crSlotA===id)crSlotA=null;
+  else if(crSlotB===id)crSlotB=null;
+  else if(!crSlotA)crSlotA=id;
+  else if(!crSlotB)crSlotB=id;
+  else crSlotB=id;
+  // Determine locked barcode from slot A
+  const aRow=crSlotA?document.querySelector(`#saved-reports-table tr[data-report="${crSlotA}"]`):null;
+  const lockedBarcode=aRow?aRow.getAttribute('data-barcode'):null;
+  document.querySelectorAll('#saved-reports-table tr[data-report]').forEach(r=>{
+    const n=r.getAttribute('data-report');
+    const rb=r.getAttribute('data-barcode');
+    r.classList.remove('sel-a','sel-b','cr-disabled');
+    const box=document.getElementById('cr-box-'+n);
+    if(!box)return;
+    if(n===crSlotA){r.classList.add('sel-a');box.textContent='A';box.style.background='var(--it)';box.style.color='#fff';box.style.borderColor='var(--it)';}
+    else if(n===crSlotB){r.classList.add('sel-b');box.textContent='B';box.style.background='var(--wt)';box.style.color='#fff';box.style.borderColor='var(--wt)';}
+    else{box.textContent='';box.style.background='transparent';box.style.color='var(--tx3)';box.style.borderColor='var(--bd2)';
+      if(lockedBarcode&&rb!==lockedBarcode)r.classList.add('cr-disabled');
+    }
+  });
+  const ready=!!(crSlotA&&crSlotB);
+  document.getElementById('cr-empty-prompt').style.display=ready?'none':'';
+  document.getElementById('cr-results').classList.toggle('vis',ready);
+  if(ready)buildCrInlineTable();
+}
 let slotA=null,slotB=null;
 function updateResults(){const ready=slotA&&slotB;document.getElementById('cmp-empty-prompt').style.display=ready?'none':'';document.getElementById('cmp-results').classList.toggle('vis',ready);const actions=document.getElementById('cp-actions');if(actions)actions.style.display=ready?'flex':'none';if(ready)setTimeout(renderKdeChart,50);}
 function cycleSlot(row){const name=row.getAttribute('data-profile');if(slotA===name)slotA=null;else if(slotB===name)slotB=null;else if(!slotA)slotA=name;else if(!slotB)slotB=name;else slotB=name;document.querySelectorAll('#profile-picker-table tbody tr').forEach(r=>{const n=r.getAttribute('data-profile');r.classList.remove('sel-a','sel-b');const box=document.getElementById('cp-box-'+n.replace(/\s+/g,'_'));if(!box)return;if(n===slotA){r.classList.add('sel-a');box.textContent='A';box.style.background='var(--it)';box.style.color='#fff';box.style.borderColor='var(--it)';}else if(n===slotB){r.classList.add('sel-b');box.textContent='B';box.style.background='var(--wt)';box.style.color='#fff';box.style.borderColor='var(--wt)';}else{box.textContent='';box.style.background='transparent';box.style.color='var(--tx3)';box.style.borderColor='var(--bd2)';}});document.getElementById('cp-a-label').textContent=slotA||'—';document.getElementById('cp-b-label').textContent=slotB||'—';updateResults();}
@@ -835,13 +993,13 @@ function renderARV1(){
       <td style="font-size:12px;color:var(--tx2);">${latestDate}</td>
       <td><span class="ds ${r.reportable?'d-lv':'d-dr'}">${r.reportable?'True':'False'}</span></td>
       <td><span class="ds ${statusCls}">${r.status}</span></td>
-      <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation()">Build report</button></td>`;
+      <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();loadKitIntoBuild('${r.barcode}')">Build report</button></td>`;
     tbody.appendChild(parentTr);
     // Child rows — same columns, blank where not applicable
     r.datasets.forEach(ds=>{
       const childTr=document.createElement('tr');
       childTr.className=grp;
-      childTr.style.cssText='display:none;background:var(--bg3);';
+      childTr.style.display='none';
       const assayCls=ds.assay==='Proteomics'?'tag-ops':'tag-sci';
       childTr.innerHTML=`
         <td></td>
@@ -877,48 +1035,50 @@ function renderAssayCatalog(){
   if(!tbody||tbody.dataset.rendered)return;
   tbody.dataset.rendered='1';
   AC_DATA.forEach(assay=>{
-    const detailId='ac-detail-'+assay.id;
+    const grp='ac-child-'+assay.id;
     const chevId='ac-chev-'+assay.id;
     const typeCls=assay.type==='Proteomics'?'tag-ops':'tag-sci';
-    // Main assay row
+    const currentCL=assay.control_lots[0]||{};
+    const currentPL=assay.peptide_lots[0]||null;
+    // Earliest expiry across all lots
+    const allExpiries=[...assay.control_lots,...assay.peptide_lots].map(l=>l.expiry);
+    const nearestExpiry=allExpiries[0]||'—';
+    // Parent row
     const mainTr=document.createElement('tr');
     mainTr.style.cursor='pointer';
     mainTr.onclick=()=>{
-      const detail=document.getElementById(detailId);
+      const children=tbody.querySelectorAll('.'+grp);
       const chev=document.getElementById(chevId);
-      const isOpen=detail.style.display!=='none';
-      detail.style.display=isOpen?'none':'';
+      const isOpen=children.length&&children[0].style.display!=='none';
+      children.forEach(c=>c.style.display=isOpen?'none':'');
       chev.textContent=isOpen?'▶':'▼';
     };
     mainTr.innerHTML=`
       <td style="font-size:11px;color:var(--tx3);" id="${chevId}">▶</td>
       <td style="font-weight:700;">${assay.name}</td>
-      <td><span class="tag ${typeCls}">${assay.type}</span></td>`;
+      <td><span class="tag ${typeCls}">${assay.type}</span></td>
+      <td style="font-family:monospace;font-size:12px;">${currentCL.lot||'—'}</td>
+      <td style="font-family:monospace;font-size:12px;">${currentPL?currentPL.lot:'—'}</td>
+      <td style="font-size:12px;">${nearestExpiry}</td>`;
     tbody.appendChild(mainTr);
-    // Detail sub-row (spans all columns)
-    const detailTr=document.createElement('tr');
-    detailTr.id=detailId;
-    detailTr.style.display='none';
-    const detailTd=document.createElement('td');
-    detailTd.colSpan=3;
-    detailTd.style.cssText='padding:12px 16px 16px 36px;background:var(--bg3);';
-    // Control lots
-    let html=`<div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Control lots</div>
-      <table class="gh-table" style="margin-bottom:14px;">
-        <thead><tr><th>Lot #</th><th>Expiry</th></tr></thead><tbody>`;
-    assay.control_lots.forEach(l=>{html+=`<tr><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td></tr>`;});
-    html+='</tbody></table>';
-    // Peptide lots (Proteomics only)
-    if(assay.type==='Proteomics'&&assay.peptide_lots.length){
-      html+=`<div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Peptide lots</div>
-        <table class="gh-table">
-          <thead><tr><th>Lot #</th><th>Expiry</th></tr></thead><tbody>`;
-      assay.peptide_lots.forEach(l=>{html+=`<tr><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td></tr>`;});
-      html+='</tbody></table>';
+    // Child rows — one per control lot (skip first, already shown in parent)
+    assay.control_lots.slice(1).forEach(l=>{
+      const tr=document.createElement('tr');
+      tr.className=grp;
+      tr.style.display='none';
+      tr.innerHTML=`<td></td><td></td><td style="font-size:11px;color:var(--tx3);">Control</td><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td></td><td style="font-size:12px;">${l.expiry}</td>`;
+      tbody.appendChild(tr);
+    });
+    // Child rows — one per peptide lot (Proteomics only, skip first)
+    if(assay.type==='Proteomics'){
+      assay.peptide_lots.slice(1).forEach(l=>{
+        const tr=document.createElement('tr');
+        tr.className=grp;
+        tr.style.display='none';
+        tr.innerHTML=`<td></td><td></td><td style="font-size:11px;color:var(--tx3);">Peptide</td><td></td><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td>`;
+        tbody.appendChild(tr);
+      });
     }
-    detailTd.innerHTML=html;
-    detailTr.appendChild(detailTd);
-    tbody.appendChild(detailTr);
   });
 }
 
