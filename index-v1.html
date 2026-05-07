@@ -321,10 +321,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <div class="nav-item child" data-panel="histograms" onclick="nav(this)">Histograms</div>
       </div>
     </div>
-    <div class="nav-sec" style="margin-top:8px;">Governance</div>
-    <div class="nav-item" data-panel="drafts" onclick="nav(this)">My drafts</div>
-    <div class="nav-item" data-panel="review" onclick="nav(this)">Review queue <span class="nav-badge">5</span></div>
-    <div class="nav-item" data-panel="audit" onclick="nav(this)">Audit log</div>
     <div class="nav-item" data-panel="dataversions" onclick="nav(this)">Data versions</div>
     <div class="sb-bottom">
       <div style="display:flex;align-items:center;gap:8px;">
@@ -364,17 +360,15 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <col style="width:110px;">
         <col>
         <col style="width:120px;">
-        <col style="width:95px;">
-        <col style="width:90px;">
+        <col style="width:110px;">
         <col style="width:120px;">
       </colgroup>
       <thead>
         <tr>
           <th></th>
           <th><span class="col-tip">Barcode<i class="col-tip-i">i</i><span class="col-tip-text">Sample kit identifier. Each barcode can have multiple reports built from different dataset combinations.</span></span></th>
-          <th><span class="col-tip">Dataset<i class="col-tip-i">i</i><span class="col-tip-text">Assay datasets included in this report. Expand the row to see all individual batches.</span></span></th>
-          <th><span class="col-tip">Date received<i class="col-tip-i">i</i><span class="col-tip-text">The most recent batch received date across all datasets for this barcode. Expand to see per-dataset dates.</span></span></th>
-          <th><span class="col-tip">Reportable<i class="col-tip-i">i</i><span class="col-tip-text">True = this report is eligible for patient delivery. Only one report per barcode should be reportable.</span></span></th>
+          <th><span class="col-tip">Datasets<i class="col-tip-i">i</i><span class="col-tip-text">Assay datasets included in this report. Expand the row to see individual batches.</span></span></th>
+          <th><span class="col-tip">Date received<i class="col-tip-i">i</i><span class="col-tip-text">Most recent batch received date. Expand to see per-dataset dates.</span></span></th>
           <th>Status</th>
           <th></th>
         </tr>
@@ -441,12 +435,29 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <div class="card" style="margin-bottom:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <div style="font-size:12px;font-weight:700;">Scores</div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
-            <button class="btn" onclick="resetScores()">Reset</button>
-          </div>
+          <button class="btn" onclick="resetScores()" style="font-size:11px;">Reset</button>
         </div>
         <div id="acc-build"></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;font-size:13px;margin-bottom:12px;">Notes</div>
+        <textarea class="fi" rows="3" placeholder="Add any notes about this report combination…" style="margin-bottom:12px;"></textarea>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="btn" onclick="saveReport()">Save report</button>
+          <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
+          <button class="btn btn-p" style="margin-left:auto;" onclick="showMyhiConfirm()">Send to MYHI ↗</button>
+        </div>
+        <div id="br-myhi-confirm" style="display:none;margin-top:12px;background:var(--ib);border:0.5px solid var(--ibr);border-radius:var(--r);padding:12px;">
+          <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Confirm — send to MYHI?</div>
+          <div style="font-size:11px;color:var(--tx2);margin-bottom:10px;">This will publish the report to the MYHI patient portal.</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-p" onclick="confirmBrSend()">Confirm send</button>
+            <button class="btn" onclick="document.getElementById('br-myhi-confirm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+        <div id="br-myhi-success" style="display:none;margin-top:12px;background:var(--sb);border:0.5px solid var(--sbr);border-radius:var(--r);padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--st);">Sent to MYHI successfully</div>
+        </div>
       </div>
     </div>
   </div>
@@ -457,16 +468,16 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
   <div class="pa" style="margin-bottom:16px;"><div class="sl" style="margin:0;">Compare reports</div></div>
   <div class="picker-card" style="margin-bottom:16px;">
     <div class="picker-label">Select two reports to compare</div>
-    <div class="picker-hint">Reports can only be compared within the same barcode. Select slot A first — other barcodes will be dimmed.</div>
+    <div class="picker-hint">Each barcode has a default report generated automatically. Reports saved from Build a report also appear here. Comparison is within the same barcode only — select slot A first to lock the barcode.</div>
     <table class="cmp-table" id="saved-reports-table">
-      <thead><tr><th style="width:48px;">Slot</th><th>Barcode</th><th>Data version</th><th>Combination</th><th>Science version</th><th>Saved by</th><th>Saved</th><th>Status</th></tr></thead>
+      <thead><tr><th style="width:48px;">Slot</th><th>Barcode</th><th>Data version</th><th>Combination</th><th>Saved by</th><th>Saved</th><th>Status</th></tr></thead>
       <tbody>
         <tr class="cr-group-hd"><td colspan="8">463F345</td></tr>
-        <tr data-report="r1" data-barcode="463F345" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.0_linear<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.0_linear</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-03-01 · Curves: Linear</div></div></span></td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
-        <tr data-report="r2" data-barcode="463F345" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.1_log2<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.1_log2</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-04-05 · Curves: Log2</div></div></span></td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r1" data-barcode="463F345" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r2" data-barcode="463F345" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
         <tr class="cr-group-hd"><td colspan="8">312B778</td></tr>
-        <tr data-report="r3" data-barcode="312B778" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.0_linear<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.0_linear</div><div class="dv-tooltip-desc">Weights: Standard · Ref ranges: 2026-01-05 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
-        <tr data-report="r4" data-barcode="312B778" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td><span onclick="event.stopPropagation()" class="dv-chip" style="pointer-events:none;">v1.2_cardio<div class="dv-tooltip"><div class="dv-tooltip-ver">v1.2_cardio</div><div class="dv-tooltip-desc">Weights: Cardio-adjusted · Ref ranges: 2026-01-28 · Curves: Linear</div></div></span></td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r3" data-barcode="312B778" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
+        <tr data-report="r4" data-barcode="312B778" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -517,12 +528,12 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <colgroup>
         <col style="width:32px;">
         <col>
-        <col style="width:110px;">
         <col style="width:140px;">
         <col style="width:140px;">
-        <col style="width:90px;">
+        <col style="width:100px;">
+        <col style="width:100px;">
       </colgroup>
-      <thead><tr><th></th><th>Assay</th><th>Type</th><th>Control lot</th><th>Peptide lot</th><th>Expiry</th></tr></thead>
+      <thead><tr><th></th><th>Assay</th><th>Control lot</th><th>Peptide lot</th><th>Control expiry</th><th>Peptide expiry</th></tr></thead>
       <tbody id="ac-tbody"></tbody>
     </table>
   </div>
@@ -772,29 +783,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 </div>
 
 <!-- DRAFTS -->
-<div class="panel" id="panel-drafts">
-  <div class="sl">My drafts</div>
-  <div class="qi"><div class="qm"><div class="qt">Update Vitamin D reference range</div><div class="qd">Last edited 2 days ago · <span class="ds d-dr">Draft</span></div></div><div class="qa"><span class="tag tag-sci">Science</span><button class="btn">Edit</button><button class="btn btn-p">Submit</button></div></div>
-  <div class="qi"><div class="qm"><div class="qt">Add hsCRP to Inflammation association</div><div class="qd">Submitted 3 days ago · <span class="ds d-rj">Rejected</span></div><div style="margin-top:6px;font-size:12px;color:var(--rt);background:var(--rb);padding:6px 10px;border-radius:var(--r);">Reviewer: "Please clarify population scope before resubmitting."</div></div><div class="qa"><span class="tag tag-sci">Science</span><button class="btn">Revise &amp; resubmit</button></div></div>
-  <div class="qi"><div class="qm"><div class="qt">Update ControlLot CL-2024-11A</div><div class="qd">Submitted 5 days ago · <span class="ds d-sb">In review</span></div></div><div class="qa"><span class="tag tag-ops">Ops</span></div></div>
-</div>
-
-<!-- REVIEW QUEUE -->
-<div class="panel" id="panel-review">
-  <div class="sl">Review queue — pending approval</div>
-  <div class="qi"><div class="qm"><div class="qt">Update Vitamin D range: 20–40 to 30–100 ng/mL</div><div class="qd">Submitted by Maria · 4 days ago</div><div class="diff-block"><div class="diff-row"><div class="df">Range low</div><span class="do">20</span><span>→</span><span class="dn">30</span></div><div class="diff-row"><div class="df">Range high</div><span class="do">40</span><span>→</span><span class="dn">100</span></div></div><div style="margin-top:8px;"><textarea class="fi" rows="2" placeholder="Add comment (required if rejecting)…"></textarea></div></div><div class="qa" style="flex-direction:column;align-items:flex-end;gap:6px;"><div style="display:flex;gap:4px;"><span class="tag tag-sci">Science</span><span class="tag tag-urg">Urgent</span></div><button class="btn btn-ok">Approve</button><button class="btn btn-rej">Reject</button></div></div>
-  <div class="qi"><div class="qm"><div class="qt">Weight: Creatinine in Renal — high weight 2 to 3, red</div><div class="qd">Submitted by Jordan · 6 days ago</div></div><div class="qa" style="flex-direction:column;align-items:flex-end;gap:6px;"><span class="tag tag-sci">Science</span><button class="btn btn-ok">Approve</button><button class="btn btn-rej">Reject</button></div></div>
-</div>
-
-<!-- AUDIT -->
-<div class="panel" id="panel-audit">
-  <div class="sl">Audit log</div>
-  <div class="card" style="padding:0;overflow:hidden;"><table class="gh-table"><thead><tr><th>Date</th><th>Change</th><th>Type</th><th>Author</th><th>Approver</th><th></th></tr></thead><tbody>
-    <tr><td style="color:var(--tx2);white-space:nowrap;">2024-11-14</td><td>LDL to Cardiovascular association added</td><td><span class="tag tag-sci">Science</span></td><td>Maria</td><td>Jordan</td><td><button class="btn" style="font-size:11px;padding:3px 8px;">Revert</button></td></tr>
-    <tr><td style="color:var(--tx2);white-space:nowrap;">2024-11-12</td><td>ControlLot CL-2024-09B updated</td><td><span class="tag tag-ops">Ops</span></td><td>Alex</td><td>Maria</td><td><button class="btn" style="font-size:11px;padding:3px 8px;">Revert</button></td></tr>
-    <tr><td style="color:var(--tx2);white-space:nowrap;">2024-11-10</td><td>HbA1c range 5.0–5.6 to 4.8–5.6 %</td><td><span class="tag tag-sci">Science</span></td><td>Jordan</td><td>Alex</td><td><button class="btn" style="font-size:11px;padding:3px 8px;">Revert</button></td></tr>
-  </tbody></table></div>
-</div>
 
     </div>
   </div>
@@ -893,7 +881,11 @@ function resetScores(){
   document.getElementById('br-scores-section').style.display='none';
   document.getElementById('br-confirm-row').style.display='flex';
   document.getElementById('acc-build').innerHTML='';
+  ['br-myhi-confirm','br-myhi-success'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
 }
+function saveReport(){alert('Report saved (wireframe — simulated).');}
+function showMyhiConfirm(){document.getElementById('br-myhi-confirm').style.display='block';document.getElementById('br-myhi-success').style.display='none';}
+function confirmBrSend(){document.getElementById('br-myhi-confirm').style.display='none';document.getElementById('br-myhi-success').style.display='block';}
 function checkAssayConflict(grp){
   const boxes=document.querySelectorAll(`input[data-group="${grp}"]`);
   const checked=[...boxes].filter(b=>b.checked);
@@ -975,7 +967,12 @@ function renderARV1(){
     const grp='arv1-c-'+idx;
     const chevId='arv1-chev-'+idx;
     const latestDate=r.datasets.map(d=>d.date_received).sort().reverse()[0]||'';
-    const statusCls=r.status==='Published'?'d-lv':r.status==='Saved'?'d-dr':'d-sb';
+    const statusLabel=r.status==='Published'?'Published':'Not published';
+    const statusCls=r.status==='Published'?'d-lv':'d-dr';
+    const protCount=r.datasets.filter(d=>d.assay==='Proteomics').length;
+    const metaCount=r.datasets.filter(d=>d.assay==='Metabolomics').length;
+    const dsParts=[];if(protCount)dsParts.push(protCount+' proteomics');if(metaCount)dsParts.push(metaCount+' metabolomics');
+    const dsPill=`<span class="ds d-sb">${dsParts.join(' · ')}</span>`;
     // Parent row
     const parentTr=document.createElement('tr');
     parentTr.style.cursor='pointer';
@@ -989,10 +986,9 @@ function renderARV1(){
     parentTr.innerHTML=`
       <td style="width:30px;font-size:11px;color:var(--tx3);" id="${chevId}">▶</td>
       <td style="font-family:monospace;font-weight:700;">${r.barcode}</td>
-      <td style="font-size:12px;color:var(--tx3);">${r.datasets.length} dataset${r.datasets.length!==1?'s':''}</td>
+      <td>${dsPill}</td>
       <td style="font-size:12px;color:var(--tx2);">${latestDate}</td>
-      <td><span class="ds ${r.reportable?'d-lv':'d-dr'}">${r.reportable?'True':'False'}</span></td>
-      <td><span class="ds ${statusCls}">${r.status}</span></td>
+      <td><span class="ds ${statusCls}">${statusLabel}</span></td>
       <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();loadKitIntoBuild('${r.barcode}')">Build report</button></td>`;
     tbody.appendChild(parentTr);
     // Child rows — same columns, blank where not applicable
@@ -1006,7 +1002,6 @@ function renderARV1(){
         <td></td>
         <td style="padding-left:16px;font-size:12px;color:var(--tx2);">${ds.name}&ensp;<span class="tag ${assayCls}">${ds.assay}</span></td>
         <td style="font-size:12px;color:var(--tx2);">${ds.date_received}</td>
-        <td></td>
         <td></td>
         <td></td>`;
       tbody.appendChild(childTr);
@@ -1039,14 +1034,12 @@ function renderAssayCatalog(){
     const chevId='ac-chev-'+assay.id;
     const typeCls=assay.type==='Proteomics'?'tag-ops':'tag-sci';
     const currentCL=assay.control_lots[0]||{};
-    const currentPL=assay.peptide_lots[0]||null;
-    // Earliest expiry across all lots
-    const allExpiries=[...assay.control_lots,...assay.peptide_lots].map(l=>l.expiry);
-    const nearestExpiry=allExpiries[0]||'—';
+    const currentPL=assay.type==='Proteomics'?(assay.peptide_lots[0]||null):null;
+    const hasMore=assay.control_lots.length>1||(assay.type==='Proteomics'&&assay.peptide_lots.length>1);
     // Parent row
     const mainTr=document.createElement('tr');
-    mainTr.style.cursor='pointer';
-    mainTr.onclick=()=>{
+    mainTr.style.cursor=hasMore?'pointer':'default';
+    if(hasMore)mainTr.onclick=()=>{
       const children=tbody.querySelectorAll('.'+grp);
       const chev=document.getElementById(chevId);
       const isOpen=children.length&&children[0].style.display!=='none';
@@ -1054,30 +1047,27 @@ function renderAssayCatalog(){
       chev.textContent=isOpen?'▶':'▼';
     };
     mainTr.innerHTML=`
-      <td style="font-size:11px;color:var(--tx3);" id="${chevId}">▶</td>
-      <td style="font-weight:700;">${assay.name}</td>
-      <td><span class="tag ${typeCls}">${assay.type}</span></td>
+      <td style="font-size:11px;color:var(--tx3);" id="${chevId}">${hasMore?'▶':''}</td>
+      <td style="font-weight:700;">${assay.name}&ensp;<span class="tag ${typeCls}">${assay.type}</span></td>
       <td style="font-family:monospace;font-size:12px;">${currentCL.lot||'—'}</td>
       <td style="font-family:monospace;font-size:12px;">${currentPL?currentPL.lot:'—'}</td>
-      <td style="font-size:12px;">${nearestExpiry}</td>`;
+      <td style="font-size:12px;">${currentCL.expiry||'—'}</td>
+      <td style="font-size:12px;">${currentPL?currentPL.expiry:'—'}</td>`;
     tbody.appendChild(mainTr);
-    // Child rows — one per control lot (skip first, already shown in parent)
-    assay.control_lots.slice(1).forEach(l=>{
+    // Child rows — paired by index (control lots vs peptide lots, skip first of each)
+    const maxExtra=Math.max(assay.control_lots.length-1, assay.type==='Proteomics'?assay.peptide_lots.length-1:0);
+    for(let i=1;i<=maxExtra;i++){
+      const cl=assay.control_lots[i]||null;
+      const pl=assay.type==='Proteomics'?(assay.peptide_lots[i]||null):null;
       const tr=document.createElement('tr');
       tr.className=grp;
       tr.style.display='none';
-      tr.innerHTML=`<td></td><td></td><td style="font-size:11px;color:var(--tx3);">Control</td><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td></td><td style="font-size:12px;">${l.expiry}</td>`;
+      tr.innerHTML=`<td></td><td></td>
+        <td style="font-family:monospace;font-size:12px;">${cl?cl.lot:'—'}</td>
+        <td style="font-family:monospace;font-size:12px;">${pl?pl.lot:'—'}</td>
+        <td style="font-size:12px;">${cl?cl.expiry:'—'}</td>
+        <td style="font-size:12px;">${pl?pl.expiry:'—'}</td>`;
       tbody.appendChild(tr);
-    });
-    // Child rows — one per peptide lot (Proteomics only, skip first)
-    if(assay.type==='Proteomics'){
-      assay.peptide_lots.slice(1).forEach(l=>{
-        const tr=document.createElement('tr');
-        tr.className=grp;
-        tr.style.display='none';
-        tr.innerHTML=`<td></td><td></td><td style="font-size:11px;color:var(--tx3);">Peptide</td><td></td><td style="font-family:monospace;font-size:12px;">${l.lot}</td><td style="font-size:12px;">${l.expiry}</td>`;
-        tbody.appendChild(tr);
-      });
     }
   });
 }
