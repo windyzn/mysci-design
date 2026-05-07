@@ -321,6 +321,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <div class="nav-item child" data-panel="histograms" onclick="nav(this)">Histograms</div>
       </div>
     </div>
+    <div class="nav-sec" style="margin-top:8px;">Governance</div>
     <div class="nav-item" data-panel="dataversions" onclick="nav(this)">Data versions</div>
     <div class="sb-bottom">
       <div style="display:flex;align-items:center;gap:8px;">
@@ -367,7 +368,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <tr>
           <th></th>
           <th><span class="col-tip">Barcode<i class="col-tip-i">i</i><span class="col-tip-text">Sample kit identifier. Each barcode can have multiple reports built from different dataset combinations.</span></span></th>
-          <th><span class="col-tip">Datasets<i class="col-tip-i">i</i><span class="col-tip-text">Assay datasets included in this report. Expand the row to see individual batches.</span></span></th>
+          <th><span class="col-tip">Batches<i class="col-tip-i">i</i><span class="col-tip-text">Assay batches included in this report. Expand the row to see individual batches.</span></span></th>
           <th><span class="col-tip">Date received<i class="col-tip-i">i</i><span class="col-tip-text">Most recent batch received date. Expand to see per-dataset dates.</span></span></th>
           <th>Status</th>
           <th></th>
@@ -445,7 +446,8 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <button class="btn" onclick="saveReport()">Save report</button>
           <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
-          <button class="btn btn-p" style="margin-left:auto;" onclick="showMyhiConfirm()">Send to MYHI ↗</button>
+          <button class="btn btn-p" id="br-myhi-btn" style="margin-left:auto;display:none;" onclick="showMyhiConfirm()">Send to MYHI ↗</button>
+          <span id="br-myhi-locked" style="font-size:11px;color:var(--tx3);margin-left:auto;display:none;">Admin only</span>
         </div>
         <div id="br-myhi-confirm" style="display:none;margin-top:12px;background:var(--ib);border:0.5px solid var(--ibr);border-radius:var(--r);padding:12px;">
           <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Confirm — send to MYHI?</div>
@@ -485,9 +487,19 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
   <div class="cmp-results" id="cr-results">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
       <div style="font-size:13px;font-weight:700;">Comparing — 463F345</div>
-      <div style="display:flex;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;">
         <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
+        <button class="btn btn-p" id="cr-myhi-btn" onclick="showCrMyhiConfirm()" style="display:none;">Send to MYHI ↗</button>
+        <span id="cr-myhi-locked" style="font-size:11px;color:var(--tx3);display:none;">Admin only</span>
       </div>
+    </div>
+    <div id="cr-myhi-confirm" style="display:none;background:var(--ib);border:0.5px solid var(--ibr);border-radius:var(--rl);padding:12px;margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Confirm — send to MYHI?</div>
+      <div style="font-size:11px;color:var(--tx2);margin-bottom:10px;">This will publish the comparison report to the MYHI patient portal.</div>
+      <div style="display:flex;gap:8px;"><button class="btn btn-p" onclick="confirmCrSend()">Confirm send</button><button class="btn" onclick="document.getElementById('cr-myhi-confirm').style.display='none'">Cancel</button></div>
+    </div>
+    <div id="cr-myhi-success" style="display:none;background:var(--sb);border:0.5px solid var(--sbr);border-radius:var(--r);padding:12px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--st);margin-bottom:4px;">Sent to MYHI successfully</div>
     </div>
     <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
       <table class="gh-table" id="cr-inline-table">
@@ -822,7 +834,7 @@ function buildCrInlineTable(){const tbody=document.getElementById('cr-inline-tbo
 
 let currentRole='contributor';
 function goToTeamSelect(){document.getElementById('login-step-1').style.display='none';document.getElementById('login-step-2').style.display='';}
-function doLogin(team){const email=document.getElementById('login-email').value||'user@molecularyou.com';currentRole=document.getElementById('login-role').value;document.getElementById('login').style.display='none';document.getElementById('app').classList.add('visible');const initials=email.split('@')[0].slice(0,2).toUpperCase();document.getElementById('sb-av').textContent=initials;document.getElementById('sb-name').textContent=email.split('@')[0];document.getElementById('sb-td').textContent=team+' team';document.getElementById('sb-tl').textContent=team;const rb=document.getElementById('sb-role-badge');rb.textContent=currentRole==='admin'?'Admin':'Contributor';rb.style.background=currentRole==='admin'?'var(--rb)':'var(--ib)';rb.style.color=currentRole==='admin'?'var(--rt)':'var(--it)';rb.style.display='inline-block';document.getElementById('nav-ops').style.display=team==='Ops'?'block':'none';document.getElementById('nav-sci').style.display=team==='Science'?'block':'none';const first=team==='Ops'?'allreports-v1':'systems';activatePanel(first);setPageHeader(first);const firstNav=document.querySelector('#nav-'+(team==='Ops'?'ops':'sci')+' .nav-item[data-panel="'+first+'"]');if(firstNav)firstNav.classList.add('active');}
+function doLogin(team){const email=document.getElementById('login-email').value||'user@molecularyou.com';currentRole=document.getElementById('login-role').value;document.getElementById('login').style.display='none';document.getElementById('app').classList.add('visible');const initials=email.split('@')[0].slice(0,2).toUpperCase();document.getElementById('sb-av').textContent=initials;document.getElementById('sb-name').textContent=email.split('@')[0];document.getElementById('sb-td').textContent=team+' team';document.getElementById('sb-tl').textContent=team;const rb=document.getElementById('sb-role-badge');rb.textContent=currentRole==='admin'?'Admin':'Contributor';rb.style.background=currentRole==='admin'?'var(--rb)':'var(--ib)';rb.style.color=currentRole==='admin'?'var(--rt)':'var(--it)';rb.style.display='inline-block';document.getElementById('nav-ops').style.display=team==='Ops'?'block':'none';document.getElementById('nav-sci').style.display=team==='Science'?'block':'none';const first=team==='Ops'?'allreports-v1':'systems';activatePanel(first);setPageHeader(first);const firstNav=document.querySelector('#nav-'+(team==='Ops'?'ops':'sci')+' .nav-item[data-panel="'+first+'"]');if(firstNav)firstNav.classList.add('active');applyRoleGating();}
 function doLogout(){document.getElementById('app').classList.remove('visible');document.getElementById('login').style.display='flex';document.getElementById('login-step-1').style.display='';document.getElementById('login-step-2').style.display='none';document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));currentRole='contributor';}
 function doSwitchTeam(){document.getElementById('login-step-2').style.display='';document.getElementById('login-step-1').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('app').classList.remove('visible');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));}
 const PAGE_META={
@@ -844,7 +856,7 @@ const PAGE_META={
 };
 function setPageHeader(panel){const m=PAGE_META[panel]||{title:panel,sub:null};document.getElementById('page-title').textContent=m.title;const activePanel=document.getElementById('panel-'+panel);if(activePanel){const sl=activePanel.querySelector('.sl');if(sl){if(m.sub){sl.textContent=m.sub;sl.style.display='block';}else{sl.style.display='none';}}}}
 function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const panel=el.dataset.panel;activatePanel(panel);setPageHeader(panel);}
-function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='buildreport')setTimeout(()=>buildAcc('acc-build'),50);if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){buildCrInlineTable();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();}
+function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();}
 function toggleGroup(id){const el=document.getElementById(id);const ch=document.getElementById('chev-'+id);const open=el.classList.contains('expanded');el.classList.toggle('collapsed',open);el.classList.toggle('expanded',!open);if(ch)ch.classList.toggle('open',!open);}
 function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
 function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
@@ -886,6 +898,13 @@ function resetScores(){
 function saveReport(){alert('Report saved (wireframe — simulated).');}
 function showMyhiConfirm(){document.getElementById('br-myhi-confirm').style.display='block';document.getElementById('br-myhi-success').style.display='none';}
 function confirmBrSend(){document.getElementById('br-myhi-confirm').style.display='none';document.getElementById('br-myhi-success').style.display='block';}
+function showCrMyhiConfirm(){document.getElementById('cr-myhi-confirm').style.display='block';document.getElementById('cr-myhi-success').style.display='none';}
+function confirmCrSend(){document.getElementById('cr-myhi-confirm').style.display='none';document.getElementById('cr-myhi-success').style.display='block';}
+function applyRoleGating(){
+  const isAdmin=currentRole==='admin';
+  ['cr-myhi-btn','br-myhi-btn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=isAdmin?'inline-block':'none';});
+  ['cr-myhi-locked','br-myhi-locked'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=isAdmin?'none':'inline-block';});
+}
 function checkAssayConflict(grp){
   const boxes=document.querySelectorAll(`input[data-group="${grp}"]`);
   const checked=[...boxes].filter(b=>b.checked);
@@ -1033,13 +1052,11 @@ function renderAssayCatalog(){
     const grp='ac-child-'+assay.id;
     const chevId='ac-chev-'+assay.id;
     const typeCls=assay.type==='Proteomics'?'tag-ops':'tag-sci';
-    const currentCL=assay.control_lots[0]||{};
-    const currentPL=assay.type==='Proteomics'?(assay.peptide_lots[0]||null):null;
-    const hasMore=assay.control_lots.length>1||(assay.type==='Proteomics'&&assay.peptide_lots.length>1);
-    // Parent row
+    const hasLots=assay.control_lots.length>0;
+    // Parent row — name only, all lots in child rows
     const mainTr=document.createElement('tr');
-    mainTr.style.cursor=hasMore?'pointer':'default';
-    if(hasMore)mainTr.onclick=()=>{
+    mainTr.style.cursor='pointer';
+    mainTr.onclick=()=>{
       const children=tbody.querySelectorAll('.'+grp);
       const chev=document.getElementById(chevId);
       const isOpen=children.length&&children[0].style.display!=='none';
@@ -1047,21 +1064,17 @@ function renderAssayCatalog(){
       chev.textContent=isOpen?'▶':'▼';
     };
     mainTr.innerHTML=`
-      <td style="font-size:11px;color:var(--tx3);" id="${chevId}">${hasMore?'▶':''}</td>
+      <td style="font-size:11px;color:var(--tx3);" id="${chevId}">▼</td>
       <td style="font-weight:700;">${assay.name}&ensp;<span class="tag ${typeCls}">${assay.type}</span></td>
-      <td style="font-family:monospace;font-size:12px;">${currentCL.lot||'—'}</td>
-      <td style="font-family:monospace;font-size:12px;">${currentPL?currentPL.lot:'—'}</td>
-      <td style="font-size:12px;">${currentCL.expiry||'—'}</td>
-      <td style="font-size:12px;">${currentPL?currentPL.expiry:'—'}</td>`;
+      <td></td><td></td><td></td><td></td>`;
     tbody.appendChild(mainTr);
-    // Child rows — paired by index (control lots vs peptide lots, skip first of each)
-    const maxExtra=Math.max(assay.control_lots.length-1, assay.type==='Proteomics'?assay.peptide_lots.length-1:0);
-    for(let i=1;i<=maxExtra;i++){
+    // Child rows — ALL lots, paired by index, expanded by default
+    const maxRows=Math.max(assay.control_lots.length, assay.type==='Proteomics'?assay.peptide_lots.length:0);
+    for(let i=0;i<maxRows;i++){
       const cl=assay.control_lots[i]||null;
       const pl=assay.type==='Proteomics'?(assay.peptide_lots[i]||null):null;
       const tr=document.createElement('tr');
       tr.className=grp;
-      tr.style.display='none';
       tr.innerHTML=`<td></td><td></td>
         <td style="font-family:monospace;font-size:12px;">${cl?cl.lot:'—'}</td>
         <td style="font-family:monospace;font-size:12px;">${pl?pl.lot:'—'}</td>
