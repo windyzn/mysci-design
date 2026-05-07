@@ -90,6 +90,12 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .tag-ops{background:var(--ib);color:var(--it);}
 .tag-sci{background:var(--sb);color:var(--st);}
 .tag-urg{background:var(--rb);color:var(--rt);}
+.tag-prot{background:#dbeafe;color:#1e40af;}
+.tag-meta{background:#d1fae5;color:#065f46;}
+.tag-expo{background:#ffedd5;color:#9a3412;}
+.tag-micro{background:#ecfccb;color:#3a5c12;}
+.tag-cell{background:#ede9fe;color:#5b21b6;}
+.tag-geno{background:#fce7f3;color:#9d174d;}
 .btn{font-size:12px;padding:5px 12px;border-radius:var(--r);border:0.5px solid var(--bd2);cursor:pointer;background:var(--bg);color:var(--tx);white-space:nowrap;}
 .btn:hover{background:var(--bg3);}
 .btn-ok{border-color:var(--sbr);color:var(--st);}
@@ -107,6 +113,10 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .d-rj{background:var(--rb);color:var(--rt);}
 .d-lv{background:var(--sb);color:var(--st);}
 .d-wr{background:var(--wb);color:var(--wt);}
+.d-complete{background:var(--sb);color:var(--st);}
+.d-incomplete{background:var(--wb);color:var(--wt);}
+.d-reprocessing{background:var(--ib);color:var(--it);}
+.d-compromised{background:var(--rb);color:var(--rt);}
 .sp{font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;}
 .sg-{background:var(--sb);color:var(--st);}
 .sy-{background:var(--wb);color:var(--wt);}
@@ -955,28 +965,32 @@ function confirmSaveProfile(){const name=document.getElementById('new-profile-na
 
 // ── ALL REPORTS V1 ──
 const ARV1_DATA=[
-  {barcode:'463F345',reportable:true,status:'Published',
+  {barcode:'463F345',reportable:true,status:'Complete',
    datasets:[
      {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-03-04'},
      {name:'1A_Metabolomics (MYCO 1.2)',assay:'Metabolomics',date_received:'2026-03-04'},
      {name:'2A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-03-05'},
    ]},
-  {barcode:'463F345',reportable:false,status:'Saved',
+  {barcode:'463F345',reportable:false,status:'Incomplete',
    datasets:[
      {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-03-04'},
    ]},
-  {barcode:'312B778',reportable:true,status:'Published',
+  {barcode:'312B778',reportable:true,status:'Reprocessing',
    datasets:[
      {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',date_received:'2026-01-08'},
      {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',date_received:'2026-01-08'},
      {name:'Jan 2026_Metabolomics (MYMet 2.0)',assay:'Metabolomics',date_received:'2026-01-27'},
    ]},
-  {barcode:'312B778',reportable:false,status:'Saved',
+  {barcode:'312B778',reportable:false,status:'Compromised',
    datasets:[
      {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',date_received:'2026-01-08'},
      {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',date_received:'2026-01-08'},
    ]},
 ];
+
+function typePillCls(t){
+  return {Proteomics:'tag-prot',Metabolomics:'tag-meta',Exposomics:'tag-expo',Microbiomics:'tag-micro',Cellular:'tag-cell',Genomics:'tag-geno'}[t]||'tag-ops';
+}
 
 function renderARV1(){
   const tbody=document.getElementById('arv1-tbody');
@@ -986,12 +1000,11 @@ function renderARV1(){
     const grp='arv1-c-'+idx;
     const chevId='arv1-chev-'+idx;
     const latestDate=r.datasets.map(d=>d.date_received).sort().reverse()[0]||'';
-    const statusLabel=r.status==='Published'?'Published':'Not published';
-    const statusCls=r.status==='Published'?'d-lv':'d-dr';
-    const protCount=r.datasets.filter(d=>d.assay==='Proteomics').length;
-    const metaCount=r.datasets.filter(d=>d.assay==='Metabolomics').length;
-    const dsParts=[];if(protCount)dsParts.push(protCount+' proteomics');if(metaCount)dsParts.push(metaCount+' metabolomics');
-    const dsPill=`<span class="ds d-sb">${dsParts.join(' · ')}</span>`;
+    const statusCls={Complete:'d-complete',Incomplete:'d-incomplete',Reprocessing:'d-reprocessing',Compromised:'d-compromised'}[r.status]||'d-dr';
+    const typeCounts={};r.datasets.forEach(d=>{typeCounts[d.assay]=(typeCounts[d.assay]||0)+1;});
+    const typeOrder=['Proteomics','Metabolomics','Exposomics','Microbiomics','Cellular','Genomics'];
+    const TYPE_COL={Proteomics:'#1e40af',Metabolomics:'#065f46',Exposomics:'#9a3412',Microbiomics:'#3a5c12',Cellular:'#5b21b6',Genomics:'#9d174d'};
+    const dsPill=typeOrder.filter(t=>typeCounts[t]).map(t=>`<span style="font-size:12px;color:${TYPE_COL[t]||'var(--tx2)'};font-weight:600;">${typeCounts[t]} ${t.toLowerCase()}</span>`).join('<span style="font-size:12px;color:var(--tx3);"> · </span>');
     // Parent row
     const parentTr=document.createElement('tr');
     parentTr.style.cursor='pointer';
@@ -1007,7 +1020,7 @@ function renderARV1(){
       <td style="font-family:monospace;font-weight:700;">${r.barcode}</td>
       <td>${dsPill}</td>
       <td style="font-size:12px;color:var(--tx2);">${latestDate}</td>
-      <td><span class="ds ${statusCls}">${statusLabel}</span></td>
+      <td><span class="ds ${statusCls}">${r.status}</span></td>
       <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();loadKitIntoBuild('${r.barcode}')">Build report</button></td>`;
     tbody.appendChild(parentTr);
     // Child rows — same columns, blank where not applicable
@@ -1015,7 +1028,7 @@ function renderARV1(){
       const childTr=document.createElement('tr');
       childTr.className=grp;
       childTr.style.display='none';
-      const assayCls=ds.assay==='Proteomics'?'tag-ops':'tag-sci';
+      const assayCls=typePillCls(ds.assay);
       childTr.innerHTML=`
         <td></td>
         <td></td>
@@ -1051,7 +1064,7 @@ function renderAssayCatalog(){
   AC_DATA.forEach(assay=>{
     const grp='ac-child-'+assay.id;
     const chevId='ac-chev-'+assay.id;
-    const typeCls=assay.type==='Proteomics'?'tag-ops':'tag-sci';
+    const typeCls=typePillCls(assay.type);
     const hasLots=assay.control_lots.length>0;
     // Parent row — name only, all lots in child rows
     const mainTr=document.createElement('tr');

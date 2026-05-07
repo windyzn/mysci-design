@@ -72,6 +72,46 @@
   --color-neutral-text:    #61859D;
 
   /* -----------------------------------------------------------
+     Report status — semantic aliases
+     ----------------------------------------------------------- */
+  --color-status-complete-bg:        var(--color-green-bg);
+  --color-status-complete-text:      var(--color-green-text);
+  --color-status-complete-border:    var(--color-green-border);
+
+  --color-status-incomplete-bg:      var(--color-yellow-bg);
+  --color-status-incomplete-text:    var(--color-yellow-text);
+  --color-status-incomplete-border:  var(--color-yellow-border);
+
+  --color-status-reprocessing-bg:    var(--color-blue-bg);
+  --color-status-reprocessing-text:  var(--color-blue-text);
+  --color-status-reprocessing-border:var(--color-blue-border);
+
+  --color-status-compromised-bg:     var(--color-red-bg);
+  --color-status-compromised-text:   var(--color-red-text);
+  --color-status-compromised-border: var(--color-red-border);
+
+  /* -----------------------------------------------------------
+     Profile type colours
+     ----------------------------------------------------------- */
+  --color-type-proteomics-bg:        #dbeafe;
+  --color-type-proteomics-text:      #1e40af;
+
+  --color-type-metabolomics-bg:      #d1fae5;
+  --color-type-metabolomics-text:    #065f46;
+
+  --color-type-exposomics-bg:        #ffedd5;
+  --color-type-exposomics-text:      #9a3412;
+
+  --color-type-microbiomics-bg:      #ecfccb;
+  --color-type-microbiomics-text:    #3a5c12;
+
+  --color-type-cellular-bg:          #ede9fe;
+  --color-type-cellular-text:        #5b21b6;
+
+  --color-type-genomics-bg:          #fce7f3;
+  --color-type-genomics-text:        #9d174d;
+
+  /* -----------------------------------------------------------
      Radius
      ----------------------------------------------------------- */
   --radius-sm:             8px;
