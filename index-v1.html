@@ -90,12 +90,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .tag-ops{background:var(--ib);color:var(--it);}
 .tag-sci{background:var(--sb);color:var(--st);}
 .tag-urg{background:var(--rb);color:var(--rt);}
-.tag-prot{background:#dbeafe;color:#1e40af;}
-.tag-meta{background:#d1fae5;color:#065f46;}
-.tag-expo{background:#ffedd5;color:#9a3412;}
-.tag-micro{background:#ecfccb;color:#3a5c12;}
-.tag-cell{background:#ede9fe;color:#5b21b6;}
-.tag-geno{background:#fce7f3;color:#9d174d;}
+.tag-prot,.tag-meta,.tag-expo,.tag-micro,.tag-cell,.tag-geno{background:#eef1f4;color:#3b5464;}
 .btn{font-size:12px;padding:5px 12px;border-radius:var(--r);border:0.5px solid var(--bd2);cursor:pointer;background:var(--bg);color:var(--tx);white-space:nowrap;}
 .btn:hover{background:var(--bg3);}
 .btn-ok{border-color:var(--sbr);color:var(--st);}
@@ -986,6 +981,16 @@ const ARV1_DATA=[
      {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',date_received:'2026-01-08'},
      {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',date_received:'2026-01-08'},
    ]},
+  {barcode:'891K234',reportable:true,status:'Complete',
+   datasets:[
+     {name:'1A_Microbiomics (MB-SEQ 1.0)',assay:'Microbiomics',date_received:'2026-04-01'},
+     {name:'1A_Exposomics (EXPO 2.1)',assay:'Exposomics',date_received:'2026-04-01'},
+   ]},
+  {barcode:'558P901',reportable:false,status:'Incomplete',
+   datasets:[
+     {name:'1A_Cellular (CELL 1.0)',assay:'Cellular',date_received:'2026-04-10'},
+     {name:'1A_Genomics (WGS 3.0)',assay:'Genomics',date_received:'2026-04-10'},
+   ]},
 ];
 
 function typePillCls(t){
@@ -1003,8 +1008,7 @@ function renderARV1(){
     const statusCls={Complete:'d-complete',Incomplete:'d-incomplete',Reprocessing:'d-reprocessing',Compromised:'d-compromised'}[r.status]||'d-dr';
     const typeCounts={};r.datasets.forEach(d=>{typeCounts[d.assay]=(typeCounts[d.assay]||0)+1;});
     const typeOrder=['Proteomics','Metabolomics','Exposomics','Microbiomics','Cellular','Genomics'];
-    const TYPE_COL={Proteomics:'#1e40af',Metabolomics:'#065f46',Exposomics:'#9a3412',Microbiomics:'#3a5c12',Cellular:'#5b21b6',Genomics:'#9d174d'};
-    const dsPill=typeOrder.filter(t=>typeCounts[t]).map(t=>`<span style="font-size:12px;color:${TYPE_COL[t]||'var(--tx2)'};font-weight:600;">${typeCounts[t]} ${t.toLowerCase()}</span>`).join('<span style="font-size:12px;color:var(--tx3);"> · </span>');
+    const dsPill=`<span style="font-size:12px;color:var(--tx2);">${typeOrder.filter(t=>typeCounts[t]).map(t=>`${typeCounts[t]} ${t.toLowerCase()}`).join(' · ')}</span>`;
     // Parent row
     const parentTr=document.createElement('tr');
     parentTr.style.cursor='pointer';

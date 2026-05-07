@@ -91,25 +91,13 @@
   --color-status-compromised-border: var(--color-red-border);
 
   /* -----------------------------------------------------------
-     Profile type colours
+     Profile type tag — shared monotone pill
+     All omic types (Proteomics, Metabolomics, Exposomics,
+     Microbiomics, Cellular, Genomics) use the same neutral
+     style so type tags don't compete with status colours.
      ----------------------------------------------------------- */
-  --color-type-proteomics-bg:        #dbeafe;
-  --color-type-proteomics-text:      #1e40af;
-
-  --color-type-metabolomics-bg:      #d1fae5;
-  --color-type-metabolomics-text:    #065f46;
-
-  --color-type-exposomics-bg:        #ffedd5;
-  --color-type-exposomics-text:      #9a3412;
-
-  --color-type-microbiomics-bg:      #ecfccb;
-  --color-type-microbiomics-text:    #3a5c12;
-
-  --color-type-cellular-bg:          #ede9fe;
-  --color-type-cellular-text:        #5b21b6;
-
-  --color-type-genomics-bg:          #fce7f3;
-  --color-type-genomics-text:        #9d174d;
+  --color-type-tag-bg:               #eef1f4;
+  --color-type-tag-text:             #3b5464; /* = --color-brand-darkblue */
 
   /* -----------------------------------------------------------
      Radius
