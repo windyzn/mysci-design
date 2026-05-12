@@ -241,6 +241,8 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .clr-r{color:var(--rt);font-size:11px;}
 .clr-y{color:var(--wt);font-size:11px;}
 .clr-g{color:var(--st);font-size:11px;}
+.pv{font-size:13px;font-weight:600;color:var(--tx);}
+.pv-ci{font-size:12px;font-weight:600;color:var(--tx);min-width:32px;display:inline-block;text-align:center;}
 .tab-bar{display:flex;gap:2px;margin-bottom:16px;border-bottom:0.5px solid var(--bd);}
 .tb{font-size:13px;padding:8px 16px;cursor:pointer;background:none;border:none;color:var(--tx2);border-bottom:2px solid transparent;margin-bottom:-0.5px;}
 .tb.active{color:var(--tx);border-bottom-color:var(--my-dark);font-weight:700;}
@@ -344,8 +346,6 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <div class="nav-item gh" onclick="toggleGroup('g-assoc')">Associations &amp; weights <span class="chev open" id="chev-g-assoc">▶</span></div>
       <div class="gc expanded" id="g-assoc">
         <div class="nav-item child" data-panel="systems" onclick="nav(this)">Associations</div>
-        <div class="nav-item child" data-panel="weights" onclick="nav(this)">Weight adjustments</div>
-        <div class="nav-item child" data-panel="cmpprofiles" onclick="nav(this)">Compare weight profiles</div>
         <div class="nav-item child" data-panel="scoringparams" onclick="nav(this)">Scoring params</div>
       </div>
       <div class="nav-item gh" onclick="toggleGroup('g-analytics')">Analytics <span class="chev open" id="chev-g-analytics">▶</span></div>
@@ -657,18 +657,18 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
 <!-- ASSOCIATIONS -->
 <div class="panel" id="panel-systems">
-  <div class="pa"><div class="sl" style="margin:0;">Associations</div><button class="btn btn-p">+ Add association</button></div>
+  <div class="pa"><div class="sl" style="margin:0;">Associations</div></div>
   <div class="tab-bar">
     <button class="tb active" onclick="switchAssocTab('table',this)">Table</button>
     <button class="tb" onclick="switchAssocTab('flowchart',this)">Flowchart</button>
   </div>
   <div id="assoc-tab-table">
-    <div class="card" style="padding:0;overflow:hidden;"><table class="gh-table"><thead><tr><th>System</th><th>Process</th><th>Biomarker</th><th>System type</th><th>Status</th></tr></thead><tbody>
-      <tr><td>Cardiovascular Health</td><td>Lipid metabolism</td><td>LDL Cholesterol</td><td>Health System</td><td><span class="ds d-lv">Live</span></td></tr>
-      <tr><td>Metabolic Health</td><td>Glucose regulation</td><td>HbA1c</td><td>Health System</td><td><span class="ds d-lv">Live</span></td></tr>
-      <tr><td>Inflammation</td><td>—</td><td>hsCRP</td><td>Health System</td><td><span class="ds d-sb">In review</span></td></tr>
-      <tr><td>Bone Health</td><td>Bone turnover</td><td>Vitamin D</td><td>Health System</td><td><span class="ds d-lv">Live</span></td></tr>
-      <tr><td>Cancer Hallmarks</td><td>—</td><td>PSA</td><td>Cancer Hallmark</td><td><span class="ds d-dr">Draft</span></td></tr>
+    <div class="card" style="padding:0;overflow:hidden;"><table class="gh-table"><thead><tr><th>System</th><th>Process</th><th>Biomarker</th><th>System type</th><th>Access</th></tr></thead><tbody>
+      <tr><td>Cardiovascular Health</td><td>Lipid metabolism</td><td>LDL Cholesterol</td><td>Health System</td><td><span class="ds d-lv">Global</span></td></tr>
+      <tr><td>Metabolic Health</td><td>Glucose regulation</td><td>HbA1c</td><td>Health System</td><td><span class="ds d-lv">Global</span></td></tr>
+      <tr><td>Inflammation</td><td>—</td><td>hsCRP</td><td>Health System</td><td><span class="ds d-lv">Global</span></td></tr>
+      <tr><td>Bone Health</td><td>Bone turnover</td><td>Vitamin D</td><td>Health System</td><td><span class="ds d-lv">Global</span></td></tr>
+      <tr><td>Cancer Hallmarks</td><td>—</td><td>PSA</td><td>Cancer Hallmark</td><td><span class="ds d-rj">Excluded</span></td></tr>
     </tbody></table></div>
   </div>
   <div id="assoc-tab-flowchart" style="display:none;">
@@ -678,122 +678,22 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
   </div>
 </div>
 
-<!-- WEIGHT ADJUSTMENTS -->
-<div class="panel" id="panel-weights">
-  <div class="pa"><div class="sl" style="margin:0;">Weight adjustments</div><div class="ar"><button class="btn">Save as draft</button><button class="btn btn-p">Submit for review</button></div></div>
-  <div class="flow-canvas">
-    <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;">
-      <span style="font-size:12px;color:var(--tx2);">System</span>
-      <select class="fi" style="width:auto;font-size:12px;" id="wt-sys-sel" onchange="renderWeightTree()"><option>Cardiovascular Health</option><option>Metabolic Health</option><option>Inflammation</option><option>Bone Health</option></select>
-      <span style="font-size:12px;color:var(--tx2);margin-left:8px;">Weight profile</span>
-      <select class="fi" style="width:auto;font-size:12px;" id="wt-profile-sel"><option>v1.0_linear</option><option>v1.1_log2</option><option>v1.2_cardio</option><option>v2.0_research</option></select>
-      <button class="btn" style="font-size:12px;padding:7px 12px;" onclick="openSaveProfileModal()">Save as new weight profile</button>
-    </div>
-    <div id="weight-tree-container" style="overflow-x:auto;margin-top:40px;"></div>
-  </div>
-  <div id="save-profile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.25);z-index:100;align-items:center;justify-content:center;">
-    <div style="background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:20px;width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.12);">
-      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Save as new weight profile</div>
-      <div style="font-size:12px;color:var(--tx2);margin-bottom:14px;">Give this weight profile a name.</div>
-      <input class="fi" id="new-profile-name" placeholder="e.g. Cardio focus v1" style="margin-bottom:14px;"/>
-      <div style="display:flex;gap:8px;justify-content:flex-end;">
-        <button class="btn" onclick="closeSaveProfileModal()">Cancel</button>
-        <button class="btn btn-ok" onclick="confirmSaveProfile()">Save profile</button>
-      </div>
-      <div id="profile-saved-msg" style="display:none;margin-top:10px;font-size:12px;color:var(--st);background:var(--sb);padding:8px 10px;border-radius:var(--r);">Weight profile saved successfully.</div>
-    </div>
-  </div>
-</div>
-
-<!-- COMPARE PROFILES -->
-<div class="panel" id="panel-cmpprofiles">
-  <div class="submit-confirm" id="submit-confirm">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;"><div style="font-size:13px;font-weight:700;color:var(--st);">Submitted for review — v1.1_log2</div><button class="btn btn-ok" onclick="nav(document.querySelector('[data-panel=review]'))">View in review queue →</button></div>
-    <div class="change-item">LDL Cholesterol in Lipid metabolism: weight 2 to 3, colour red, direction high</div>
-    <div class="change-item">hsCRP in Vascular inflammation: weight 2 to 3, colour red, direction high</div>
-    <div class="change-item">Triglycerides in Lipid metabolism: weight 2 to 1</div>
-  </div>
-  <div class="pa">
-    <div class="sl" style="margin:0;">Compare profiles</div>
-    <div class="ar" id="cp-actions" style="display:none;">
-      <button class="btn btn-p" onclick="doSubmitProfile()">Submit for review</button>
-      <button class="btn" onclick="doDiscard()">Discard</button>
-    </div>
-  </div>
-  <div class="picker-card">
-    <div class="picker-label">Select two profiles to compare</div>
-    <div class="picker-hint">Click a row to assign slot A (first click) or slot B (second click).</div>
-    <table class="cmp-table" id="profile-picker-table">
-      <thead><tr><th style="width:48px;">Slot</th><th>Profile name</th><th>Status</th><th>Last modified</th><th>Modified by</th></tr></thead>
-      <tbody>
-        <tr data-profile="v1.0_linear" onclick="cycleSlot(this)"><td><span class="cp-slot-box" id="cp-box-v1.0_linear" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;font-size:12px;">v1.0_linear</td><td><span class="ds d-lv">Live</span></td><td>2024-10-01</td><td>Jordan</td></tr>
-        <tr data-profile="v1.1_log2" onclick="cycleSlot(this)"><td><span class="cp-slot-box" id="cp-box-v1.1_log2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;font-size:12px;">v1.1_log2</td><td><span class="ds d-dr">Draft</span></td><td>2024-11-12</td><td>Maria</td></tr>
-        <tr data-profile="v1.2_cardio" onclick="cycleSlot(this)"><td><span class="cp-slot-box" id="cp-box-v1.2_cardio" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;font-size:12px;">v1.2_cardio</td><td><span class="ds d-lv">Live</span></td><td>2024-08-15</td><td>Alex</td></tr>
-        <tr data-profile="v2.0_research" onclick="cycleSlot(this)"><td><span class="cp-slot-box" id="cp-box-v2.0_research" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;font-size:12px;">v2.0_research</td><td><span class="ds d-dr">Draft</span></td><td>2024-11-08</td><td>Maria</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div id="cmp-empty-prompt" style="text-align:center;padding:32px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">Select two profiles above to compare weights and see their impact.</div>
-  <div class="cmp-results" id="cmp-results">
-    <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
-      <table class="gh-table">
-        <thead><tr>
-          <th style="width:42%;">System / Process / Biomarker</th>
-          <th><span class="slot-a">A</span> <span id="cp-a-label" style="font-weight:400;font-size:11px;color:var(--tx2);">v1.0_linear</span></th>
-          <th><span class="slot-b">B</span> <span id="cp-b-label" style="font-weight:400;font-size:11px;color:var(--tx2);">v1.1_log2</span></th>
-          <th>Diff</th>
-        </tr></thead>
-        <tbody>
-          <tr style="background:var(--bg3);"><td colspan="4" style="font-size:11px;font-weight:700;color:var(--tx2);padding:6px 10px;">Process weights</td></tr>
-          <tr><td style="padding-left:20px;">Lipid metabolism</td><td>1</td><td>2</td><td><span class="db db-up">+1</span></td></tr>
-          <tr><td style="padding-left:20px;">Vascular inflammation</td><td>1</td><td>1</td><td><span class="db db-same">0</span></td></tr>
-          <tr style="background:var(--bg3);"><td colspan="4" style="font-size:11px;font-weight:700;color:var(--tx2);padding:6px 10px;">Biomarker weights</td></tr>
-          <tr><td style="padding-left:20px;">LDL Cholesterol</td><td>2</td><td>3</td><td><span class="db db-up">+1</span></td></tr>
-          <tr><td style="padding-left:20px;">HDL Cholesterol</td><td>2</td><td>2</td><td><span class="db db-same">0</span></td></tr>
-          <tr><td style="padding-left:20px;">Triglycerides</td><td>2</td><td>1</td><td><span class="db db-dn">-1</span></td></tr>
-          <tr><td style="padding-left:20px;">hsCRP</td><td>2</td><td>3</td><td><span class="db db-up">+1</span></td></tr>
-          <tr><td style="padding-left:20px;">Lp(a)</td><td>1</td><td>1</td><td><span class="db db-same">0</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
-      <div style="padding:10px 14px;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span style="font-size:13px;font-weight:700;">Individual impact</span>
-        <select class="fi" style="width:220px;font-size:12px;"><option>PT-8812 — Jane Smith</option><option>PT-7741 — John Doe</option></select>
-      </div>
-      <table class="gh-table">
-        <thead><tr><th style="width:42%;">System</th><th><span class="slot-a">A</span> v1.0_linear</th><th><span class="slot-b">B</span> v1.1_log2</th><th>Diff</th></tr></thead>
-        <tbody>
-          <tr><td>Cardiovascular Health</td><td><span class="sp sg-">74</span></td><td><span class="sp sg-">71</span></td><td><span class="db db-dn">-3</span></td></tr>
-          <tr><td>Inflammation</td><td><span class="sp sr-">28</span></td><td><span class="sp sr-">26</span></td><td><span class="db db-dn">-2</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <div style="font-size:13px;font-weight:700;" id="pop-chart-title">Population distribution — Cardiovascular Health</div>
-        <select class="fi" style="width:auto;font-size:12px;" id="pop-sys-sel" onchange="renderKdeChart()"><option>Cardiovascular Health</option><option>Inflammation</option></select>
-      </div>
-      <div style="position:relative;height:160px;"><canvas id="overlayChart"></canvas></div>
-    </div>
-  </div>
-</div>
 
 <!-- SCORING PARAMS -->
 <div class="panel" id="panel-scoringparams">
-  <div class="pa"><div class="sl" style="margin:0;">Scoring parameters</div><div class="ar"><button class="btn">Save as draft</button><button class="btn btn-p">Submit for review</button></div></div>
+  <div class="pa"><div class="sl" style="margin:0;">Scoring parameters</div></div>
   <div class="card">
     <div style="margin-bottom:20px;">
       <div class="ps-title">Global parameters</div>
-      <div class="pr"><span class="pl">Score cutoff %</span><input class="pi" value="50" type="number"/></div>
-      <div class="pr"><span class="pl">Biomarker curve type</span><select class="pi" style="appearance:auto;"><option>Linear</option><option>Log2</option></select></div>
-      <div class="pr"><span class="pl">Global yellow weight</span><input class="pi" value="2" type="number" step="1"/></div>
-      <div class="pr"><span class="pl">Global red weight</span><input class="pi" value="4" type="number" step="1"/></div>
+      <div class="pr"><span class="pl">Score cutoff %</span><span class="pv">50</span></div>
+      <div class="pr"><span class="pl">Biomarker curve type</span><span class="pv">Linear</span></div>
+      <div class="pr"><span class="pl">Global yellow weight</span><span class="pv">2</span></div>
+      <div class="pr"><span class="pl">Global red weight</span><span class="pv">4</span></div>
     </div>
     <div>
       <div class="ps-title">Colour cutoffs</div>
-      <div class="pr"><span class="pl">All systems</span><div class="cr"><span class="clr-r">Red</span><input class="ci" value="0"/><span style="color:var(--tx3);">–</span><input class="ci" value="69"/><span class="clr-y" style="margin-left:6px;">Yellow</span><input class="ci" value="70"/><span style="color:var(--tx3);">–</span><input class="ci" value="90"/><span class="clr-g" style="margin-left:6px;">Green</span><span style="font-size:12px;color:var(--tx2);">91+</span></div></div>
-      <div class="pr"><span class="pl">All processes</span><div class="cr"><span class="clr-r">Red</span><input class="ci" value="0"/><span style="color:var(--tx3);">–</span><input class="ci" value="64"/><span class="clr-y" style="margin-left:6px;">Yellow</span><input class="ci" value="65"/><span style="color:var(--tx3);">–</span><input class="ci" value="88"/><span class="clr-g" style="margin-left:6px;">Green</span><span style="font-size:12px;color:var(--tx2);">89+</span></div></div>
+      <div class="pr"><span class="pl">All systems</span><div class="cr"><span class="clr-r">Red</span><span class="pv-ci">0</span><span style="color:var(--tx3);">–</span><span class="pv-ci">69</span><span class="clr-y" style="margin-left:6px;">Yellow</span><span class="pv-ci">70</span><span style="color:var(--tx3);">–</span><span class="pv-ci">90</span><span class="clr-g" style="margin-left:6px;">Green</span><span style="font-size:12px;color:var(--tx2);">91+</span></div></div>
+      <div class="pr"><span class="pl">All processes</span><div class="cr"><span class="clr-r">Red</span><span class="pv-ci">0</span><span style="color:var(--tx3);">–</span><span class="pv-ci">64</span><span class="clr-y" style="margin-left:6px;">Yellow</span><span class="pv-ci">65</span><span style="color:var(--tx3);">–</span><span class="pv-ci">88</span><span class="clr-g" style="margin-left:6px;">Green</span><span style="font-size:12px;color:var(--tx2);">89+</span></div></div>
     </div>
   </div>
 </div>
@@ -801,13 +701,31 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <!-- SUMMARY TABLES -->
 <div class="panel" id="panel-summary">
   <div class="pa"><div class="sl" style="margin:0;">Summary tables</div><button class="btn">↓ Export CSV</button></div>
-  <div class="card" style="margin-bottom:16px;"><div style="font-size:13px;font-weight:700;margin-bottom:12px;">Systems — 27 total</div>
-    <table class="gh-table"><thead><tr><th>System</th><th>Type</th><th>Mean</th><th>Median</th><th>SD</th><th>Range</th><th>N</th></tr></thead><tbody>
-      <tr><td>Cardiovascular Health</td><td>Health System</td><td>66.2</td><td>68</td><td>12.4</td><td>18–94</td><td>312</td></tr>
-      <tr><td>Metabolic Health</td><td>Health System</td><td>58.7</td><td>61</td><td>14.1</td><td>12–96</td><td>312</td></tr>
-      <tr><td>Inflammation</td><td>Health System</td><td>51.3</td><td>53</td><td>18.2</td><td>8–97</td><td>312</td></tr>
-      <tr><td>Bone Health</td><td>Health System</td><td>72.8</td><td>74</td><td>10.6</td><td>30–98</td><td>312</td></tr>
-      <tr><td>Cancer Hallmarks</td><td>Cancer Hallmark</td><td>44.2</td><td>45</td><td>20.1</td><td>5–91</td><td>312</td></tr>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Health Systems <span style="font-weight:400;font-size:12px;color:var(--tx3);">5 systems</span></div>
+    <table class="gh-table"><thead><tr><th>System</th><th>Mean</th><th>Median</th><th>SD</th><th>Range</th><th>N</th></tr></thead><tbody>
+      <tr><td>Cardiovascular Health</td><td>66.2</td><td>68</td><td>12.4</td><td>18–94</td><td>312</td></tr>
+      <tr><td>Metabolic Health</td><td>58.7</td><td>61</td><td>14.1</td><td>12–96</td><td>312</td></tr>
+      <tr><td>Inflammation</td><td>51.3</td><td>53</td><td>18.2</td><td>8–97</td><td>312</td></tr>
+      <tr><td>Bone Health</td><td>72.8</td><td>74</td><td>10.6</td><td>30–98</td><td>312</td></tr>
+      <tr><td>Hormonal Health</td><td>61.4</td><td>63</td><td>15.2</td><td>14–95</td><td>312</td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Cancer Hallmarks <span style="font-weight:400;font-size:12px;color:var(--tx3);">2 systems</span></div>
+    <table class="gh-table"><thead><tr><th>System</th><th>Mean</th><th>Median</th><th>SD</th><th>Range</th><th>N</th></tr></thead><tbody>
+      <tr><td>Cancer Hallmarks (Overall)</td><td>44.2</td><td>45</td><td>20.1</td><td>5–91</td><td>312</td></tr>
+      <tr><td>Proliferative Signalling</td><td>39.8</td><td>41</td><td>22.4</td><td>3–88</td><td>312</td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Longevity <span style="font-weight:400;font-size:12px;color:var(--tx3);">2 systems</span></div>
+    <table class="gh-table"><thead><tr><th>System</th><th>Mean</th><th>Median</th><th>SD</th><th>Range</th><th>N</th></tr></thead><tbody>
+      <tr><td>Biological Age Index</td><td>55.1</td><td>57</td><td>16.8</td><td>10–93</td><td>312</td></tr>
+      <tr><td>Cellular Health</td><td>62.3</td><td>64</td><td>13.5</td><td>22–97</td><td>312</td></tr>
     </tbody></table>
   </div>
 </div>
@@ -876,10 +794,8 @@ const PAGE_META={
   'comparereports':{title:'Reports',                sub:'Compare reports'},
   'assaycatalog':  {title:'Assay Catalog',          sub:null},
   'refrange':      {title:'Reference Ranges',       sub:null},
-  'systems':       {title:'Associations & Weights', sub:'Associations'},
-  'weights':       {title:'Associations & Weights', sub:'Weight adjustments'},
-  'cmpprofiles':   {title:'Associations & Weights', sub:'Compare profiles'},
-  'scoringparams': {title:'Associations & Weights', sub:'Scoring params'},
+  'systems':       {title:'Science',                sub:'Associations'},
+  'scoringparams': {title:'Science',                sub:'Scoring params'},
   'summary':       {title:'Analytics',              sub:'Summary tables'},
   'histograms':    {title:'Analytics',              sub:'Histograms'},
   'drafts':        {title:'My Drafts',              sub:null},
