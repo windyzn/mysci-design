@@ -703,30 +703,55 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
   <div class="pa"><div class="sl" style="margin:0;">Summary tables</div><button class="btn">↓ Export CSV</button></div>
 
   <div class="card" style="margin-bottom:16px;">
-    <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Health Systems <span style="font-weight:400;font-size:12px;color:var(--tx3);">5 systems</span></div>
-    <table class="gh-table"><thead><tr><th>System</th><th>Mean</th><th>Median</th><th>SD</th><th>Range</th><th>N</th></tr></thead><tbody>
-      <tr><td>Cardiovascular Health</td><td>66.2</td><td>68</td><td>12.4</td><td>18–94</td><td>312</td></tr>
-      <tr><td>Metabolic Health</td><td>58.7</td><td>61</td><td>14.1</td><td>12–96</td><td>312</td></tr>
-      <tr><td>Inflammation</td><td>51.3</td><td>53</td><td>18.2</td><td>8–97</td><td>312</td></tr>
-      <tr><td>Bone Health</td><td>72.8</td><td>74</td><td>10.6</td><td>30–98</td><td>312</td></tr>
-      <tr><td>Hormonal Health</td><td>61.4</td><td>63</td><td>15.2</td><td>14–95</td><td>312</td></tr>
-    </tbody></table>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
+      <span style="font-size:13px;font-weight:700;">Health Systems</span>
+      <span style="font-size:12px;color:var(--tx3);">5 systems</span>
+    </div>
+    <table class="gh-table" style="table-layout:fixed;width:100%;">
+      <colgroup><col><col style="width:68px;"><col style="width:68px;"><col style="width:56px;"><col style="width:88px;"><col style="width:44px;"></colgroup>
+      <thead><tr><th>System</th><th style="text-align:right;">Mean</th><th style="text-align:right;">Median</th><th style="text-align:right;">SD</th><th style="text-align:right;">Range</th><th style="text-align:right;">N</th></tr></thead>
+      <tbody>
+        <tr><td>Cardiovascular Health</td><td style="text-align:right;">66.2</td><td style="text-align:right;">68</td><td style="text-align:right;">12.4</td><td style="text-align:right;">18–94</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Metabolic Health</td><td style="text-align:right;">58.7</td><td style="text-align:right;">61</td><td style="text-align:right;">14.1</td><td style="text-align:right;">12–96</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Inflammation</td><td style="text-align:right;">51.3</td><td style="text-align:right;">53</td><td style="text-align:right;">18.2</td><td style="text-align:right;">8–97</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Bone Health</td><td style="text-align:right;">72.8</td><td style="text-align:right;">74</td><td style="text-align:right;">10.6</td><td style="text-align:right;">30–98</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Hormonal Health</td><td style="text-align:right;">61.4</td><td style="text-align:right;">63</td><td style="text-align:right;">15.2</td><td style="text-align:right;">14–95</td><td style="text-align:right;">312</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="card" style="margin-bottom:16px;">
-    <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Cancer Hallmarks <span style="font-weight:400;font-size:12px;color:var(--tx3);">2 systems</span></div>
-    <table class="gh-table"><thead><tr><th>System</th><th>Mean</th><th>Median</th><th>SD</th><th>Range</th><th>N</th></tr></thead><tbody>
-      <tr><td>Cancer Hallmarks (Overall)</td><td>44.2</td><td>45</td><td>20.1</td><td>5–91</td><td>312</td></tr>
-      <tr><td>Proliferative Signalling</td><td>39.8</td><td>41</td><td>22.4</td><td>3–88</td><td>312</td></tr>
-    </tbody></table>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
+      <span style="font-size:13px;font-weight:700;">Health Areas</span>
+      <span style="font-size:12px;color:var(--tx3);">6 areas</span>
+    </div>
+    <table class="gh-table" style="table-layout:fixed;width:100%;">
+      <colgroup><col><col style="width:68px;"><col style="width:68px;"><col style="width:56px;"><col style="width:88px;"><col style="width:44px;"></colgroup>
+      <thead><tr><th>Area</th><th style="text-align:right;">Mean</th><th style="text-align:right;">Median</th><th style="text-align:right;">SD</th><th style="text-align:right;">Range</th><th style="text-align:right;">N</th></tr></thead>
+      <tbody>
+        <tr><td>Lipid Metabolism</td><td style="text-align:right;">64.4</td><td style="text-align:right;">66</td><td style="text-align:right;">13.1</td><td style="text-align:right;">14–96</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Glucose Regulation</td><td style="text-align:right;">57.2</td><td style="text-align:right;">59</td><td style="text-align:right;">16.4</td><td style="text-align:right;">9–95</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Vascular Inflammation</td><td style="text-align:right;">53.8</td><td style="text-align:right;">55</td><td style="text-align:right;">19.7</td><td style="text-align:right;">5–98</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Bone Turnover</td><td style="text-align:right;">70.1</td><td style="text-align:right;">72</td><td style="text-align:right;">11.8</td><td style="text-align:right;">28–99</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Thyroid Function</td><td style="text-align:right;">68.5</td><td style="text-align:right;">70</td><td style="text-align:right;">12.6</td><td style="text-align:right;">22–97</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Oxidative Stress</td><td style="text-align:right;">48.9</td><td style="text-align:right;">50</td><td style="text-align:right;">20.3</td><td style="text-align:right;">4–93</td><td style="text-align:right;">312</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="card" style="margin-bottom:16px;">
-    <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Longevity <span style="font-weight:400;font-size:12px;color:var(--tx3);">2 systems</span></div>
-    <table class="gh-table"><thead><tr><th>System</th><th>Mean</th><th>Median</th><th>SD</th><th>Range</th><th>N</th></tr></thead><tbody>
-      <tr><td>Biological Age Index</td><td>55.1</td><td>57</td><td>16.8</td><td>10–93</td><td>312</td></tr>
-      <tr><td>Cellular Health</td><td>62.3</td><td>64</td><td>13.5</td><td>22–97</td><td>312</td></tr>
-    </tbody></table>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
+      <span style="font-size:13px;font-weight:700;">Cancer Hallmarks</span>
+      <span style="font-size:12px;color:var(--tx3);">2 hallmarks</span>
+    </div>
+    <table class="gh-table" style="table-layout:fixed;width:100%;">
+      <colgroup><col><col style="width:68px;"><col style="width:68px;"><col style="width:56px;"><col style="width:88px;"><col style="width:44px;"></colgroup>
+      <thead><tr><th>Hallmark</th><th style="text-align:right;">Mean</th><th style="text-align:right;">Median</th><th style="text-align:right;">SD</th><th style="text-align:right;">Range</th><th style="text-align:right;">N</th></tr></thead>
+      <tbody>
+        <tr><td>Cancer Hallmarks (Overall)</td><td style="text-align:right;">44.2</td><td style="text-align:right;">45</td><td style="text-align:right;">20.1</td><td style="text-align:right;">5–91</td><td style="text-align:right;">312</td></tr>
+        <tr><td>Proliferative Signalling</td><td style="text-align:right;">39.8</td><td style="text-align:right;">41</td><td style="text-align:right;">22.4</td><td style="text-align:right;">3–88</td><td style="text-align:right;">312</td></tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
