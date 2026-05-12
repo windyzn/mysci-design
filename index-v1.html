@@ -114,7 +114,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .sr-more:hover{text-decoration:underline;}
 .sr-divider{height:0.5px;background:var(--bd);margin:6px 0;}
 .sr-empty{padding:44px 24px;text-align:center;}
-.sr-empty-icon{font-size:28px;margin-bottom:10px;}
+.sr-empty-icon{margin-bottom:10px;color:var(--tx3);display:flex;justify-content:center;}
 .sr-empty-msg{font-size:13px;color:var(--tx3);}
 .sr-hint{padding:28px 24px;text-align:center;font-size:13px;color:var(--tx3);}
 .search-foot{border-top:0.5px solid var(--bd);padding:8px 16px;display:flex;gap:18px;}
@@ -1270,7 +1270,7 @@ function runSearch(){
   // Reference ranges
   const rrHits=RR_DATA.filter(r=>r.biomarker.toLowerCase().includes(q)||r.myco.toLowerCase().includes(q)||r.category.toLowerCase().includes(q));
   if(!rptHits.length&&!acHits.length&&!rrHits.length){
-    body.innerHTML=`<div class="sr-empty"><div class="sr-empty-icon">🔍</div><div class="sr-empty-msg">No results for <strong>"${escHtml(q)}"</strong></div></div>`;
+    body.innerHTML=`<div class="sr-empty"><div class="sr-empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div><div class="sr-empty-msg">No results for <strong>"${escHtml(q)}"</strong></div></div>`;
     return;
   }
   let html='';
