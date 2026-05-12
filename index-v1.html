@@ -105,7 +105,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .sr-hd{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;padding:10px 16px 4px;}
 .sr-row{display:flex;align-items:center;gap:10px;padding:7px 12px;cursor:pointer;margin:0 4px;border-radius:var(--r);}
 .sr-row:hover,.sr-row.sr-focus{background:var(--bg3);}
-.sr-ico{width:30px;height:30px;background:var(--nb);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
+.sr-ico{width:30px;height:30px;background:var(--nb);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--tx3);}
 .sr-info{flex:1;min-width:0;}
 .sr-name{font-size:13px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sr-sub{font-size:11px;color:var(--tx3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -1281,7 +1281,7 @@ function runSearch(){
       const tc={};r.datasets.forEach(d=>{tc[d.assay]=(tc[d.assay]||0)+1;});
       const batchText=typeOrder.filter(t=>tc[t]).map(t=>`${tc[t]} ${t.toLowerCase()}`).join(' · ')||'—';
       const sCls={Complete:'d-complete',Incomplete:'d-incomplete',Reprocessing:'d-reprocessing',Compromised:'d-compromised'}[r.status]||'d-dr';
-      html+=`<div class="sr-row" ${navRow('allreports-v1')}><span class="sr-ico">📋</span><div class="sr-info"><div class="sr-name" style="font-family:monospace;">${r.barcode}</div><div class="sr-sub">${batchText}</div></div><div class="sr-aside"><span class="ds ${sCls}" style="font-size:10px;">${r.status}</span></div></div>`;
+      html+=`<div class="sr-row" ${navRow('allreports-v1')}><span class="sr-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><div class="sr-info"><div class="sr-name" style="font-family:monospace;">${r.barcode}</div><div class="sr-sub">${batchText}</div></div><div class="sr-aside"><span class="ds ${sCls}" style="font-size:10px;">${r.status}</span></div></div>`;
     });
     if(rptHits.length>4)html+=`<div class="sr-more">+${rptHits.length-4} more report${rptHits.length-4>1?'s':''}</div>`;
   }
@@ -1290,7 +1290,7 @@ function runSearch(){
     html+=`<div class="sr-hd">Assay catalog</div>`;
     acHits.slice(0,4).forEach(a=>{
       const lotInfo=`${a.lab||''} · ${a.control_lots.length} control lot${a.control_lots.length!==1?'s':''}`;
-      html+=`<div class="sr-row" ${navRow('assaycatalog')}><span class="sr-ico">🧪</span><div class="sr-info"><div class="sr-name">${a.name}</div><div class="sr-sub">${lotInfo}</div></div><div class="sr-aside"><span class="tag tag-${a.type.toLowerCase().slice(0,4)}" style="font-size:10px;">${a.type}</span></div></div>`;
+      html+=`<div class="sr-row" ${navRow('assaycatalog')}><span class="sr-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31l-5.44 9.97A2 2 0 0 0 6.31 22h11.38a2 2 0 0 0 1.75-2.72L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg></span><div class="sr-info"><div class="sr-name">${a.name}</div><div class="sr-sub">${lotInfo}</div></div><div class="sr-aside"><span class="tag tag-${a.type.toLowerCase().slice(0,4)}" style="font-size:10px;">${a.type}</span></div></div>`;
     });
     if(acHits.length>4)html+=`<div class="sr-more">+${acHits.length-4} more</div>`;
   }
@@ -1298,7 +1298,7 @@ function runSearch(){
   if(rrHits.length){
     html+=`<div class="sr-hd">Reference ranges</div>`;
     rrHits.slice(0,4).forEach(r=>{
-      html+=`<div class="sr-row" ${navRow('refrange')}><span class="sr-ico">📊</span><div class="sr-info"><div class="sr-name">${r.biomarker}</div><div class="sr-sub">${r.category} · ${r.low}–${r.high} ${r.units} · ${r.fluid}</div></div><div class="sr-aside"><span class="ds d-dr" style="font-size:10px;font-family:monospace;">${r.myco}</span></div></div>`;
+      html+=`<div class="sr-row" ${navRow('refrange')}><span class="sr-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><div class="sr-info"><div class="sr-name">${r.biomarker}</div><div class="sr-sub">${r.category} · ${r.low}–${r.high} ${r.units} · ${r.fluid}</div></div><div class="sr-aside"><span class="ds d-dr" style="font-size:10px;font-family:monospace;">${r.myco}</span></div></div>`;
     });
     if(rrHits.length>4)html+=`<div class="sr-more">+${rrHits.length-4} more biomarker${rrHits.length-4>1?'s':''}</div>`;
   }
