@@ -22,6 +22,7 @@
   --color-bg:              #ffffff;
   --color-bg-subtle:       #F4F8FB; /* Content area background */
   --color-bg-muted:        #D5E6EE; /* Hover states, section fills (= serenity) */
+  --color-bg-emphasis:     #b8cdd8; /* Structural group headers — one step darker than muted */
 
   /* -----------------------------------------------------------
      Text
