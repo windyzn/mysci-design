@@ -386,13 +386,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
 <!-- ALL REPORTS V1 — two-level nested table -->
 <div class="panel" id="panel-allreports-v1">
-  <div class="pa">
-    <div class="sl" style="margin:0;">All reports</div>
-    <div style="display:flex;align-items:center;gap:4px;">
-      <input class="fi" id="arv1-search" placeholder="Search reports…" style="display:none;width:180px;font-size:12px;padding:5px 8px;" oninput="filterARV1()"/>
-      <button class="btn" onclick="toggleARV1Search()" title="Search" style="padding:5px 8px;display:flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-    </div>
-  </div>
+  <div class="sl" style="margin:0;">All reports</div>
   <div class="card" style="padding:0;overflow:hidden;">
     <table class="gh-table" id="arv1-table" style="table-layout:fixed;width:100%;">
       <colgroup>
@@ -573,13 +567,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
 <!-- ASSAY CATALOG -->
 <div class="panel" id="panel-assaycatalog">
-  <div class="pa">
-    <div class="sl" style="margin:0;">Assay catalog</div>
-    <div style="display:flex;align-items:center;gap:4px;">
-      <input class="fi" id="ac-search" placeholder="Search assays…" style="display:none;width:180px;font-size:12px;padding:5px 8px;" oninput="filterAC()"/>
-      <button class="btn" onclick="toggleACSearch()" title="Search" style="padding:5px 8px;display:flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-    </div>
-  </div>
+  <div class="pa"><div class="sl" style="margin:0;">Assay catalog</div></div>
   <div class="card" style="padding:0;overflow:hidden;">
     <table class="gh-table" id="ac-table" style="table-layout:fixed;width:100%;">
       <colgroup>
@@ -669,13 +657,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
 <!-- ASSOCIATIONS -->
 <div class="panel" id="panel-systems">
-  <div class="pa">
-    <div class="sl" style="margin:0;">Associations</div>
-    <div style="display:flex;align-items:center;gap:4px;" id="assoc-search-wrap">
-      <input class="fi" id="assoc-search" placeholder="Search associations…" style="display:none;width:180px;font-size:12px;padding:5px 8px;" oninput="filterAssoc()"/>
-      <button class="btn" onclick="toggleAssocSearch()" title="Search" style="padding:5px 8px;display:flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-    </div>
-  </div>
+  <div class="pa"><div class="sl" style="margin:0;">Associations</div></div>
   <div class="tab-bar">
     <button class="tb active" onclick="switchAssocTab('table',this)">Table</button>
     <button class="tb" onclick="switchAssocTab('flowchart',this)">Flowchart</button>
@@ -853,7 +835,7 @@ function toggleGroup(id){const el=document.getElementById(id);const ch=document.
 function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
 function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
 function switchTab(btn,id){document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById(id).classList.add('active');}
-function switchAssocTab(which,btn){document.querySelectorAll('#panel-systems .tb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('assoc-tab-table').style.display=which==='table'?'':'none';document.getElementById('assoc-tab-flowchart').style.display=which==='flowchart'?'':'none';const sw=document.getElementById('assoc-search-wrap');if(sw)sw.style.display=which==='table'?'flex':'none';if(which==='flowchart'){const inp=document.getElementById('assoc-search');if(inp){inp.style.display='none';inp.value='';filterAssoc();}setTimeout(renderFlowchart,50);}
+function switchAssocTab(which,btn){document.querySelectorAll('#panel-systems .tb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('assoc-tab-table').style.display=which==='table'?'':'none';document.getElementById('assoc-tab-flowchart').style.display=which==='flowchart'?'':'none';if(which==='flowchart')setTimeout(renderFlowchart,50);}
 function exportCSV(){alert('CSV export (wireframe — simulated download)');}
 function loadKitIntoBuild(bc){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -1256,62 +1238,6 @@ function toggleRRSearch(){
   const visible=input.style.display!=='none';
   input.style.display=visible?'none':'';
   if(!visible){input.focus();}else{input.value='';filterRR();}
-}
-
-// ── TABLE SEARCH: All Reports ──
-function toggleARV1Search(){
-  const input=document.getElementById('arv1-search');
-  const visible=input.style.display!=='none';
-  input.style.display=visible?'none':'';
-  if(!visible){input.focus();}else{input.value='';filterARV1();}
-}
-function filterARV1(){
-  const q=(document.getElementById('arv1-search')?.value||'').toLowerCase().trim();
-  const tbody=document.getElementById('arv1-tbody');
-  if(!tbody)return;
-  if(!q){renderARV1();return;}
-  [...tbody.querySelectorAll('tr')].forEach(row=>{
-    if(/^arv1-c-\d+$/.test(row.className)){
-      row.style.display='none';
-    } else {
-      row.style.display=row.textContent.toLowerCase().includes(q)?'':'none';
-    }
-  });
-}
-
-// ── TABLE SEARCH: Assay Catalog ──
-function toggleACSearch(){
-  const input=document.getElementById('ac-search');
-  const visible=input.style.display!=='none';
-  input.style.display=visible?'none':'';
-  if(!visible){input.focus();}else{input.value='';filterAC();}
-}
-function filterAC(){
-  const q=(document.getElementById('ac-search')?.value||'').toLowerCase().trim();
-  const tbody=document.getElementById('ac-tbody');
-  if(!tbody)return;
-  if(!q){tbody.dataset.rendered='';renderAssayCatalog();return;}
-  [...tbody.querySelectorAll('tr')].forEach(row=>{
-    if(/^ac-child-/.test(row.className)){
-      row.style.display='none';
-    } else {
-      row.style.display=row.textContent.toLowerCase().includes(q)?'':'none';
-    }
-  });
-}
-
-// ── TABLE SEARCH: Associations ──
-function toggleAssocSearch(){
-  const input=document.getElementById('assoc-search');
-  const visible=input.style.display!=='none';
-  input.style.display=visible?'none':'';
-  if(!visible){input.focus();}else{input.value='';filterAssoc();}
-}
-function filterAssoc(){
-  const q=(document.getElementById('assoc-search')?.value||'').toLowerCase().trim();
-  document.querySelectorAll('#assoc-tab-table tbody tr').forEach(row=>{
-    row.style.display=!q||row.textContent.toLowerCase().includes(q)?'':'none';
-  });
 }
 
 // ── GLOBAL SEARCH ──
