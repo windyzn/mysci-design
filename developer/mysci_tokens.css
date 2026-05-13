@@ -92,6 +92,21 @@
   --color-status-compromised-border: var(--color-red-border);
 
   /* -----------------------------------------------------------
+     Score bands — integer 0–100
+     Used on report comparison, build a report accordion,
+     and anywhere a numeric score is displayed as a coloured pill.
+     Thresholds: high ≥ 91 · mid 70–90 · low < 70
+     ----------------------------------------------------------- */
+  --color-score-high-bg:         var(--color-green-bg);    /* ≥ 91 */
+  --color-score-high-text:       var(--color-green-text);
+
+  --color-score-mid-bg:          var(--color-yellow-bg);   /* 70–90 */
+  --color-score-mid-text:        var(--color-yellow-text);
+
+  --color-score-low-bg:          var(--color-red-bg);      /* < 70 */
+  --color-score-low-text:        var(--color-red-text);
+
+  /* -----------------------------------------------------------
      Profile type tag — shared monotone pill
      All omic types (Proteomics, Metabolomics, Exposomics,
      Microbiomics, Cellular, Genomics) use the same neutral
