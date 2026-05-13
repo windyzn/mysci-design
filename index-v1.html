@@ -356,6 +356,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     </div>
     <div class="nav-sec" style="margin-top:8px;">Governance</div>
     <div class="nav-item" data-panel="dataversions" onclick="nav(this)">Data versions</div>
+    <div class="nav-item" data-panel="audit" onclick="nav(this)">Audit log</div>
     <div class="sb-bottom">
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="avatar" id="sb-av">–</div>
@@ -569,6 +570,64 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <tr style="height:44px;"><td style="font-weight:700;font-family:monospace;">6.20.0</td><td style="white-space:nowrap;">2026-01-05</td><td style="font-size:12px;color:var(--tx2);">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</td><td>Alex</td><td><span class="ds d-dr">Archived</span></td></tr>
         <tr style="height:44px;"><td style="font-weight:700;font-family:monospace;">6.19.2</td><td style="white-space:nowrap;">2025-12-10</td><td style="font-size:12px;color:var(--tx2);">Bug fix: corrected weight propagation for 2-tier biomarker-to-system associations.</td><td>Jordan</td><td><span class="ds d-dr">Archived</span></td></tr>
       </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- AUDIT LOG -->
+<div class="panel" id="panel-audit">
+  <!-- filter + search bar -->
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <select class="fi" style="width:auto;font-size:12px;" id="audit-f-type" onchange="filterAudit()">
+        <option value="">All change types</option>
+        <option>Association</option>
+        <option>Reference range</option>
+        <option>Scoring param</option>
+        <option>Data version</option>
+      </select>
+      <select class="fi" style="width:auto;font-size:12px;" id="audit-f-status" onchange="filterAudit()">
+        <option value="">All statuses</option>
+        <option>Approved</option>
+        <option>Pending</option>
+        <option>Rejected</option>
+      </select>
+      <select class="fi" style="width:auto;font-size:12px;" id="audit-f-user" onchange="filterAudit()">
+        <option value="">All users</option>
+        <option>Maria</option>
+        <option>Jordan</option>
+        <option>Alex</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:4px;">
+      <input class="fi" id="audit-search" placeholder="Search biomarker, disease, entity…" style="display:none;width:240px;font-size:12px;padding:5px 8px;" oninput="filterAudit()"/>
+      <button class="btn" onclick="toggleAuditSearch()" id="audit-search-btn" title="Search" style="padding:5px 8px;display:flex;align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="audit-count" style="font-size:11px;color:var(--tx3);margin-bottom:8px;"></div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="gh-table" style="table-layout:fixed;width:100%;">
+      <colgroup>
+        <col style="width:100px;">
+        <col style="width:130px;">
+        <col style="width:80px;">
+        <col>
+        <col style="width:80px;">
+        <col style="width:96px;">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Entity</th>
+          <th>Change type</th>
+          <th>Description</th>
+          <th>User</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="audit-tbody"></tbody>
     </table>
   </div>
 </div>
@@ -854,7 +913,7 @@ const PAGE_META={
 };
 function setPageHeader(panel){const m=PAGE_META[panel]||{title:panel,sub:null};document.getElementById('page-title').textContent=m.title;const activePanel=document.getElementById('panel-'+panel);if(activePanel){const sl=activePanel.querySelector('.sl');if(sl){if(m.sub){sl.textContent=m.sub;sl.style.display='block';}else{sl.style.display='none';}}}}
 function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const panel=el.dataset.panel;activatePanel(panel);setPageHeader(panel);}
-function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();}
+function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();if(name==='audit')renderAuditLog();}
 function toggleGroup(id){const el=document.getElementById(id);const ch=document.getElementById('chev-'+id);const open=el.classList.contains('expanded');el.classList.toggle('collapsed',open);el.classList.toggle('expanded',!open);if(ch)ch.classList.toggle('open',!open);}
 function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
 function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
@@ -1269,6 +1328,75 @@ document.addEventListener('click',e=>{
 document.querySelectorAll('#col-menu input[data-col]').forEach(cb=>{
   cb.addEventListener('change',applyColVisibility);
 });
+// ── AUDIT LOG ──
+const AUDIT_DATA=[
+  {date:'2026-04-28',entity:'Glucose',type:'Association',description:'Added Glucose → Type 2 Diabetes association. Weight set to 8. Replaces legacy HbA1c-only mapping.',user:'Maria',status:'Approved'},
+  {date:'2026-04-22',entity:'hsCRP',type:'Reference range',description:'Upper bound revised from 3.0 to 2.8 mg/L based on updated NHANES cohort (N=4,210). Applies to Serum only.',user:'Jordan',status:'Approved'},
+  {date:'2026-04-15',entity:'Type 2 Diabetes',type:'Scoring param',description:'Multiplier for Glucose regulation process increased from 6 to 8. Pending review from science committee.',user:'Alex',status:'Pending'},
+  {date:'2026-04-10',entity:'LDL Cholesterol',type:'Reference range',description:'Proposed tightening of optimal range to 0–1.8 mmol/L (from 0–2.6). Based on ESC 2023 guidelines.',user:'Maria',status:'Rejected'},
+  {date:'2026-04-03',entity:'Vitamin D',type:'Reference range',description:'Reference range updated to 30–100 ng/mL; added footnote for clinical deficiency threshold at <20 ng/mL.',user:'Jordan',status:'Approved'},
+  {date:'2026-03-28',entity:'PSA',type:'Association',description:'PSA → Prostate Cancer association flagged for exclusion pending lab validation. Access set to Excluded.',user:'Alex',status:'Approved'},
+  {date:'2026-03-20',entity:'Cardiovascular Health',type:'Scoring param',description:'Process weight for Vascular inflammation raised from 5 to 7. Colour trigger updated from yellow to red at score <50.',user:'Maria',status:'Approved'},
+  {date:'2026-03-10',entity:'HbA1c',type:'Association',description:'Reviewed HbA1c → Metabolic Health pathway. No changes made. Decision to retain existing weight of 7.',user:'Jordan',status:'Approved'},
+  {date:'2026-02-23',entity:'Data version 6.23.3',type:'Data version',description:'13 new biofunction associations added. Glucose-Type 2 Diabetes scoring adjustment included. Promoted to Active.',user:'Maria',status:'Approved'},
+  {date:'2026-02-15',entity:'Triglycerides',type:'Reference range',description:'Proposed reduction of upper bound from 1.7 to 1.5 mmol/L. Under review by science team.',user:'Alex',status:'Pending'},
+  {date:'2026-02-01',entity:'Data version 6.22.0',type:'Data version',description:'Bone Health scoring cutoffs revised. New Thyroid function associations added. Archived after 6.23.3 promoted.',user:'Jordan',status:'Approved'},
+  {date:'2026-01-18',entity:'Inflammation',type:'Scoring param',description:'Oxidative stress process weight reduced from 9 to 6 after outlier analysis showed over-penalisation.',user:'Maria',status:'Approved'},
+];
+
+function renderAuditLog(){
+  const tbody=document.getElementById('audit-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  const statusCls={Approved:'d-complete',Pending:'d-reprocessing',Rejected:'d-compromised'};
+  AUDIT_DATA.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.dataset.type=r.type;
+    tr.dataset.status=r.status;
+    tr.dataset.user=r.user;
+    tr.dataset.text=(r.entity+' '+r.type+' '+r.description+' '+r.user+' '+r.status).toLowerCase();
+    tr.innerHTML=`
+      <td style="font-size:12px;color:var(--tx2);white-space:nowrap;">${r.date}</td>
+      <td style="font-weight:600;font-size:13px;">${r.entity}</td>
+      <td><span class="ds d-sb" style="font-size:10px;white-space:nowrap;">${r.type}</span></td>
+      <td style="font-size:12px;color:var(--tx2);">${r.description}</td>
+      <td style="font-size:12px;">${r.user}</td>
+      <td><span class="ds ${statusCls[r.status]||'d-dr'}">${r.status}</span></td>`;
+    tbody.appendChild(tr);
+  });
+  updateAuditCount();
+}
+
+function filterAudit(){
+  const q=(document.getElementById('audit-search')?.value||'').toLowerCase().trim();
+  const fType=(document.getElementById('audit-f-type')?.value||'').toLowerCase();
+  const fStatus=(document.getElementById('audit-f-status')?.value||'').toLowerCase();
+  const fUser=(document.getElementById('audit-f-user')?.value||'').toLowerCase();
+  const rows=document.querySelectorAll('#audit-tbody tr');
+  rows.forEach(r=>{
+    const matchQ=!q||r.dataset.text.includes(q);
+    const matchT=!fType||r.dataset.type.toLowerCase()===fType;
+    const matchS=!fStatus||r.dataset.status.toLowerCase()===fStatus;
+    const matchU=!fUser||r.dataset.user.toLowerCase()===fUser;
+    r.style.display=matchQ&&matchT&&matchS&&matchU?'':'none';
+  });
+  updateAuditCount();
+}
+
+function updateAuditCount(){
+  const total=document.querySelectorAll('#audit-tbody tr').length;
+  const visible=[...document.querySelectorAll('#audit-tbody tr')].filter(r=>r.style.display!=='none').length;
+  const el=document.getElementById('audit-count');
+  if(el)el.textContent=visible===total?`${total} entries`:`${visible} of ${total} entries`;
+}
+
+function toggleAuditSearch(){
+  const input=document.getElementById('audit-search');
+  const visible=input.style.display!=='none';
+  input.style.display=visible?'none':'';
+  if(!visible){input.focus();}else{input.value='';filterAudit();}
+}
+
 // ── ALL REPORTS SEARCH ──
 function toggleARV1Search(){
   const input=document.getElementById('arv1-search');
