@@ -283,6 +283,9 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .col-tip-text{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:300;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--r);padding:8px 10px;font-size:11px;color:var(--tx2);line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,0.12);width:200px;white-space:normal;font-weight:400;text-transform:none;letter-spacing:0;}
 .col-tip-r .col-tip-text{left:auto;right:0;}
 .col-tip:hover .col-tip-text{display:block;}
+.dir-up{color:var(--rt);font-size:12px;font-weight:700;}
+.dir-dn{color:var(--it);font-size:12px;font-weight:700;}
+.dir-both{color:var(--tx3);font-size:12px;font-weight:700;}
 </style>
 </head>
 <body>
@@ -674,31 +677,80 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
 <!-- ASSOCIATIONS -->
 <div class="panel" id="panel-systems">
-  <div class="pa" style="display:flex;justify-content:space-between;align-items:center;">
-    <div class="sl" style="margin:0;">Associations</div>
-    <div id="assoc-search-wrap" style="display:flex;align-items:center;gap:4px;">
+  <div class="pa"><div class="sl" style="margin:0;">Associations</div></div>
+
+  <!-- filter bar (table view only) -->
+  <div id="assoc-filter-bar" style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <select class="fi" style="width:auto;font-size:12px;" id="assoc-f-type" onchange="filterAssoc()">
+      <option value="">All system types</option>
+      <option value="Health System">Health System</option>
+      <option value="Health Area">Health Area</option>
+      <option value="Fitness">Fitness</option>
+      <option value="Cancer Hallmark">Cancer Hallmark</option>
+    </select>
+    <div style="display:flex;align-items:center;gap:4px;">
       <input class="fi" id="assoc-search" placeholder="Search associations…" style="display:none;width:210px;font-size:12px;padding:5px 8px;" oninput="filterAssoc()"/>
       <button class="btn" onclick="toggleAssocSearch()" id="assoc-search-btn" title="Search" style="padding:5px 8px;display:flex;align-items:center;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
+      <div style="position:relative;">
+        <button class="btn" onclick="toggleAssocColMenu()" id="assoc-col-toggle-btn" style="padding:5px 8px;display:flex;align-items:center;" title="Show / hide columns">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+        <div id="assoc-col-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:50;min-width:190px;">
+          <div style="padding:4px 12px 6px;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Show / hide columns</div>
+          <label class="col-toggle-row"><input type="checkbox" checked disabled/> Biomarker <span style="font-size:10px;color:var(--tx3);">(locked)</span></label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-acol="direction"/> Direction</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-acol="weight"/> Weight</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-acol="pmid"/> PMID</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-acol="systype"/> System type</label>
+          <label class="col-toggle-row"><input type="checkbox" checked data-acol="access"/> Access</label>
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="tab-bar">
     <button class="tb active" onclick="switchAssocTab('table',this)">Table</button>
     <button class="tb" onclick="switchAssocTab('flowchart',this)">Flowchart</button>
   </div>
   <div id="assoc-tab-table">
-    <div class="card" style="padding:0;overflow:hidden;"><table class="gh-table"><thead><tr><th>System</th><th>Process</th><th>Biomarker</th><th>System type</th><th>Access</th></tr></thead><tbody>
-      <tr><td>Cardiovascular Health</td><td>Lipid metabolism</td><td>LDL Cholesterol</td><td>Health System</td><td><span class="ds d-lv">Global</span></td></tr>
-      <tr><td>Metabolic Health</td><td>Glucose regulation</td><td>HbA1c</td><td>Health System</td><td><span class="ds d-lv">Global</span></td></tr>
-      <tr><td>Inflammation</td><td>—</td><td>hsCRP</td><td>Health System</td><td><span class="ds d-lv">Global</span></td></tr>
-      <tr><td>Bone Health</td><td>Bone turnover</td><td>Vitamin D</td><td>Health System</td><td><span class="ds d-lv">Global</span></td></tr>
-      <tr><td>Cancer Hallmarks</td><td>—</td><td>PSA</td><td>Cancer Hallmark</td><td><span class="ds d-rj">Excluded</span></td></tr>
-    </tbody></table></div>
+    <div style="overflow-x:auto;border:0.5px solid var(--bd);border-radius:var(--rl);background:var(--bg);">
+      <table class="gh-table" style="min-width:820px;">
+        <thead><tr>
+          <th>System</th><th>Process</th><th>Biomarker</th>
+          <th data-acol="direction">Direction</th>
+          <th data-acol="weight">Weight</th>
+          <th data-acol="pmid">PMID</th>
+          <th data-acol="systype">System type</th>
+          <th data-acol="access">Access</th>
+        </tr></thead>
+        <tbody>
+          <tr data-systype="Health System"><td>Cardiovascular Health</td><td>Lipid metabolism</td><td>LDL Cholesterol</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">3×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">28512501</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Cardiovascular Health</td><td>Lipid metabolism</td><td>HDL Cholesterol</td><td data-acol="direction"><span class="dir-dn">↓ Low</span></td><td data-acol="weight"><span class="wb-num">2×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">28512501</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Cardiovascular Health</td><td>Lipid metabolism</td><td>Triglycerides</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">28512501</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Cardiovascular Health</td><td>Lipid metabolism</td><td>Lp(a)</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">26260718</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Cardiovascular Health</td><td>Vascular inflammation</td><td>hsCRP</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">3×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">24550560</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Cardiovascular Health</td><td>Vascular inflammation</td><td>IL-6</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Metabolic Health</td><td>Glucose regulation</td><td>HbA1c</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">3×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">30636605</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Metabolic Health</td><td>Glucose regulation</td><td>Fasting glucose</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">2×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">30636605</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Metabolic Health</td><td>Glucose regulation</td><td>Insulin</td><td data-acol="direction"><span class="dir-both">↕ Both</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Metabolic Health</td><td>Thyroid function</td><td>TSH</td><td data-acol="direction"><span class="dir-both">↕ Both</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">27013369</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Metabolic Health</td><td>Thyroid function</td><td>Free T4</td><td data-acol="direction"><span class="dir-both">↕ Both</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">27013369</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Inflammation</td><td>Oxidative stress</td><td>hsCRP</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">2×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">24550560</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Inflammation</td><td>Oxidative stress</td><td>Ferritin</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Inflammation</td><td>Oxidative stress</td><td>MDA</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">2×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Bone Health</td><td>Bone turnover</td><td>Vitamin D</td><td data-acol="direction"><span class="dir-dn">↓ Low</span></td><td data-acol="weight"><span class="wb-num">3×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">29480230</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Bone Health</td><td>Bone turnover</td><td>PTH</td><td data-acol="direction"><span class="dir-both">↕ Both</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">29480230</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health System"><td>Bone Health</td><td>Bone turnover</td><td>Osteocalcin</td><td data-acol="direction"><span class="dir-dn">↓ Low</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Cancer Hallmark"><td>Cancer Hallmarks</td><td>—</td><td>PSA</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">2×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Cancer Hallmark</td><td data-acol="access"><span class="ds d-rj">Excluded</span></td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <div id="assoc-tab-flowchart" style="display:none;">
     <div class="card" style="margin-bottom:12px;padding:10px 14px;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:12px;color:var(--tx2);">System</span><select class="fi" style="width:auto;font-size:12px;" id="fc-sys-sel" onchange="renderFlowchart()"><option>Cardiovascular Health</option><option>Metabolic Health</option><option>Bone Health</option><option>Inflammation</option></select></div></div>
-    <div class="fc-legend"><span><span class="legd" style="background:var(--sb);border:1px solid var(--sbr);"></span>System</span><span><span class="legd" style="background:var(--wb);border:1px solid var(--wbr);"></span>Process</span><span><span class="legd" style="background:var(--bg3);border:1px solid var(--bd2);"></span>Biomarker</span></div>
+    <div class="fc-legend"><span><span class="legd" style="background:var(--sb);border:1px solid var(--sbr);"></span>System</span><span><span class="legd" style="background:var(--wb);border:1px solid var(--wbr);"></span>Process</span><span><span class="legd" style="background:var(--bg3);border:1px solid var(--bd2);"></span>Biomarker</span><span style="margin-left:8px;color:var(--rt);font-size:12px;font-weight:700;">↑ High</span><span style="color:var(--it);font-size:12px;font-weight:700;">↓ Low</span><span style="color:var(--tx3);font-size:12px;font-weight:700;">↕ Both</span></div>
     <div class="flow-svg-wrap" id="flowchart-container"></div>
   </div>
 </div>
@@ -815,8 +867,8 @@ function refreshBN(pi,bi,key){const el=document.getElementById('bn-'+pi+'-'+bi);
 function closeAllPops(){document.querySelectorAll('.pop').forEach(p=>p.remove());document.querySelectorAll('.fn').forEach(n=>{n.classList.remove('sel');n.style.outline='none';});}
 document.addEventListener('click',e=>{if(!e.target.closest('.fn')&&!e.target.closest('.pop'))closeAllPops();});
 
-const FC={'Cardiovascular Health':{processes:[{name:'Lipid metabolism',biomarkers:['LDL Cholesterol','HDL Cholesterol','Triglycerides','Lp(a)']},{name:'Vascular inflammation',biomarkers:['hsCRP','IL-6','Fibrinogen']}]},'Metabolic Health':{processes:[{name:'Glucose regulation',biomarkers:['HbA1c','Fasting glucose','Insulin','HOMA-IR']},{name:'Thyroid function',biomarkers:['TSH','Free T4','Free T3']}]},'Bone Health':{processes:[{name:'Bone turnover',biomarkers:['Vitamin D','PTH','Osteocalcin','CTX']}]},'Inflammation':{processes:[{name:'Oxidative stress',biomarkers:['hsCRP','Ferritin','MDA','8-OHdG']},{name:'Acute phase',biomarkers:['CRP','SAA','Fibrinogen']}]}};
-function renderFlowchart(){const sys=document.getElementById('fc-sys-sel').value;const data=FC[sys];const container=document.getElementById('flowchart-container');if(!data){container.innerHTML='';return;}const SW=140,SH=40,PW=138,PH=32,BW=138,BH=28,GAP=12,HGAP=60,PAD=16;const allBios=[];data.processes.forEach(p=>p.biomarkers.forEach(b=>{if(!allBios.find(x=>x.name===b))allBios.push({name:b,procs:[p.name]});else allBios.find(x=>x.name===b).procs.push(p.name);}));const procTotalH=data.processes.length*PH+(data.processes.length-1)*GAP;const bioTotalH=allBios.length*BH+(allBios.length-1)*GAP;const totalH=Math.max(SH,procTotalH,bioTotalH)+PAD*2;const col0=PAD,col1=PAD+SW+HGAP,col2=col1+PW+HGAP,totalW=col2+BW+PAD;const ns=t=>document.createElementNS('http://www.w3.org/2000/svg',t);const svg=ns('svg');svg.setAttribute('width',totalW);svg.setAttribute('height',totalH);svg.style.display='block';function drawNode(x,y,w,h,label,fill,stroke,tc,id){const g=ns('g');if(id)g.id=id;const rect=ns('rect');rect.setAttribute('x',x);rect.setAttribute('y',y);rect.setAttribute('width',w);rect.setAttribute('height',h);rect.setAttribute('rx','6');rect.setAttribute('fill',fill);rect.setAttribute('stroke',stroke);rect.setAttribute('stroke-width','0.5');const txt=ns('text');txt.setAttribute('x',x+w/2);txt.setAttribute('y',y+h/2+1);txt.setAttribute('text-anchor','middle');txt.setAttribute('dominant-baseline','middle');txt.setAttribute('font-size','11');txt.setAttribute('fill',tc);txt.setAttribute('font-family','Lato,system-ui,sans-serif');const mc=Math.floor(w/6.2);txt.textContent=label.length>mc?label.slice(0,mc-1)+'…':label;g.appendChild(rect);g.appendChild(txt);svg.appendChild(g);return{lx:x,rx:x+w,my:y+h/2};}function drawCurve(x1,y1,x2,y2,pi,bi){const path=ns('path');const mx=(x1+x2)/2;path.setAttribute('d',`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','rgba(24,55,75,0.14)');path.setAttribute('stroke-width','1.5');if(pi!==undefined){path.setAttribute('data-pi',pi);path.setAttribute('data-bi',bi);}svg.insertBefore(path,svg.firstChild);return path;}const sysY=totalH/2-SH/2;const sysN=drawNode(col0,sysY,SW,SH,sys,'#D5EFE5','#7BBFA0','#2A6B4F');const procStartY=(totalH-procTotalH)/2;const procNodes=[];data.processes.forEach((p,pi)=>{const y=procStartY+pi*(PH+GAP);const n=drawNode(col1,y,PW,PH,p.name,'#FFDEB8','#F5A623','#854f0b','fcp'+pi);procNodes.push({...n,name:p.name});drawCurve(sysN.rx,sysN.my,n.lx,n.my);});const bioStartY=(totalH-bioTotalH)/2;const bioNodes={};allBios.forEach((b,bi)=>{const y=bioStartY+bi*(BH+GAP);const n=drawNode(col2,y,BW,BH,b.name,'#D5E6EE','rgba(24,55,75,0.22)','#18374B','fcb'+bi);bioNodes[b.name]={...n,idx:bi};});const lines=[];data.processes.forEach((p,pi)=>{p.biomarkers.forEach(bName=>{const bn=bioNodes[bName];if(!bn)return;const pn=procNodes[pi];const l=drawCurve(pn.rx,pn.my,bn.lx,bn.my,pi,bn.idx);lines.push({line:l,pi,bi:bn.idx});});});function setHL(pi,bi,on){lines.forEach(l=>{const m=(pi===undefined||l.pi===pi)&&(bi===undefined||l.bi===bi);l.line.setAttribute('stroke',m&&on?'rgba(140,207,207,0.9)':'rgba(24,55,75,0.14)');l.line.setAttribute('stroke-width',m&&on?'2.5':'1.5');});if(pi!==undefined){const el=svg.getElementById('fcp'+pi);if(el)el.querySelector('rect').setAttribute('stroke-width',on?'2':'0.5');}if(bi!==undefined){const el=svg.getElementById('fcb'+bi);if(el)el.querySelector('rect').setAttribute('stroke-width',on?'2':'0.5');}}data.processes.forEach((p,pi)=>{const el=svg.getElementById('fcp'+pi);if(!el)return;el.style.cursor='pointer';el.onmouseenter=()=>setHL(pi,undefined,true);el.onmouseleave=()=>setHL(pi,undefined,false);});allBios.forEach((b,bi)=>{const el=svg.getElementById('fcb'+bi);if(!el)return;el.style.cursor='pointer';el.onmouseenter=()=>setHL(undefined,bi,true);el.onmouseleave=()=>setHL(undefined,bi,false);});container.innerHTML='';container.appendChild(svg);}
+const FC={'Cardiovascular Health':{processes:[{name:'Lipid metabolism',biomarkers:[{name:'LDL Cholesterol',dir:'high'},{name:'HDL Cholesterol',dir:'low'},{name:'Triglycerides',dir:'high'},{name:'Lp(a)',dir:'high'}]},{name:'Vascular inflammation',biomarkers:[{name:'hsCRP',dir:'high'},{name:'IL-6',dir:'high'},{name:'Fibrinogen',dir:'high'}]}]},'Metabolic Health':{processes:[{name:'Glucose regulation',biomarkers:[{name:'HbA1c',dir:'high'},{name:'Fasting glucose',dir:'high'},{name:'Insulin',dir:'both'},{name:'HOMA-IR',dir:'high'}]},{name:'Thyroid function',biomarkers:[{name:'TSH',dir:'both'},{name:'Free T4',dir:'both'},{name:'Free T3',dir:'both'}]}]},'Bone Health':{processes:[{name:'Bone turnover',biomarkers:[{name:'Vitamin D',dir:'low'},{name:'PTH',dir:'both'},{name:'Osteocalcin',dir:'low'},{name:'CTX',dir:'high'}]}]},'Inflammation':{processes:[{name:'Oxidative stress',biomarkers:[{name:'hsCRP',dir:'high'},{name:'Ferritin',dir:'high'},{name:'MDA',dir:'high'},{name:'8-OHdG',dir:'high'}]},{name:'Acute phase',biomarkers:[{name:'CRP',dir:'high'},{name:'SAA',dir:'high'},{name:'Fibrinogen',dir:'high'}]}]}};
+function renderFlowchart(){const sys=document.getElementById('fc-sys-sel').value;const data=FC[sys];const container=document.getElementById('flowchart-container');if(!data){container.innerHTML='';return;}const SW=140,SH=40,PW=138,PH=32,BW=148,BH=28,GAP=12,HGAP=60,PAD=16;const allBios=[];data.processes.forEach(p=>p.biomarkers.forEach(b=>{if(!allBios.find(x=>x.name===b.name))allBios.push({name:b.name,dir:b.dir,procs:[p.name]});else allBios.find(x=>x.name===b.name).procs.push(p.name);}));const procTotalH=data.processes.length*PH+(data.processes.length-1)*GAP;const bioTotalH=allBios.length*BH+(allBios.length-1)*GAP;const totalH=Math.max(SH,procTotalH,bioTotalH)+PAD*2;const col0=PAD,col1=PAD+SW+HGAP,col2=col1+PW+HGAP,totalW=col2+BW+PAD;const ns=t=>document.createElementNS('http://www.w3.org/2000/svg',t);const svg=ns('svg');svg.setAttribute('width',totalW);svg.setAttribute('height',totalH);svg.style.display='block';function bioFill(d){return d==='high'?'#FFE4E4':d==='low'?'#E4EFFF':'#D5E6EE';}function bioBorder(d){return d==='high'?'rgba(200,60,60,0.35)':d==='low'?'rgba(60,100,200,0.30)':'rgba(24,55,75,0.22)';}function bioArrow(d){return d==='high'?' ↑':d==='low'?' ↓':' ↕';}function drawNode(x,y,w,h,label,fill,stroke,tc,id){const g=ns('g');if(id)g.id=id;const rect=ns('rect');rect.setAttribute('x',x);rect.setAttribute('y',y);rect.setAttribute('width',w);rect.setAttribute('height',h);rect.setAttribute('rx','6');rect.setAttribute('fill',fill);rect.setAttribute('stroke',stroke);rect.setAttribute('stroke-width','0.5');const txt=ns('text');txt.setAttribute('x',x+w/2);txt.setAttribute('y',y+h/2+1);txt.setAttribute('text-anchor','middle');txt.setAttribute('dominant-baseline','middle');txt.setAttribute('font-size','11');txt.setAttribute('fill',tc);txt.setAttribute('font-family','Lato,system-ui,sans-serif');const mc=Math.floor(w/6.2);txt.textContent=label.length>mc?label.slice(0,mc-1)+'…':label;g.appendChild(rect);g.appendChild(txt);svg.appendChild(g);return{lx:x,rx:x+w,my:y+h/2};}function drawCurve(x1,y1,x2,y2,pi,bi){const path=ns('path');const mx=(x1+x2)/2;path.setAttribute('d',`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','rgba(24,55,75,0.14)');path.setAttribute('stroke-width','1.5');if(pi!==undefined){path.setAttribute('data-pi',pi);path.setAttribute('data-bi',bi);}svg.insertBefore(path,svg.firstChild);return path;}const sysY=totalH/2-SH/2;const sysN=drawNode(col0,sysY,SW,SH,sys,'#D5EFE5','#7BBFA0','#2A6B4F');const procStartY=(totalH-procTotalH)/2;const procNodes=[];data.processes.forEach((p,pi)=>{const y=procStartY+pi*(PH+GAP);const n=drawNode(col1,y,PW,PH,p.name,'#FFDEB8','#F5A623','#854f0b','fcp'+pi);procNodes.push({...n,name:p.name});drawCurve(sysN.rx,sysN.my,n.lx,n.my);});const bioStartY=(totalH-bioTotalH)/2;const bioNodes={};allBios.forEach((b,bi)=>{const y=bioStartY+bi*(BH+GAP);const label=b.name+bioArrow(b.dir);const n=drawNode(col2,y,BW,BH,label,bioFill(b.dir),bioBorder(b.dir),'#18374B','fcb'+bi);bioNodes[b.name]={...n,idx:bi};});const lines=[];data.processes.forEach((p,pi)=>{p.biomarkers.forEach(bio=>{const bName=bio.name;const bn=bioNodes[bName];if(!bn)return;const pn=procNodes[pi];const l=drawCurve(pn.rx,pn.my,bn.lx,bn.my,pi,bn.idx);lines.push({line:l,pi,bi:bn.idx});});});function setHL(pi,bi,on){lines.forEach(l=>{const m=(pi===undefined||l.pi===pi)&&(bi===undefined||l.bi===bi);l.line.setAttribute('stroke',m&&on?'rgba(140,207,207,0.9)':'rgba(24,55,75,0.14)');l.line.setAttribute('stroke-width',m&&on?'2.5':'1.5');});if(pi!==undefined){const el=svg.getElementById('fcp'+pi);if(el)el.querySelector('rect').setAttribute('stroke-width',on?'2':'0.5');}if(bi!==undefined){const el=svg.getElementById('fcb'+bi);if(el)el.querySelector('rect').setAttribute('stroke-width',on?'2':'0.5');}}data.processes.forEach((p,pi)=>{const el=svg.getElementById('fcp'+pi);if(!el)return;el.style.cursor='pointer';el.onmouseenter=()=>setHL(pi,undefined,true);el.onmouseleave=()=>setHL(pi,undefined,false);});allBios.forEach((b,bi)=>{const el=svg.getElementById('fcb'+bi);if(!el)return;el.style.cursor='pointer';el.onmouseenter=()=>setHL(undefined,bi,true);el.onmouseleave=()=>setHL(undefined,bi,false);});container.innerHTML='';container.appendChild(svg);}
 
 let overlayChart=null;
 const KDE_DATA={'Cardiovascular Health':{meanA:66.2,sdA:12.4,meanB:64.1,sdB:13.8},'Inflammation':{meanA:51.3,sdA:18.2,meanB:49.5,sdB:19.1}};
@@ -865,8 +917,8 @@ function switchAssocTab(which,btn){
   btn.classList.add('active');
   document.getElementById('assoc-tab-table').style.display=which==='table'?'':'none';
   document.getElementById('assoc-tab-flowchart').style.display=which==='flowchart'?'':'none';
-  const sw=document.getElementById('assoc-search-wrap');
-  if(sw)sw.style.display=which==='table'?'flex':'none';
+  const fb=document.getElementById('assoc-filter-bar');
+  if(fb)fb.style.display=which==='table'?'flex':'none';
   if(which==='flowchart'){
     const inp=document.getElementById('assoc-search');
     if(inp){inp.style.display='none';inp.value='';filterAssoc();}
@@ -1308,7 +1360,7 @@ function filterAC(){
   });
 }
 
-// ── ASSOCIATIONS SEARCH ──
+// ── ASSOCIATIONS SEARCH / FILTER / COLUMN TOGGLE ──
 function toggleAssocSearch(){
   const input=document.getElementById('assoc-search');
   const visible=input.style.display!=='none';
@@ -1317,10 +1369,36 @@ function toggleAssocSearch(){
 }
 function filterAssoc(){
   const q=(document.getElementById('assoc-search')?.value||'').toLowerCase().trim();
+  const t=document.getElementById('assoc-f-type')?.value||'';
   document.querySelectorAll('#assoc-tab-table tbody tr').forEach(row=>{
-    row.style.display=!q||row.textContent.toLowerCase().includes(q)?'':'none';
+    const matchQ=!q||row.textContent.toLowerCase().includes(q);
+    const matchT=!t||row.dataset.systype===t;
+    row.style.display=matchQ&&matchT?'':'none';
   });
 }
+function toggleAssocColMenu(){
+  const m=document.getElementById('assoc-col-menu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+function applyAssocColVisibility(){
+  document.querySelectorAll('#assoc-col-menu input[data-acol]').forEach(cb=>{
+    const col=cb.getAttribute('data-acol');
+    const visible=cb.checked;
+    document.querySelectorAll(`#assoc-tab-table [data-acol="${col}"]`).forEach(el=>{
+      el.style.display=visible?'':'none';
+    });
+  });
+}
+document.querySelectorAll('#assoc-col-menu input[data-acol]').forEach(cb=>{
+  cb.addEventListener('change',applyAssocColVisibility);
+});
+document.addEventListener('click',e=>{
+  const menu=document.getElementById('assoc-col-menu');
+  const btn=document.getElementById('assoc-col-toggle-btn');
+  if(menu&&btn&&!menu.contains(e.target)&&!btn.contains(e.target)){
+    menu.style.display='none';
+  }
+});
 
 function toggleRRSearch(){
   const input=document.getElementById('rr-search');
