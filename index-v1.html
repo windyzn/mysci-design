@@ -680,8 +680,12 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <div class="panel" id="panel-systems">
   <div class="pa"><div class="sl" style="margin:0;">Associations</div></div>
 
-  <!-- filter bar (table view only) -->
-  <div id="assoc-filter-bar" style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+  <div class="tab-bar">
+    <button class="tb active" onclick="switchAssocTab('table',this)">Table</button>
+    <button class="tb" onclick="switchAssocTab('flowchart',this)">Flowchart</button>
+  </div>
+  <!-- toolbar (table view only) -->
+  <div id="assoc-filter-bar" style="display:flex;justify-content:flex-end;align-items:center;gap:4px;margin-bottom:12px;">
     <select class="fi" style="width:auto;font-size:12px;" id="assoc-f-type" onchange="filterAssoc()">
       <option value="">All system types</option>
       <option value="Health System">Health System</option>
@@ -689,31 +693,24 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <option value="Fitness">Fitness</option>
       <option value="Cancer Hallmark">Cancer Hallmark</option>
     </select>
-    <div style="display:flex;align-items:center;gap:4px;">
-      <input class="fi" id="assoc-search" placeholder="Search associations…" style="display:none;width:210px;font-size:12px;padding:5px 8px;" oninput="filterAssoc()"/>
-      <button class="btn" onclick="toggleAssocSearch()" id="assoc-search-btn" title="Search" style="padding:5px 8px;display:flex;align-items:center;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input class="fi" id="assoc-search" placeholder="Search associations…" style="display:none;width:210px;font-size:12px;padding:5px 8px;" oninput="filterAssoc()"/>
+    <button class="btn" onclick="toggleAssocSearch()" id="assoc-search-btn" title="Search" style="padding:5px 8px;display:flex;align-items:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <div style="position:relative;">
+      <button class="btn" onclick="toggleAssocColMenu()" id="assoc-col-toggle-btn" style="padding:5px 8px;display:flex;align-items:center;" title="Show / hide columns">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       </button>
-      <div style="position:relative;">
-        <button class="btn" onclick="toggleAssocColMenu()" id="assoc-col-toggle-btn" style="padding:5px 8px;display:flex;align-items:center;" title="Show / hide columns">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        </button>
-        <div id="assoc-col-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:50;min-width:190px;">
-          <div style="padding:4px 12px 6px;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Show / hide columns</div>
-          <label class="col-toggle-row"><input type="checkbox" checked disabled/> Biomarker <span style="font-size:10px;color:var(--tx3);">(locked)</span></label>
-          <label class="col-toggle-row"><input type="checkbox" checked data-acol="direction"/> Direction</label>
-          <label class="col-toggle-row"><input type="checkbox" checked data-acol="weight"/> Weight</label>
-          <label class="col-toggle-row"><input type="checkbox" checked data-acol="pmid"/> PMID</label>
-          <label class="col-toggle-row"><input type="checkbox" checked data-acol="systype"/> System type</label>
-          <label class="col-toggle-row"><input type="checkbox" checked data-acol="access"/> Access</label>
-        </div>
+      <div id="assoc-col-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:50;min-width:190px;">
+        <div style="padding:4px 12px 6px;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;">Show / hide columns</div>
+        <label class="col-toggle-row"><input type="checkbox" checked disabled/> Biomarker <span style="font-size:10px;color:var(--tx3);">(locked)</span></label>
+        <label class="col-toggle-row"><input type="checkbox" checked data-acol="direction"/> Direction</label>
+        <label class="col-toggle-row"><input type="checkbox" checked data-acol="weight"/> Weight</label>
+        <label class="col-toggle-row"><input type="checkbox" checked data-acol="pmid"/> PMID</label>
+        <label class="col-toggle-row"><input type="checkbox" checked data-acol="systype"/> System type</label>
+        <label class="col-toggle-row"><input type="checkbox" checked data-acol="access"/> Access</label>
       </div>
     </div>
-  </div>
-
-  <div class="tab-bar">
-    <button class="tb active" onclick="switchAssocTab('table',this)">Table</button>
-    <button class="tb" onclick="switchAssocTab('flowchart',this)">Flowchart</button>
   </div>
   <div id="assoc-tab-table">
     <div style="overflow-x:auto;border:0.5px solid var(--bd);border-radius:var(--rl);background:var(--bg);">
@@ -745,6 +742,23 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
           <tr data-systype="Health System"><td>Bone Health</td><td>Bone turnover</td><td>PTH</td><td data-acol="direction"><span class="dir-both">↕ Both</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="font-size:12px;font-family:monospace;color:var(--tx2);">29480230</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
           <tr data-systype="Health System"><td>Bone Health</td><td>Bone turnover</td><td>Osteocalcin</td><td data-acol="direction"><span class="dir-dn">↓ Low</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health System</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
           <tr data-systype="Cancer Hallmark"><td>Cancer Hallmarks</td><td>—</td><td>PSA</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">2×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Cancer Hallmark</td><td data-acol="access"><span class="ds d-rj">Excluded</span></td></tr>
+          <tr data-systype="Health Area"><td>Alzheimer's disease</td><td>Mitochondrial Energy</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health Area"><td>Alzheimer's disease</td><td>Tryptophan Processing</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health Area"><td>Atherosclerosis</td><td>Blood Clotting Control</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health Area"><td>Atherosclerosis</td><td>Blood Vessel Lining Health</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health Area"><td>Atherosclerosis</td><td>Cell Membrane Lipids</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health Area"><td>Cardiovascular disease</td><td>Blood Sugar Control</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health Area"><td>Cardiovascular disease</td><td>Blood Vessel Lining Health</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health Area"><td>Type 2 diabetes</td><td>Cell Protection &amp; Detox</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Health Area"><td>Type 2 diabetes</td><td>Fat &amp; Cholesterol Transport</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Health Area</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Fitness"><td>Recovery</td><td>Inflammation &amp; immune readiness</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Fitness</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Fitness"><td>Readiness</td><td>Stress recovery</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Fitness</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Fitness"><td>Performance</td><td>Fat metabolism</td><td><span style="color:var(--tx3);">—</span></td><td data-acol="direction"><span style="color:var(--tx3);">—</span></td><td data-acol="weight"><span style="color:var(--tx3);">—</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Fitness</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Cancer Hallmark"><td>Thromboinflammation</td><td>Acute Phase Response</td><td>Alpha-1-antichymotrypsin</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Cancer Hallmark</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Cancer Hallmark"><td>Thromboinflammation</td><td>Acute Phase Response</td><td>Ceruloplasmin</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Cancer Hallmark</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Cancer Hallmark"><td>Cell Proliferation</td><td>Nucleotide &amp; Amino Acid Supply</td><td>Asparagine</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Cancer Hallmark</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Cancer Hallmark"><td>Metastasis</td><td>Tumor Suppressor Loss</td><td>Beta-2-glycoprotein 1</td><td data-acol="direction"><span class="dir-dn">↓ Low</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Cancer Hallmark</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
+          <tr data-systype="Cancer Hallmark"><td>Metastasis</td><td>Lipid-Mediated Tumor Spread</td><td>Retinol-binding protein 4</td><td data-acol="direction"><span class="dir-up">↑ High</span></td><td data-acol="weight"><span class="wb-num">1×</span></td><td data-acol="pmid"><span style="color:var(--tx3);">—</span></td><td data-acol="systype">Cancer Hallmark</td><td data-acol="access"><span class="ds d-lv">Global</span></td></tr>
         </tbody>
       </table>
     </div>
