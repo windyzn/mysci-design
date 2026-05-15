@@ -339,7 +339,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <div class="nav-sec">Operations</div>
       <div class="nav-item gh" onclick="toggleGroup('g-reports')">Reports <span class="chev open" id="chev-g-reports">▶</span></div>
       <div class="gc expanded" id="g-reports">
-        <div class="nav-item child" data-panel="allreports-v1" onclick="nav(this)">All reports</div>
+        <div class="nav-item child" data-panel="allreports-v1" onclick="nav(this)">All kits</div>
         <div class="nav-item child" data-panel="comparereports" onclick="nav(this)">Compare reports</div>
       </div>
       <div class="nav-item" data-panel="assaycatalog" onclick="nav(this)">Assay catalog</div>
@@ -392,7 +392,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <!-- ALL REPORTS V1 — two-level nested table -->
 <div class="panel" id="panel-allreports-v1">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div class="sl" style="margin:0;">All reports</div>
+    <div class="sl" style="margin:0;">All kits</div>
     <div style="display:flex;align-items:center;gap:4px;">
       <input class="fi" id="arv1-search" placeholder="Search barcode, batch, assay…" style="display:none;width:220px;font-size:12px;padding:5px 8px;" oninput="filterARV1()"/>
       <button class="btn" onclick="toggleARV1Search()" id="arv1-search-btn" title="Search" style="padding:5px 8px;display:flex;align-items:center;">
@@ -433,7 +433,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <div style="font-size:13px;font-weight:700;" id="br-kit-title">Building report for 463F345</div>
         <div style="font-size:11px;color:var(--tx2);" id="br-kit-sub">Select datasets below, then generate scores</div>
       </div>
-      <button class="btn" onclick="backToAllReports()" style="font-size:11px;">← Back to all reports</button>
+      <button class="btn" onclick="backToAllReports()" style="font-size:11px;">← Back to all kits</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
       <div class="card" style="margin-bottom:0;">
@@ -892,7 +892,7 @@ function doLogin(team){const email=document.getElementById('login-email').value|
 function doLogout(){document.getElementById('app').classList.remove('visible');document.getElementById('login').style.display='flex';document.getElementById('login-step-1').style.display='';document.getElementById('login-step-2').style.display='none';document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));currentRole='contributor';}
 function doSwitchTeam(){document.getElementById('login-step-2').style.display='';document.getElementById('login-step-1').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('app').classList.remove('visible');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));}
 const PAGE_META={
-  'allreports-v1': {title:'Reports',               sub:'All reports'},
+  'allreports-v1': {title:'Reports',               sub:'All kits'},
   'buildreport':   {title:'Reports',               sub:'Build a report'},
   'comparereports':{title:'Reports',                sub:'Compare reports'},
   'assaycatalog':  {title:'Assay Catalog',          sub:null},
