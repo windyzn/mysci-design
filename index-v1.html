@@ -547,7 +547,8 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <span style="font-size:11px;color:var(--tx3);margin-right:2px;">Filter:</span>
       <button class="cr-filter-btn active" onclick="setCrFilter('all')">All</button>
       <button class="cr-filter-btn" onclick="setCrFilter('any-change')">Any change</button>
-      <button class="cr-filter-btn" onclick="setCrFilter('band-change')">Band change</button>
+      <button class="cr-filter-btn" onclick="setCrFilter('colour-1step')">Colour change (1 step)</button>
+      <button class="cr-filter-btn" onclick="setCrFilter('colour-2step')">Colour change (2 steps)</button>
       <button class="cr-filter-btn" onclick="setCrFilter('improved')">Improved</button>
       <button class="cr-filter-btn" onclick="setCrFilter('declined')">Declined</button>
     </div>
@@ -933,7 +934,7 @@ function buildCrInlineTable(){
         dC=bandDiffCell(`<span class="${dc}">${ds}</span>`,ba,bb);
         const rc=bandRowClass(ba,bb);if(rc)tr.classList.add(rc);
         tr.dataset.changed=(row.aScore!==row.bScore)?'1':'0';
-        tr.dataset.bandChanged=(ba!==bb)?'1':'0';
+        tr.dataset.colorSteps=String(Math.abs(bandRank(bb)-bandRank(ba)));
         tr.dataset.improved=(bandRank(bb)>bandRank(ba))?'1':'0';
         tr.dataset.declined=(bandRank(bb)<bandRank(ba))?'1':'0';
       }
@@ -1100,7 +1101,8 @@ function applyCrFilter(){
   document.querySelectorAll('#cr-inline-tbody tr').forEach(tr=>{
     if(crActiveFilter==='all'){tr.style.display='';return;}
     if(crActiveFilter==='any-change'){tr.style.display=tr.dataset.changed==='1'?'':'none';return;}
-    if(crActiveFilter==='band-change'){tr.style.display=tr.dataset.bandChanged==='1'?'':'none';return;}
+    if(crActiveFilter==='colour-1step'){tr.style.display=tr.dataset.colorSteps==='1'?'':'none';return;}
+    if(crActiveFilter==='colour-2step'){tr.style.display=tr.dataset.colorSteps==='2'?'':'none';return;}
     if(crActiveFilter==='improved'){tr.style.display=tr.dataset.improved==='1'?'':'none';return;}
     if(crActiveFilter==='declined'){tr.style.display=tr.dataset.declined==='1'?'':'none';return;}
   });
