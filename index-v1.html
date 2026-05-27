@@ -153,6 +153,10 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .cr-group-hd td{background:var(--bg4);font-size:11px;font-weight:700;color:var(--tx2);padding:5px 12px;letter-spacing:.02em;border-bottom:0.5px solid var(--bd2);}
 .bc-mini{font-size:9px;font-weight:700;padding:1px 4px;border-radius:6px;line-height:1.4;}
 .bc-sep{font-size:9px;color:var(--tx3);margin:0 1px;}
+.cr-filter-btn{border:0.5px solid var(--bd2);background:transparent;color:var(--tx2);font-size:11px;padding:3px 10px;border-radius:10px;cursor:pointer;line-height:1.6;}
+.cr-filter-btn:hover{background:var(--bg3);}
+.cr-filter-btn.active{background:var(--it);color:#fff;border-color:var(--it);}
+.cr-single-mode th:nth-child(3),.cr-single-mode td:nth-child(3),.cr-single-mode th:nth-child(4),.cr-single-mode td:nth-child(4){display:none;}
 .qi{border:0.5px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;background:var(--bg);}
 .qi:hover{border-color:var(--bd2);}
 .qm{flex:1;min-width:0;}
@@ -515,29 +519,37 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 <div class="panel" id="panel-comparereports">
   <div class="pa" style="margin-bottom:16px;"><div class="sl" style="margin:0;">Compare reports</div></div>
   <div class="picker-card" style="margin-bottom:16px;">
-    <div class="picker-label">Select two reports to compare</div>
+    <div class="picker-label">Select one or two reports</div>
     <div class="picker-hint">Each barcode has a default report generated automatically. Reports saved from Build a report also appear here. Comparison is within the same barcode only — select slot A first to lock the barcode.</div>
     <table class="cmp-table" id="saved-reports-table">
       <thead><tr><th style="width:48px;">Slot</th><th>Barcode</th><th>Data version</th><th>Combination</th><th>Saved by</th><th>Saved</th><th>Status</th></tr></thead>
       <tbody>
         <tr class="cr-group-hd"><td colspan="8">463F345</td></tr>
-        <tr data-report="r1" data-barcode="463F345" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
-        <tr data-report="r2" data-barcode="463F345" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r1" data-barcode="463F345" data-label="1A_Prot + 1A_Meta" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r2" data-barcode="463F345" data-label="2A_Prot + Apr 1A_Meta" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
         <tr class="cr-group-hd"><td colspan="8">312B778</td></tr>
-        <tr data-report="r3" data-barcode="312B778" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
-        <tr data-report="r4" data-barcode="312B778" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
+        <tr data-report="r3" data-barcode="312B778" data-label="1A_Prot + 1A_Meta HQE" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
+        <tr data-report="r4" data-barcode="312B778" data-label="1A_Prot + 1A_Meta + Jan Meta" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
       </tbody>
     </table>
   </div>
-  <div id="cr-empty-prompt" style="text-align:center;padding:32px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">Select two reports above to compare them side by side.</div>
+  <div id="cr-empty-prompt" style="text-align:center;padding:32px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">Select a report above to view it. Select a second to compare side by side.</div>
   <div class="cmp-results" id="cr-results">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div style="font-size:13px;font-weight:700;">Comparing — 463F345</div>
+      <div id="cr-comparing-label" style="font-size:13px;font-weight:700;">Comparing</div>
       <div style="display:flex;align-items:center;gap:8px;">
         <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
         <button class="btn btn-p" id="cr-myhi-btn" onclick="showCrMyhiConfirm()" style="display:none;">Send to MYHI ↗</button>
         <span id="cr-myhi-locked" style="font-size:11px;color:var(--tx3);display:none;">Admin only</span>
       </div>
+    </div>
+    <div id="cr-filter-bar" style="display:none;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+      <span style="font-size:11px;color:var(--tx3);margin-right:2px;">Filter:</span>
+      <button class="cr-filter-btn active" onclick="setCrFilter('all')">All</button>
+      <button class="cr-filter-btn" onclick="setCrFilter('any-change')">Any change</button>
+      <button class="cr-filter-btn" onclick="setCrFilter('band-change')">Band change</button>
+      <button class="cr-filter-btn" onclick="setCrFilter('improved')">Improved</button>
+      <button class="cr-filter-btn" onclick="setCrFilter('declined')">Declined</button>
     </div>
     <div id="cr-myhi-confirm" style="display:none;background:var(--ib);border:0.5px solid var(--ibr);border-radius:var(--rl);padding:12px;margin-bottom:12px;">
       <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Confirm — send to MYHI?</div>
@@ -901,7 +913,49 @@ function bandDiffCell(numSpan,aCls,bCls){if(aCls===bCls)return numSpan;const pil
 function bandRowClass(aCls,bCls){const steps=Math.abs(bandRank(bCls)-bandRank(aCls));if(steps===0)return '';return steps===2?'row-band-2':'row-band-1';}
 
 const CR_DATA=[{type:'system',label:'Cardiovascular Health',a:74,b:71},{type:'process',label:'Lipid metabolism',a:70,b:68,indent:1},{type:'biomarker',label:'LDL Cholesterol',aVal:'2.1 mmol/L',bVal:'2.8 mmol/L',aScore:78,bScore:65,indent:2},{type:'biomarker',label:'HDL Cholesterol',aVal:'1.8 mmol/L',bVal:'1.7 mmol/L',aScore:82,bScore:80,indent:2},{type:'process',label:'Vascular inflammation',a:78,b:74,indent:1},{type:'biomarker',label:'hsCRP',aVal:'1.2 mg/L',bVal:'0.6 mg/L',aScore:85,bScore:95,indent:2},{type:'system',label:'Metabolic Health',a:51,b:55},{type:'process',label:'Glucose regulation',a:48,b:52,indent:1},{type:'biomarker',label:'HbA1c',aVal:'5.4%',bVal:'5.3%',aScore:72,bScore:75,indent:2},{type:'system',label:'Inflammation',a:28,b:31},{type:'process',label:'Oxidative stress',a:25,b:28,indent:1}];
-function buildCrInlineTable(){const tbody=document.getElementById('cr-inline-tbody');if(!tbody)return;tbody.innerHTML='';CR_DATA.forEach(row=>{const tr=document.createElement('tr');const indent=(row.indent||0)*16;let labelStyle=`padding-left:${10+indent}px;font-size:13px;`;if(row.type==='system'){labelStyle+='font-weight:700;';}else if(row.type==='process'){labelStyle+='color:var(--tx2);font-size:12px;';}else{labelStyle+='color:var(--tx3);font-size:12px;';}let aC,bC,dC;if(row.type==='biomarker'){const d=row.bScore-row.aScore;const dc=d>0?'dp':d<0?'dm':'dz';const ds=d>0?'+'+d:d===0?'0':String(d);const ba=sc(row.aScore),bb=sc(row.bScore);aC=`<span class="sp ${ba}">${row.aScore}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.aVal}</span>`;bC=`<span class="sp ${bb}">${row.bScore}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.bVal}</span>`;dC=bandDiffCell(`<span class="${dc}">${ds}</span>`,ba,bb);const rc=bandRowClass(ba,bb);if(rc)tr.classList.add(rc);}else{const d=row.b-row.a;const dc=d>0?'dp':d<0?'dm':'dz';const ds=d>0?'+'+d:d===0?'0':String(d);const ba=sc(row.a),bb=sc(row.b);aC=`<span class="sp ${ba}">${row.a}</span>`;bC=`<span class="sp ${bb}">${row.b}</span>`;dC=bandDiffCell(`<span class="${dc}">${ds}</span>`,ba,bb);const rc=bandRowClass(ba,bb);if(rc)tr.classList.add(rc);}tr.innerHTML=`<td style="${labelStyle}">${row.label}</td><td>${aC}</td><td>${bC}</td><td>${dC}</td>`;tbody.appendChild(tr);});}
+function buildCrInlineTable(){
+  const tbody=document.getElementById('cr-inline-tbody');if(!tbody)return;tbody.innerHTML='';
+  const singleMode=!crSlotB;
+  const table=document.getElementById('cr-inline-table');
+  if(singleMode){table.classList.add('cr-single-mode');}else{table.classList.remove('cr-single-mode');}
+  CR_DATA.forEach(row=>{
+    const tr=document.createElement('tr');
+    const indent=(row.indent||0)*16;
+    let labelStyle=`padding-left:${10+indent}px;font-size:13px;`;
+    if(row.type==='system'){labelStyle+='font-weight:700;';}else if(row.type==='process'){labelStyle+='color:var(--tx2);font-size:12px;';}else{labelStyle+='color:var(--tx3);font-size:12px;';}
+    let aC,bC='',dC='';
+    if(row.type==='biomarker'){
+      const ba=sc(row.aScore);
+      aC=`<span class="sp ${ba}">${row.aScore}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.aVal}</span>`;
+      if(!singleMode){
+        const bb=sc(row.bScore);const d=row.bScore-row.aScore;const dc=d>0?'dp':d<0?'dm':'dz';const ds=d>0?'+'+d:d===0?'0':String(d);
+        bC=`<span class="sp ${bb}">${row.bScore}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.bVal}</span>`;
+        dC=bandDiffCell(`<span class="${dc}">${ds}</span>`,ba,bb);
+        const rc=bandRowClass(ba,bb);if(rc)tr.classList.add(rc);
+        tr.dataset.changed=(row.aScore!==row.bScore)?'1':'0';
+        tr.dataset.bandChanged=(ba!==bb)?'1':'0';
+        tr.dataset.improved=(bandRank(bb)>bandRank(ba))?'1':'0';
+        tr.dataset.declined=(bandRank(bb)<bandRank(ba))?'1':'0';
+      }
+    }else{
+      const ba=sc(row.a);
+      aC=`<span class="sp ${ba}">${row.a}</span>`;
+      if(!singleMode){
+        const bb=sc(row.b);const d=row.b-row.a;const dc=d>0?'dp':d<0?'dm':'dz';const ds=d>0?'+'+d:d===0?'0':String(d);
+        bC=`<span class="sp ${bb}">${row.b}</span>`;
+        dC=bandDiffCell(`<span class="${dc}">${ds}</span>`,ba,bb);
+        const rc=bandRowClass(ba,bb);if(rc)tr.classList.add(rc);
+        tr.dataset.changed=(row.a!==row.b)?'1':'0';
+        tr.dataset.bandChanged=(ba!==bb)?'1':'0';
+        tr.dataset.improved=(bandRank(bb)>bandRank(ba))?'1':'0';
+        tr.dataset.declined=(bandRank(bb)<bandRank(ba))?'1':'0';
+      }
+    }
+    tr.innerHTML=`<td style="${labelStyle}">${row.label}</td><td>${aC}</td><td>${bC}</td><td>${dC}</td>`;
+    tbody.appendChild(tr);
+  });
+  applyCrFilter();
+}
 
 let currentRole='contributor';
 function goToTeamSelect(){document.getElementById('login-step-1').style.display='none';document.getElementById('login-step-2').style.display='';}
@@ -1023,10 +1077,33 @@ function crCycleSlot(row){
       if(lockedBarcode&&rb!==lockedBarcode)r.classList.add('cr-disabled');
     }
   });
-  const ready=!!(crSlotA&&crSlotB);
+  const bRow2=crSlotB?document.querySelector(`#saved-reports-table tr[data-report="${crSlotB}"]`):null;
+  document.getElementById('cr-a-label').textContent=aRow?aRow.getAttribute('data-label'):'—';
+  document.getElementById('cr-b-label').textContent=bRow2?bRow2.getAttribute('data-label'):'—';
+  const comparingLabel=document.getElementById('cr-comparing-label');
+  if(comparingLabel)comparingLabel.textContent='Comparing — '+(aRow?aRow.getAttribute('data-barcode'):'');
+  const filterBar=document.getElementById('cr-filter-bar');
+  if(filterBar)filterBar.style.display=crSlotB?'flex':'none';
+  const ready=!!crSlotA;
   document.getElementById('cr-empty-prompt').style.display=ready?'none':'';
   document.getElementById('cr-results').classList.toggle('vis',ready);
   if(ready)buildCrInlineTable();
+}
+let crActiveFilter='all';
+function setCrFilter(f){
+  crActiveFilter=f;
+  document.querySelectorAll('.cr-filter-btn').forEach(b=>{b.classList.toggle('active',b.getAttribute('onclick')===`setCrFilter('${f}')`);});
+  applyCrFilter();
+}
+function applyCrFilter(){
+  if(!crSlotB)return;
+  document.querySelectorAll('#cr-inline-tbody tr').forEach(tr=>{
+    if(crActiveFilter==='all'){tr.style.display='';return;}
+    if(crActiveFilter==='any-change'){tr.style.display=tr.dataset.changed==='1'?'':'none';return;}
+    if(crActiveFilter==='band-change'){tr.style.display=tr.dataset.bandChanged==='1'?'':'none';return;}
+    if(crActiveFilter==='improved'){tr.style.display=tr.dataset.improved==='1'?'':'none';return;}
+    if(crActiveFilter==='declined'){tr.style.display=tr.dataset.declined==='1'?'':'none';return;}
+  });
 }
 let slotA=null,slotB=null;
 function updateResults(){const ready=slotA&&slotB;document.getElementById('cmp-empty-prompt').style.display=ready?'none':'';document.getElementById('cmp-results').classList.toggle('vis',ready);const actions=document.getElementById('cp-actions');if(actions)actions.style.display=ready?'flex':'none';if(ready)setTimeout(renderKdeChart,50);}
