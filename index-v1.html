@@ -529,8 +529,8 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     </div>
     <div class="card" style="padding:0;overflow:hidden;">
       <table class="gh-table" id="cr2-list-table" style="table-layout:fixed;width:100%;">
-        <colgroup><col style="width:140px;"><col style="width:130px;"><col><col style="width:88px;"></colgroup>
-        <thead><tr><th>Barcode</th><th>Date received</th><th>Combinations available</th><th>Status</th></tr></thead>
+        <colgroup><col style="width:160px;"><col><col style="width:100px;"></colgroup>
+        <thead><tr><th style="padding-left:20px;">Barcode</th><th>Combinations</th><th style="padding-right:20px;">Status</th></tr></thead>
         <tbody id="cr2-list-tbody"></tbody>
       </table>
     </div>
@@ -538,12 +538,9 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
   <!-- Phase 2: Matrix + Comparison -->
   <div id="cr2-phase2" style="display:none;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-      <button class="btn" onclick="cr2Back()" style="font-size:12px;padding:4px 10px;">← Change barcode</button>
-      <span style="color:var(--bd3);">·</span>
-      <span style="font-family:monospace;font-weight:700;font-size:14px;" id="cr2-hdr-barcode"></span>
-      <span style="color:var(--bd3);">·</span>
-      <span style="font-size:12px;color:var(--tx3);" id="cr2-hdr-date"></span>
+    <div style="margin-bottom:16px;">
+      <div style="font-family:monospace;font-size:20px;font-weight:700;color:var(--tx);letter-spacing:.04em;" id="cr2-hdr-barcode"></div>
+      <button onclick="cr2Back()" style="background:none;border:none;padding:0;margin-top:5px;font-size:12px;color:var(--tx3);cursor:pointer;text-decoration:underline;text-underline-offset:2px;">← Change barcode</button>
     </div>
 
     <div class="card" style="margin-bottom:12px;">
@@ -1208,13 +1205,17 @@ let cr2Selected=new Set(),cr2CurrentBarcode=null;
 function cr2Init(){cr2RenderList(CR2_BARCODES);}
 function cr2RenderList(data){
   const tbody=document.getElementById('cr2-list-tbody');if(!tbody)return;tbody.innerHTML='';
+  const pillA='display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:500;margin:1px 2px;';
   data.forEach(bc=>{
     const assaySet=new Set(bc.reports.map(r=>r.assay));
     const fluidSet=new Set(bc.reports.map(r=>r.biofluid));
-    const combos=assaySet.size+' assay'+(assaySet.size!==1?'s':'')+' · '+fluidSet.size+' biofluid'+(fluidSet.size!==1?'s':'');
+    const assayTypes=new Set();
+    assaySet.forEach(a=>{if(/proteomics/i.test(a))assayTypes.add('Proteomics');if(/metabolomics/i.test(a))assayTypes.add('Metabolomics');});
+    const assayPills=[...assayTypes].map(t=>`<span style="${pillA}background:rgba(0,130,130,0.09);color:var(--it);">${t}</span>`).join('');
+    const fluidPills=[...fluidSet].map(f=>`<span style="${pillA}background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);">${f}</span>`).join('');
     const sCls=bc.status==='Complete'?'d-complete':'d-incomplete';
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td><button onclick="cr2Select('${bc.barcode}')" style="font-family:monospace;font-size:13px;font-weight:700;background:none;border:none;color:var(--it);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">${bc.barcode}</button></td><td style="color:var(--tx2);">${bc.receivedDate}</td><td style="font-size:12px;color:var(--tx3);">${combos}</td><td><span class="ds ${sCls}">${bc.status}</span></td>`;
+    tr.innerHTML=`<td style="padding-left:20px;"><button onclick="cr2Select('${bc.barcode}')" style="font-family:monospace;font-size:13px;font-weight:700;background:none;border:none;color:var(--it);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">${bc.barcode}</button></td><td style="font-size:12px;">${assayPills}${fluidPills}</td><td style="padding-right:20px;"><span class="ds ${sCls}">${bc.status}</span></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -1228,7 +1229,6 @@ function cr2Select(barcode){
   document.getElementById('cr2-phase2').style.display='';
   const bc=CR2_BARCODES.find(b=>b.barcode===barcode);
   document.getElementById('cr2-hdr-barcode').textContent=barcode;
-  document.getElementById('cr2-hdr-date').textContent=bc?bc.receivedDate:'';
   cr2RenderMatrix(bc);cr2RenderComparison(bc);
 }
 function cr2Back(){
@@ -1246,11 +1246,14 @@ function cr2RenderMatrix(bc){
   });
   fluids.sort((a,b)=>{const ai=fluidOrder.indexOf(a),bi=fluidOrder.indexOf(b);return(ai<0?99:ai)-(bi<0?99:bi);});
   const cellMap=new Map();bc.reports.forEach(r=>cellMap.set(r.assay+'|'+r.biofluid,r));
-  let html=`<table style="border-collapse:collapse;font-size:13px;"><thead><tr><th style="padding:0 28px 10px 0;text-align:left;font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;">Assay</th>`;
+  const thMeta='padding:0 20px 10px 0;text-align:left;font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;';
+  let html=`<table style="border-collapse:collapse;font-size:13px;"><thead><tr><th style="${thMeta}">Assay</th><th style="${thMeta}">Received</th><th style="${thMeta}">Data version</th>`;
   fluids.forEach(f=>{html+=`<th style="padding:0 0 10px 0;text-align:center;min-width:80px;font-size:11px;font-weight:600;color:var(--tx);">${f}</th>`;});
   html+=`</tr></thead><tbody>`;
   assayKeys.forEach(assay=>{
-    html+=`<tr style="border-top:0.5px solid var(--bd);"><td style="padding:10px 28px 10px 0;color:var(--tx2);">${assay}</td>`;
+    const firstR=bc.reports.find(r=>r.assay===assay);
+    const dvBadge=firstR&&firstR.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:1px 5px;">${firstR.dataVersion}</span>`:'—';
+    html+=`<tr style="border-top:0.5px solid var(--bd);"><td style="padding:10px 20px 10px 0;color:var(--tx2);">${assay}</td><td style="padding:10px 20px 10px 0;font-size:12px;color:var(--tx3);white-space:nowrap;">${bc.receivedDate}</td><td style="padding:10px 20px 10px 0;">${dvBadge}</td>`;
     fluids.forEach(fluid=>{
       const r=cellMap.get(assay+'|'+fluid);
       if(r){
@@ -1293,31 +1296,30 @@ function cr2RenderComparison(bc){
       if(!seenHA.has(hk)){if(!uniqHA.has(sys.name))uniqHA.set(sys.name,[]);uniqHA.get(sys.name).push(ha.name);seenHA.add(hk);}
       ha.biomarkers.forEach(bm=>{
         const bk=hk+'|'+bm.biomarker;
-        if(!seenBMset.has(bk)){if(!uniqBM.has(hk))uniqBM.set(hk,[]);uniqBM.get(hk).push({name:bm.biomarker,ref:bm.ref,units:bm.units});seenBMset.add(bk);}
+        if(!seenBMset.has(bk)){if(!uniqBM.has(hk))uniqBM.set(hk,[]);uniqBM.get(hk).push(bm.biomarker);seenBMset.add(bk);}
       });
     });
   }));
   const twoCol=sel.length===2;
   document.getElementById('cr2-result-thead').innerHTML=
-    '<th style="font-size:12px;font-weight:600;min-width:220px;padding:10px 8px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);">Health System / Health Area / Biomarker</th>'+
+    '<th style="min-width:220px;padding:10px 8px;"></th>'+
     sel.map((r,i)=>{
-      const lbl=cr2ColLabel(r);
-      const dv=r.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:1px 5px;margin-left:5px;">${r.dataVersion}</span>`:'';
+      const assayLabel=r.assay.replace(/\s*\([^)]*\)/,'').trim();
       const slot=twoCol?`<span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:${i===0?'var(--it)':'var(--wt)'};color:#fff;font-size:10px;font-weight:700;text-align:center;line-height:16px;margin-right:5px;">${i===0?'A':'B'}</span>`:'';
-      return `<th style="text-align:center;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${slot}${lbl}${dv}</div><div style="margin-top:5px;"><button onclick="cr2Regenerate('${r.id}')" style="font-size:10px;padding:2px 8px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button></div></th>`;
+      return `<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="display:flex;align-items:center;gap:8px;white-space:nowrap;">${slot}<span>${assayLabel.toUpperCase()}</span><button onclick="cr2Regenerate('${r.id}')" style="font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button></div><div style="font-size:11px;color:var(--tx3);font-weight:400;margin-top:3px;">${r.biofluid}</div></th>`;
     }).join('')+
     (twoCol?'<th style="text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;min-width:72px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
   const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
-  function diffCell(vals,bands){if(!twoCol||vals[0]==null||vals[1]==null)return twoCol?'<td></td>':'';const d=vals[1]-vals[0];return`<td style="text-align:right;padding:6px 14px;font-size:12px;">${bandDiffCell(`<span class="${d>0?'dp':d<0?'dm':'dz'}">${d>0?'+'+d:d===0?'0':String(d)}</span>`,bands[0],bands[1])}</td>`;}
-  function rowBg(bands){const valid=bands.filter(Boolean);return valid.length>1&&new Set(valid).size>1?'background:#fff5f5;':'';}
+  function diffCell(vals){if(!twoCol||vals[0]==null||vals[1]==null)return twoCol?'<td></td>':'';const d=vals[1]-vals[0];const cls=d>0?'dp':d<0?'dm':'dz';return`<td style="text-align:right;padding:6px 14px;font-size:12px;"><span class="${cls}">${d>0?'+'+d:d===0?'0':String(d)}</span></td>`;}
+  function rowBg(bands){const valid=bands.filter(Boolean);return valid.length>1&&new Set(valid).size>1?'border-left:3px solid #c9844a;':'border-left:3px solid transparent;';}
   uniqSys.forEach(sn=>{
     const sVals=sel.map(r=>{const s=rSys(r,sn);return s?s.score:null;});
     const sBands=sVals.map(v=>v!=null?sc(v):null);
     const sTr=document.createElement('tr');
     sTr.style.cssText='border-top:1.5px solid var(--bd);background:var(--bg2);'+rowBg(sBands);
     let cells=`<td style="padding:9px 8px;font-size:13px;font-weight:700;">${sn}</td>`;
-    sVals.forEach(v=>{cells+=v!=null?`<td style="text-align:center;padding:9px 8px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="text-align:center;color:var(--bd3);">—</td>`;});
-    cells+=diffCell(sVals,sBands);
+    sVals.forEach(v=>{cells+=v!=null?`<td style="text-align:left;padding:9px 14px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="padding:9px 14px;color:var(--bd3);">—</td>`;});
+    cells+=diffCell(sVals);
     sTr.innerHTML=cells;tbody.appendChild(sTr);
     (uniqHA.get(sn)||[]).forEach(hn=>{
       const hVals=sel.map(r=>{const h=rHA(r,sn,hn);return h?h.score:null;});
@@ -1325,17 +1327,17 @@ function cr2RenderComparison(bc){
       const hTr=document.createElement('tr');
       hTr.style.cssText='border-top:0.5px solid var(--bd);'+rowBg(hBands);
       let hCells=`<td style="padding:7px 8px 7px 22px;font-size:12px;color:var(--tx2);">${hn}</td>`;
-      hVals.forEach(v=>{hCells+=v!=null?`<td style="text-align:center;padding:7px 8px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="text-align:center;color:var(--bd3);">—</td>`;});
-      hCells+=diffCell(hVals,hBands);
+      hVals.forEach(v=>{hCells+=v!=null?`<td style="text-align:left;padding:7px 14px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="padding:7px 14px;color:var(--bd3);">—</td>`;});
+      hCells+=diffCell(hVals);
       hTr.innerHTML=hCells;tbody.appendChild(hTr);
-      (uniqBM.get(sn+'|'+hn)||[]).forEach(({name:bn,ref})=>{
+      (uniqBM.get(sn+'|'+hn)||[]).forEach(bn=>{
         const bmData=sel.map(r=>rBM(r,sn,hn,bn));
         const bmBands=bmData.map(bm=>bm?sc(bm.score):null);
         const bTr=document.createElement('tr');
         bTr.style.cssText='border-top:0.5px solid var(--bd);'+rowBg(bmBands);
-        let bCells=`<td style="padding:6px 8px 6px 38px;"><div style="font-size:12px;color:var(--tx3);">${bn}</div>${ref?`<div style="font-size:10px;color:var(--bd3);margin-top:1px;">ref ${ref}</div>`:''}</td>`;
-        bmData.forEach(bm=>{bCells+=bm?`<td style="text-align:center;padding:6px 8px;white-space:nowrap;"><span class="sp ${sc(bm.score)}" style="font-size:11px;">${bm.score}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${bm.value}${bm.units?' '+bm.units:''}</span></td>`:`<td style="text-align:center;color:var(--bd3);font-size:13px;">—</td>`;});
-        bCells+=diffCell(bmData.map(bm=>bm?bm.score:null),bmBands);
+        let bCells=`<td style="padding:6px 8px 6px 38px;"><div style="font-size:12px;color:var(--tx3);">${bn}</div></td>`;
+        bmData.forEach(bm=>{const refTxt=bm&&bm.ref?`<span style="font-size:10px;color:var(--bd3);margin-left:6px;">ref ${bm.ref}</span>`:'';bCells+=bm?`<td style="text-align:left;padding:6px 14px;white-space:nowrap;"><span class="sp ${sc(bm.score)}" style="font-size:11px;">${bm.score}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${bm.value}${bm.units?' '+bm.units:''}</span>${refTxt}</td>`:`<td style="padding:6px 14px;color:var(--bd3);font-size:13px;">—</td>`;});
+        bCells+=diffCell(bmData.map(bm=>bm?bm.score:null));
         bTr.innerHTML=bCells;tbody.appendChild(bTr);
       });
     });
