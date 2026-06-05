@@ -555,6 +555,10 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       Select at least one combination above to view the comparison.
     </div>
     <div id="cr2-result-wrap" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span id="cr2-result-hdr-title" style="font-size:14px;font-weight:700;color:var(--tx);"></span>
+        <button class="btn" onclick="cr2SendToMyhi()" style="font-size:12px;">Send to MYHI ↗</button>
+      </div>
       <div class="card" style="padding:0;overflow:hidden;">
         <div style="overflow-x:auto;">
           <table class="gh-table" id="cr2-result-table" style="min-width:500px;">
@@ -1111,39 +1115,92 @@ function applyCrFilter(){
 // ── COMPARE REPORTS (new two-phase design) ────────────────────────────────
 const CR2_BARCODES=[
   {barcode:'463F345',receivedDate:'2026-03-04',status:'Complete',reports:[
-    {id:'cr2-r1',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Serum',rows:[
-      {biomarker:'LDL Cholesterol',value:'2.1',units:'mmol/L',score:78},
-      {biomarker:'HDL Cholesterol',value:'1.8',units:'mmol/L',score:82},
-      {biomarker:'hsCRP',value:'1.2',units:'mg/L',score:85},
-      {biomarker:'IL-6',value:'2.4',units:'pg/mL',score:71},
-      {biomarker:'Fibrinogen',value:'3.1',units:'g/L',score:74},
+    {id:'cr2-r1',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Serum',dataVersion:'6.21.1',systems:[
+      {name:'Cardiovascular Health',score:74,healthAreas:[
+        {name:'Lipid Metabolism',score:70,biomarkers:[
+          {biomarker:'LDL Cholesterol',value:'2.1',units:'mmol/L',ref:'<2.6',score:78},
+          {biomarker:'HDL Cholesterol',value:'1.8',units:'mmol/L',ref:'>1.0',score:82},
+          {biomarker:'Triglycerides',value:'1.1',units:'mmol/L',ref:'<1.7',score:88},
+        ]},
+        {name:'Vascular Inflammation',score:78,biomarkers:[
+          {biomarker:'hsCRP',value:'1.2',units:'mg/L',ref:'<3.0',score:85},
+          {biomarker:'IL-6',value:'2.4',units:'pg/mL',ref:'<5.9',score:71},
+          {biomarker:'Fibrinogen',value:'3.1',units:'g/L',ref:'2–4',score:74},
+        ]},
+      ]},
+      {name:'Metabolic Health',score:65,healthAreas:[
+        {name:'Glucose Regulation',score:60,biomarkers:[
+          {biomarker:'Insulin',value:'8.2',units:'mU/L',ref:'2–25',score:72},
+          {biomarker:'HOMA-IR',value:'1.9',units:'',ref:'<2.0',score:68},
+        ]},
+      ]},
     ]},
-    {id:'cr2-r2',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Plasma',rows:[
-      {biomarker:'LDL Cholesterol',value:'2.4',units:'mmol/L',score:65},
-      {biomarker:'HDL Cholesterol',value:'1.6',units:'mmol/L',score:75},
-      {biomarker:'hsCRP',value:'1.5',units:'mg/L',score:79},
-      {biomarker:'IL-6',value:'2.9',units:'pg/mL',score:62},
-      {biomarker:'Fibrinogen',value:'3.6',units:'g/L',score:67},
+    {id:'cr2-r2',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Plasma',dataVersion:'6.21.1',systems:[
+      {name:'Cardiovascular Health',score:71,healthAreas:[
+        {name:'Lipid Metabolism',score:68,biomarkers:[
+          {biomarker:'LDL Cholesterol',value:'2.4',units:'mmol/L',ref:'<2.6',score:65},
+          {biomarker:'HDL Cholesterol',value:'1.6',units:'mmol/L',ref:'>1.0',score:75},
+          {biomarker:'Triglycerides',value:'1.3',units:'mmol/L',ref:'<1.7',score:84},
+        ]},
+        {name:'Vascular Inflammation',score:74,biomarkers:[
+          {biomarker:'hsCRP',value:'1.5',units:'mg/L',ref:'<3.0',score:79},
+          {biomarker:'IL-6',value:'2.9',units:'pg/mL',ref:'<5.9',score:62},
+          {biomarker:'Fibrinogen',value:'3.6',units:'g/L',ref:'2–4',score:67},
+        ]},
+      ]},
+      {name:'Metabolic Health',score:62,healthAreas:[
+        {name:'Glucose Regulation',score:58,biomarkers:[
+          {biomarker:'Insulin',value:'9.1',units:'mU/L',ref:'2–25',score:66},
+          {biomarker:'HOMA-IR',value:'2.2',units:'',ref:'<2.0',score:59},
+        ]},
+      ]},
     ]},
-    {id:'cr2-r3',assay:'1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',rows:[
-      {biomarker:'Glucose',value:'5.1',units:'mmol/L',score:88},
-      {biomarker:'HbA1c',value:'5.4',units:'%',score:72},
-      {biomarker:'Homocysteine',value:'8.2',units:'μM',score:81},
-      {biomarker:'Glutamine',value:'510',units:'μM',score:74},
+    {id:'cr2-r3',assay:'1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',dataVersion:'6.23.3',systems:[
+      {name:'Metabolic Health',score:82,healthAreas:[
+        {name:'Glucose Regulation',score:79,biomarkers:[
+          {biomarker:'Glucose',value:'5.1',units:'mmol/L',ref:'3.9–5.6',score:88},
+          {biomarker:'HbA1c',value:'5.4',units:'%',ref:'4.8–5.6',score:72},
+          {biomarker:'Homocysteine',value:'8.2',units:'μM',ref:'<15',score:81},
+          {biomarker:'Glutamine',value:'510',units:'μM',ref:'400–700',score:74},
+        ]},
+      ]},
+      {name:'Inflammation',score:58,healthAreas:[
+        {name:'Oxidative Stress',score:55,biomarkers:[
+          {biomarker:'MDA',value:'2.1',units:'μM',ref:'<3.5',score:76},
+          {biomarker:'8-OHdG',value:'18',units:'ng/mg',ref:'<30',score:71},
+        ]},
+      ]},
     ]},
-    {id:'cr2-r4',assay:'April 1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',rows:[
-      {biomarker:'Glucose',value:'5.3',units:'mmol/L',score:84},
-      {biomarker:'HbA1c',value:'5.5',units:'%',score:69},
-      {biomarker:'Homocysteine',value:'9.1',units:'μM',score:73},
-      {biomarker:'Glutamine',value:'490',units:'μM',score:70},
+    {id:'cr2-r4',assay:'April 1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',dataVersion:'6.23.3',systems:[
+      {name:'Metabolic Health',score:78,healthAreas:[
+        {name:'Glucose Regulation',score:74,biomarkers:[
+          {biomarker:'Glucose',value:'5.3',units:'mmol/L',ref:'3.9–5.6',score:84},
+          {biomarker:'HbA1c',value:'5.5',units:'%',ref:'4.8–5.6',score:69},
+          {biomarker:'Homocysteine',value:'9.1',units:'μM',ref:'<15',score:73},
+          {biomarker:'Glutamine',value:'490',units:'μM',ref:'400–700',score:70},
+        ]},
+      ]},
+      {name:'Inflammation',score:53,healthAreas:[
+        {name:'Oxidative Stress',score:51,biomarkers:[
+          {biomarker:'MDA',value:'2.4',units:'μM',ref:'<3.5',score:71},
+          {biomarker:'8-OHdG',value:'22',units:'ng/mg',ref:'<30',score:65},
+        ]},
+      ]},
     ]},
   ]},
   {barcode:'312B778',receivedDate:'2026-01-15',status:'Complete',reports:[
-    {id:'cr2-r5',assay:'1A_Proteomics (MRM 1.1 HQE)',biofluid:'Serum',rows:[
-      {biomarker:'LDL Cholesterol',value:'2.8',units:'mmol/L',score:65},
-      {biomarker:'HDL Cholesterol',value:'1.4',units:'mmol/L',score:68},
-      {biomarker:'hsCRP',value:'4.2',units:'mg/L',score:42},
-      {biomarker:'IL-6',value:'5.1',units:'pg/mL',score:35},
+    {id:'cr2-r5',assay:'1A_Proteomics (MRM 1.1 HQE)',biofluid:'Serum',dataVersion:'6.20.0',systems:[
+      {name:'Cardiovascular Health',score:58,healthAreas:[
+        {name:'Lipid Metabolism',score:55,biomarkers:[
+          {biomarker:'LDL Cholesterol',value:'2.8',units:'mmol/L',ref:'<2.6',score:48},
+          {biomarker:'HDL Cholesterol',value:'1.4',units:'mmol/L',ref:'>1.0',score:68},
+          {biomarker:'Triglycerides',value:'2.1',units:'mmol/L',ref:'<1.7',score:52},
+        ]},
+        {name:'Vascular Inflammation',score:42,biomarkers:[
+          {biomarker:'hsCRP',value:'4.2',units:'mg/L',ref:'<3.0',score:35},
+          {biomarker:'IL-6',value:'5.1',units:'pg/mL',ref:'<5.9',score:42},
+        ]},
+      ]},
     ]},
   ]},
 ];
@@ -1223,24 +1280,68 @@ function cr2RenderComparison(bc){
   const sel=bc.reports.filter(r=>cr2Selected.has(r.id));
   if(!sel.length){empty.style.display='';wrap.style.display='none';return;}
   empty.style.display='none';wrap.style.display='';
-  const bioOrder=[],bioSet=new Set();
-  sel.forEach(r=>r.rows.forEach(row=>{if(!bioSet.has(row.biomarker)){bioOrder.push(row.biomarker);bioSet.add(row.biomarker);}}));
-  document.getElementById('cr2-result-thead').innerHTML=
-    '<th style="font-size:12px;font-weight:600;min-width:160px;">Biomarker</th>'+
-    sel.map(r=>`<th style="text-align:center;font-size:12px;font-weight:600;white-space:nowrap;">${cr2ColLabel(r)}</th>`).join('');
-  const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
-  bioOrder.forEach(bm=>{
-    const tr=document.createElement('tr');
-    let cells=`<td style="font-size:13px;">${bm}</td>`;
-    sel.forEach(r=>{
-      const row=r.rows.find(x=>x.biomarker===bm);
-      cells+=row
-        ?`<td style="text-align:center;"><span class="sp ${sc(row.score)}">${row.score}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.value} ${row.units}</span></td>`
-        :`<td style="text-align:center;color:var(--tx3);">—</td>`;
+  const hdrTitle=document.getElementById('cr2-result-hdr-title');
+  if(hdrTitle)hdrTitle.textContent='Comparing — '+bc.barcode;
+  const rSys=(r,sn)=>r.systems.find(s=>s.name===sn);
+  const rHA=(r,sn,hn)=>{const s=rSys(r,sn);return s?s.healthAreas.find(h=>h.name===hn):null;};
+  const rBM=(r,sn,hn,bn)=>{const h=rHA(r,sn,hn);return h?h.biomarkers.find(b=>b.biomarker===bn):null;};
+  const uniqSys=[],seenSys=new Set(),uniqHA=new Map(),seenHA=new Set(),uniqBM=new Map(),seenBMset=new Set();
+  sel.forEach(r=>r.systems.forEach(sys=>{
+    if(!seenSys.has(sys.name)){uniqSys.push(sys.name);seenSys.add(sys.name);}
+    sys.healthAreas.forEach(ha=>{
+      const hk=sys.name+'|'+ha.name;
+      if(!seenHA.has(hk)){if(!uniqHA.has(sys.name))uniqHA.set(sys.name,[]);uniqHA.get(sys.name).push(ha.name);seenHA.add(hk);}
+      ha.biomarkers.forEach(bm=>{
+        const bk=hk+'|'+bm.biomarker;
+        if(!seenBMset.has(bk)){if(!uniqBM.has(hk))uniqBM.set(hk,[]);uniqBM.get(hk).push({name:bm.biomarker,ref:bm.ref,units:bm.units});seenBMset.add(bk);}
+      });
     });
-    tr.innerHTML=cells;tbody.appendChild(tr);
+  }));
+  const twoCol=sel.length===2;
+  document.getElementById('cr2-result-thead').innerHTML=
+    '<th style="font-size:12px;font-weight:600;min-width:220px;padding:10px 8px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);">Health System / Health Area / Biomarker</th>'+
+    sel.map((r,i)=>{
+      const lbl=cr2ColLabel(r);
+      const dv=r.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:1px 5px;margin-left:5px;">${r.dataVersion}</span>`:'';
+      const slot=twoCol?`<span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:${i===0?'var(--it)':'var(--wt)'};color:#fff;font-size:10px;font-weight:700;text-align:center;line-height:16px;margin-right:5px;">${i===0?'A':'B'}</span>`:'';
+      return `<th style="text-align:center;font-size:12px;font-weight:600;white-space:nowrap;padding:8px 14px;">${slot}${lbl}${dv}</th>`;
+    }).join('')+
+    (twoCol?'<th style="text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;min-width:72px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
+  const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
+  function diffCell(vals,bands){if(!twoCol||vals[0]==null||vals[1]==null)return twoCol?'<td></td>':'';const d=vals[1]-vals[0];return`<td style="text-align:right;padding:6px 14px;font-size:12px;">${bandDiffCell(`<span class="${d>0?'dp':d<0?'dm':'dz'}">${d>0?'+'+d:d===0?'0':String(d)}</span>`,bands[0],bands[1])}</td>`;}
+  function rowBg(bands){const valid=bands.filter(Boolean);return valid.length>1&&new Set(valid).size>1?'background:#fff5f5;':'';}
+  uniqSys.forEach(sn=>{
+    const sVals=sel.map(r=>{const s=rSys(r,sn);return s?s.score:null;});
+    const sBands=sVals.map(v=>v!=null?sc(v):null);
+    const sTr=document.createElement('tr');
+    sTr.style.cssText='border-top:1.5px solid var(--bd);background:var(--bg2);'+rowBg(sBands);
+    let cells=`<td style="padding:9px 8px;font-size:13px;font-weight:700;">${sn}</td>`;
+    sVals.forEach(v=>{cells+=v!=null?`<td style="text-align:center;padding:9px 8px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="text-align:center;color:var(--bd3);">—</td>`;});
+    cells+=diffCell(sVals,sBands);
+    sTr.innerHTML=cells;tbody.appendChild(sTr);
+    (uniqHA.get(sn)||[]).forEach(hn=>{
+      const hVals=sel.map(r=>{const h=rHA(r,sn,hn);return h?h.score:null;});
+      const hBands=hVals.map(v=>v!=null?sc(v):null);
+      const hTr=document.createElement('tr');
+      hTr.style.cssText='border-top:0.5px solid var(--bd);'+rowBg(hBands);
+      let hCells=`<td style="padding:7px 8px 7px 22px;font-size:12px;color:var(--tx2);">${hn}</td>`;
+      hVals.forEach(v=>{hCells+=v!=null?`<td style="text-align:center;padding:7px 8px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="text-align:center;color:var(--bd3);">—</td>`;});
+      hCells+=diffCell(hVals,hBands);
+      hTr.innerHTML=hCells;tbody.appendChild(hTr);
+      (uniqBM.get(sn+'|'+hn)||[]).forEach(({name:bn,ref})=>{
+        const bmData=sel.map(r=>rBM(r,sn,hn,bn));
+        const bmBands=bmData.map(bm=>bm?sc(bm.score):null);
+        const bTr=document.createElement('tr');
+        bTr.style.cssText='border-top:0.5px solid var(--bd);'+rowBg(bmBands);
+        let bCells=`<td style="padding:6px 8px 6px 38px;"><div style="font-size:12px;color:var(--tx3);">${bn}</div>${ref?`<div style="font-size:10px;color:var(--bd3);margin-top:1px;">ref ${ref}</div>`:''}</td>`;
+        bmData.forEach(bm=>{bCells+=bm?`<td style="text-align:center;padding:6px 8px;white-space:nowrap;"><span class="sp ${sc(bm.score)}" style="font-size:11px;">${bm.score}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${bm.value}${bm.units?' '+bm.units:''}</span></td>`:`<td style="text-align:center;color:var(--bd3);font-size:13px;">—</td>`;});
+        bCells+=diffCell(bmData.map(bm=>bm?bm.score:null),bmBands);
+        bTr.innerHTML=bCells;tbody.appendChild(bTr);
+      });
+    });
   });
 }
+function cr2SendToMyhi(){alert('Send to MYHI — not wired up in this prototype.');}
 let slotA=null,slotB=null;
 function updateResults(){const ready=slotA&&slotB;document.getElementById('cmp-empty-prompt').style.display=ready?'none':'';document.getElementById('cmp-results').classList.toggle('vis',ready);const actions=document.getElementById('cp-actions');if(actions)actions.style.display=ready?'flex':'none';if(ready)setTimeout(renderKdeChart,50);}
 function cycleSlot(row){const name=row.getAttribute('data-profile');if(slotA===name)slotA=null;else if(slotB===name)slotB=null;else if(!slotA)slotA=name;else if(!slotB)slotB=name;else slotB=name;document.querySelectorAll('#profile-picker-table tbody tr').forEach(r=>{const n=r.getAttribute('data-profile');r.classList.remove('sel-a','sel-b');const box=document.getElementById('cp-box-'+n.replace(/\s+/g,'_'));if(!box)return;if(n===slotA){r.classList.add('sel-a');box.textContent='A';box.style.background='var(--it)';box.style.color='#fff';box.style.borderColor='var(--it)';}else if(n===slotB){r.classList.add('sel-b');box.textContent='B';box.style.background='var(--wt)';box.style.color='#fff';box.style.borderColor='var(--wt)';}else{box.textContent='';box.style.background='transparent';box.style.color='var(--tx3)';box.style.borderColor='var(--bd2)';}});document.getElementById('cp-a-label').textContent=slotA||'—';document.getElementById('cp-b-label').textContent=slotB||'—';updateResults();}
