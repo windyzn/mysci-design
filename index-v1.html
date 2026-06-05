@@ -1304,7 +1304,7 @@ function cr2RenderComparison(bc){
       const lbl=cr2ColLabel(r);
       const dv=r.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:1px 5px;margin-left:5px;">${r.dataVersion}</span>`:'';
       const slot=twoCol?`<span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:${i===0?'var(--it)':'var(--wt)'};color:#fff;font-size:10px;font-weight:700;text-align:center;line-height:16px;margin-right:5px;">${i===0?'A':'B'}</span>`:'';
-      return `<th style="text-align:center;font-size:12px;font-weight:600;white-space:nowrap;padding:8px 14px;">${slot}${lbl}${dv}</th>`;
+      return `<th style="text-align:center;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${slot}${lbl}${dv}</div><div style="margin-top:5px;"><button onclick="cr2Regenerate('${r.id}')" style="font-size:10px;padding:2px 8px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button></div></th>`;
     }).join('')+
     (twoCol?'<th style="text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;min-width:72px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
   const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
@@ -1342,6 +1342,14 @@ function cr2RenderComparison(bc){
   });
 }
 function cr2SendToMyhi(){alert('Send to MYHI — not wired up in this prototype.');}
+function cr2Regenerate(id){
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  const r=bc&&bc.reports.find(x=>x.id===id);
+  if(!r)return;
+  const btn=document.querySelector(`button[onclick="cr2Regenerate('${id}')"]`);
+  if(btn){btn.textContent='Regenerating…';btn.disabled=true;btn.style.color='var(--tx3)';}
+  setTimeout(()=>{if(btn){btn.textContent='✓ Done';btn.style.color='var(--sg,#2a7a4f)';}setTimeout(()=>{if(btn){btn.textContent='↻ Regenerate';btn.disabled=false;btn.style.color='var(--tx2)';}},2000);},1800);
+}
 let slotA=null,slotB=null;
 function updateResults(){const ready=slotA&&slotB;document.getElementById('cmp-empty-prompt').style.display=ready?'none':'';document.getElementById('cmp-results').classList.toggle('vis',ready);const actions=document.getElementById('cp-actions');if(actions)actions.style.display=ready?'flex':'none';if(ready)setTimeout(renderKdeChart,50);}
 function cycleSlot(row){const name=row.getAttribute('data-profile');if(slotA===name)slotA=null;else if(slotB===name)slotB=null;else if(!slotA)slotA=name;else if(!slotB)slotB=name;else slotB=name;document.querySelectorAll('#profile-picker-table tbody tr').forEach(r=>{const n=r.getAttribute('data-profile');r.classList.remove('sel-a','sel-b');const box=document.getElementById('cp-box-'+n.replace(/\s+/g,'_'));if(!box)return;if(n===slotA){r.classList.add('sel-a');box.textContent='A';box.style.background='var(--it)';box.style.color='#fff';box.style.borderColor='var(--it)';}else if(n===slotB){r.classList.add('sel-b');box.textContent='B';box.style.background='var(--wt)';box.style.color='#fff';box.style.borderColor='var(--wt)';}else{box.textContent='';box.style.background='transparent';box.style.color='var(--tx3)';box.style.borderColor='var(--bd2)';}});document.getElementById('cp-a-label').textContent=slotA||'—';document.getElementById('cp-b-label').textContent=slotB||'—';updateResults();}
