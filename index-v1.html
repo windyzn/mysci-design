@@ -96,6 +96,11 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 /* ── Global search modal ── */
 .search-overlay{position:fixed;inset:0;background:rgba(24,55,75,0.28);z-index:300;display:none;align-items:flex-start;justify-content:center;padding-top:72px;}
 .search-modal{background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);width:580px;max-height:72vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(24,55,75,0.2);overflow:hidden;}
+.cr2-myhi-overlay{position:fixed;inset:0;background:rgba(24,55,75,0.28);z-index:300;display:none;align-items:center;justify-content:center;}
+.cr2-myhi-modal{background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);width:460px;box-shadow:0 12px 40px rgba(24,55,75,0.18);overflow:hidden;}
+.cr2-myhi-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:0.5px solid var(--bd);}
+.cr2-myhi-body{padding:20px 18px;}
+.cr2-myhi-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 18px;border-top:0.5px solid var(--bd);}
 .search-top{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:0.5px solid var(--bd);}
 .search-top svg{flex-shrink:0;color:var(--tx3);}
 .search-qi{flex:1;border:none;outline:none;font-size:14px;color:var(--tx);background:transparent;font-family:inherit;}
@@ -554,7 +559,10 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     <div id="cr2-result-wrap" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <span id="cr2-result-hdr-title" style="font-size:14px;font-weight:700;color:var(--tx);"></span>
-        <button class="btn" onclick="cr2SendToMyhi()" style="font-size:12px;">Send to MYHI ↗</button>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx3);cursor:pointer;user-select:none;" title="Prototype toggle — simulate admin session"><input type="checkbox" id="cr2-admin-toggle" onchange="cr2ToggleAdmin(this.checked)" style="cursor:pointer;margin:0;"> Admin</label>
+          <button class="btn" id="cr2-send-btn" onclick="cr2SendToMyhi()" style="font-size:12px;opacity:0.45;cursor:not-allowed;" title="Admin access required">🔒 Send to MYHI</button>
+        </div>
       </div>
       <div class="card" style="padding:0;overflow:hidden;">
         <div style="overflow-x:auto;">
@@ -1201,7 +1209,7 @@ const CR2_BARCODES=[
     ]},
   ]},
 ];
-let cr2Selected=new Set(),cr2CurrentBarcode=null;
+let cr2Selected=new Set(),cr2CurrentBarcode=null,cr2IsAdmin=false;
 function cr2Init(){cr2RenderList(CR2_BARCODES);}
 function cr2RenderList(data){
   const tbody=document.getElementById('cr2-list-tbody');if(!tbody)return;tbody.innerHTML='';
@@ -1342,7 +1350,42 @@ function cr2RenderComparison(bc){
     });
   });
 }
-function cr2SendToMyhi(){alert('Send to MYHI — not wired up in this prototype.');}
+function cr2ToggleAdmin(on){cr2IsAdmin=on;const btn=document.getElementById('cr2-send-btn');if(!btn)return;if(on){btn.innerHTML='Send to MYHI ↗';btn.style.opacity='';btn.style.cursor='';btn.title='';}else{btn.innerHTML='🔒 Send to MYHI';btn.style.opacity='0.45';btn.style.cursor='not-allowed';btn.title='Admin access required';}}
+function cr2SendToMyhi(){
+  if(!cr2IsAdmin)return;
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  if(!bc)return;
+  const sel=bc.reports.filter(r=>cr2Selected.has(r.id));
+  if(!sel.length)return;
+  const optEl=document.getElementById('cr2-myhi-options');
+  optEl.innerHTML=sel.map((r,i)=>`<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--bd2);border-radius:6px;cursor:pointer;font-size:13px;"><input type="radio" name="cr2-myhi-rpt" value="${r.id}" ${i===0?'checked':''} style="cursor:pointer;margin:0;"><span><strong>${r.assay.replace(/\s*\([^)]*\)/,'').trim()}</strong> · ${r.biofluid}</span></label>`).join('');
+  document.getElementById('cr2-myhi-step1').style.display='';
+  document.getElementById('cr2-myhi-step2').style.display='none';
+  document.getElementById('cr2-myhi-step3').style.display='none';
+  document.getElementById('cr2-myhi-title').textContent='Send to MYHI';
+  document.getElementById('cr2-myhi-overlay').style.display='flex';
+}
+function cr2MyhiStep2(){
+  const sel=document.querySelector('input[name="cr2-myhi-rpt"]:checked');if(!sel)return;
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  const r=bc&&bc.reports.find(x=>x.id===sel.value);if(!r)return;
+  document.getElementById('cr2-myhi-selected-label').textContent=r.assay.replace(/\s*\([^)]*\)/,'').trim()+' · '+r.biofluid;
+  document.getElementById('cr2-myhi-selected-barcode').textContent=cr2CurrentBarcode;
+  document.getElementById('cr2-myhi-step1').style.display='none';
+  document.getElementById('cr2-myhi-step2').style.display='';
+}
+function cr2MyhiBack(){document.getElementById('cr2-myhi-step1').style.display='';document.getElementById('cr2-myhi-step2').style.display='none';}
+function cr2MyhiConfirm(){
+  const sel=document.querySelector('input[name="cr2-myhi-rpt"]:checked');
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  const r=bc&&sel&&bc.reports.find(x=>x.id===sel.value);
+  const lbl=r?r.assay.replace(/\s*\([^)]*\)/,'').trim()+' · '+r.biofluid:'report';
+  document.getElementById('cr2-myhi-success-msg').textContent=lbl+' for barcode '+cr2CurrentBarcode+' has been sent to the MYHI portal.';
+  document.getElementById('cr2-myhi-step2').style.display='none';
+  document.getElementById('cr2-myhi-step3').style.display='';
+  document.getElementById('cr2-myhi-title').textContent='Sent ✓';
+}
+function cr2MyhiClose(){document.getElementById('cr2-myhi-overlay').style.display='none';}
 function cr2Regenerate(id){
   const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
   const r=bc&&bc.reports.find(x=>x.id===id);
@@ -1830,6 +1873,55 @@ function updateSrFocus(){
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openSearch();}});
 </script>
+
+<!-- Send to MYHI modal -->
+<div class="cr2-myhi-overlay" id="cr2-myhi-overlay" onclick="if(event.target===this)cr2MyhiClose()">
+  <div class="cr2-myhi-modal">
+    <div class="cr2-myhi-hdr">
+      <span style="font-size:14px;font-weight:700;color:var(--tx);" id="cr2-myhi-title">Send to MYHI</span>
+      <button onclick="cr2MyhiClose()" style="background:none;border:none;font-size:20px;color:var(--tx3);cursor:pointer;line-height:1;padding:0;margin-left:12px;">×</button>
+    </div>
+    <!-- Step 1: select report -->
+    <div id="cr2-myhi-step1">
+      <div class="cr2-myhi-body">
+        <div style="font-size:13px;color:var(--tx2);margin-bottom:14px;">Select which report to send to MYHI:</div>
+        <div id="cr2-myhi-options" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+      <div class="cr2-myhi-foot">
+        <button class="btn" onclick="cr2MyhiClose()" style="font-size:12px;background:var(--bg);color:var(--tx2);border-color:var(--bd2);">Cancel</button>
+        <button class="btn btn-p" onclick="cr2MyhiStep2()" style="font-size:12px;">Next →</button>
+      </div>
+    </div>
+    <!-- Step 2: confirm -->
+    <div id="cr2-myhi-step2" style="display:none;">
+      <div class="cr2-myhi-body">
+        <div style="display:flex;align-items:flex-start;gap:12px;background:var(--bg3);border:0.5px solid var(--bd);border-radius:8px;padding:14px 16px;">
+          <span style="font-size:18px;line-height:1.5;flex-shrink:0;">⚠️</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:5px;">Confirm send</div>
+            <div style="font-size:13px;color:var(--tx2);">Send <strong id="cr2-myhi-selected-label"></strong> for barcode <strong id="cr2-myhi-selected-barcode"></strong> to MYHI?</div>
+            <div style="font-size:11px;color:var(--tx3);margin-top:7px;">Once sent, this report will be visible in the MYHI portal. This action cannot be undone.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cr2-myhi-foot">
+        <button class="btn" onclick="cr2MyhiBack()" style="font-size:12px;background:var(--bg);color:var(--tx2);border-color:var(--bd2);">← Back</button>
+        <button class="btn btn-p" onclick="cr2MyhiConfirm()" style="font-size:12px;">Send ↗</button>
+      </div>
+    </div>
+    <!-- Step 3: success -->
+    <div id="cr2-myhi-step3" style="display:none;">
+      <div class="cr2-myhi-body" style="text-align:center;padding:36px 24px 28px;">
+        <div style="width:48px;height:48px;border-radius:50%;background:rgba(42,122,79,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px;color:#2a7a4f;">✓</div>
+        <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:8px;">Sent to MYHI</div>
+        <div style="font-size:12px;color:var(--tx2);" id="cr2-myhi-success-msg"></div>
+      </div>
+      <div class="cr2-myhi-foot">
+        <button class="btn btn-p" onclick="cr2MyhiClose()" style="font-size:12px;">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Global search overlay -->
 <div class="search-overlay" id="search-overlay" onclick="if(event.target===this)closeSearch()">
