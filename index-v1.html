@@ -517,61 +517,55 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
 <!-- COMPARE REPORTS -->
 <div class="panel" id="panel-comparereports">
-  <div class="pa" style="margin-bottom:16px;"><div class="sl" style="margin:0;">Compare reports</div></div>
-  <div class="picker-card" style="margin-bottom:16px;">
-    <div class="picker-label">Select one or two reports</div>
-    <div class="picker-hint">Each barcode has a default report generated automatically. Reports saved from Build a report also appear here. Comparison is within the same barcode only — select slot A first to lock the barcode.</div>
-    <table class="cmp-table" id="saved-reports-table">
-      <thead><tr><th style="width:48px;">Slot</th><th>Barcode</th><th>Data version</th><th>Combination</th><th>Saved by</th><th>Saved</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr class="cr-group-hd"><td colspan="8">463F345</td></tr>
-        <tr data-report="r1" data-barcode="463F345" data-label="1A_Prot + 1A_Meta" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r1" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.21.1<div class="dv-tooltip"><div class="dv-tooltip-ver">6.21.1</div><div class="dv-tooltip-desc">Addition of 8 new biofunction associations, updated reference ranges for Vitamin D and hsCRP.</div><div class="dv-tooltip-date">Released 2026-03-01</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1) + 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-03-10</td><td><span class="ds d-dr">Saved</span></td></tr>
-        <tr data-report="r2" data-barcode="463F345" data-label="2A_Prot + Apr 1A_Meta" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r2" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">463F345</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">2A_Proteomics (MRM 1.1) + April 1A_Metabolomics (MYCO 1.2)</td><td>Maria</td><td>2026-04-05</td><td><span class="ds d-dr">Saved</span></td></tr>
-        <tr class="cr-group-hd"><td colspan="8">312B778</td></tr>
-        <tr data-report="r3" data-barcode="312B778" data-label="1A_Prot + 1A_Meta HQE" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r3" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.20.0<div class="dv-tooltip"><div class="dv-tooltip-ver">6.20.0</div><div class="dv-tooltip-desc">Major scoring model update: revised cutoffs for Cardiovascular Health and Inflammation systems.</div><div class="dv-tooltip-date">Released 2026-01-05</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics (MRM 1.1 HQE) + 1A_Metabolomics (MYCO 1.2 HQE)</td><td>Alex</td><td>2026-01-15</td><td><span class="ds d-lv">Published</span></td></tr>
-        <tr data-report="r4" data-barcode="312B778" data-label="1A_Prot + 1A_Meta + Jan Meta" onclick="crCycleSlot(this)"><td><span class="cr-slot-box" id="cr-box-r4" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:4px;font-size:10px;font-weight:700;color:var(--tx3);cursor:pointer;"></span></td><td style="font-family:monospace;">312B778</td><td><span class="dv-chip" onclick="event.stopPropagation()">6.23.3<div class="dv-tooltip"><div class="dv-tooltip-ver">6.23.3</div><div class="dv-tooltip-desc">Addition of 13 new biofunction associations, updated weight for Glucose-Type 2 diabetes scoring adjustment.</div><div class="dv-tooltip-date">Released 2026-02-23</div></div></span></td><td style="font-size:11px;color:var(--tx2);">1A_Proteomics + 1A_Metabolomics + Jan 2026_Metabolomics (MYMet 2.0)</td><td>Alex</td><td>2026-01-28</td><td><span class="ds d-dr">Saved</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div id="cr-empty-prompt" style="text-align:center;padding:32px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">Select a report above to view it. Select a second to compare side by side.</div>
-  <div class="cmp-results" id="cr-results">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div id="cr-comparing-label" style="font-size:13px;font-weight:700;">Comparing</div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
-        <button class="btn btn-p" id="cr-myhi-btn" onclick="showCrMyhiConfirm()" style="display:none;">Send to MYHI ↗</button>
-        <span id="cr-myhi-locked" style="font-size:11px;color:var(--tx3);display:none;">Admin only</span>
-      </div>
+
+  <!-- Phase 1: Barcode list -->
+  <div id="cr2-phase1">
+    <div style="margin-bottom:14px;">
+      <div class="sl" style="margin-bottom:2px;">Compare reports</div>
+      <div style="font-size:12px;color:var(--tx3);">Select a barcode to compare its lab combinations.</div>
     </div>
-    <div id="cr-filter-bar" style="display:none;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
-      <span style="font-size:11px;color:var(--tx3);margin-right:2px;">Filter:</span>
-      <button class="cr-filter-btn active" onclick="setCrFilter('all')">All</button>
-      <button class="cr-filter-btn" onclick="setCrFilter('any-change')">Any change</button>
-      <button class="cr-filter-btn" onclick="setCrFilter('colour-1step')">Colour change (1 step)</button>
-      <button class="cr-filter-btn" onclick="setCrFilter('colour-2step')">Colour change (2 steps)</button>
-      <button class="cr-filter-btn" onclick="setCrFilter('improved')">Improved</button>
-      <button class="cr-filter-btn" onclick="setCrFilter('declined')">Declined</button>
+    <div style="margin-bottom:12px;">
+      <input class="fi" id="cr2-search" placeholder="Search by barcode…" style="max-width:280px;font-size:13px;" oninput="cr2Filter()"/>
     </div>
-    <div id="cr-myhi-confirm" style="display:none;background:var(--ib);border:0.5px solid var(--ibr);border-radius:var(--rl);padding:12px;margin-bottom:12px;">
-      <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Confirm — send to MYHI?</div>
-      <div style="font-size:11px;color:var(--tx2);margin-bottom:10px;">This will publish the comparison report to the MYHI patient portal.</div>
-      <div style="display:flex;gap:8px;"><button class="btn btn-p" onclick="confirmCrSend()">Confirm send</button><button class="btn" onclick="document.getElementById('cr-myhi-confirm').style.display='none'">Cancel</button></div>
-    </div>
-    <div id="cr-myhi-success" style="display:none;background:var(--sb);border:0.5px solid var(--sbr);border-radius:var(--r);padding:12px;margin-bottom:12px;">
-      <div style="font-size:13px;font-weight:700;color:var(--st);margin-bottom:4px;">Sent to MYHI successfully</div>
-    </div>
-    <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
-      <table class="gh-table" id="cr-inline-table">
-        <thead><tr style="background:var(--bg3);">
-          <th style="width:40%;">Health System / Health Area / Biomarker</th>
-          <th style="width:26%;"><span class="slot-a">A</span> <span id="cr-a-label" style="font-weight:400;font-size:11px;color:var(--tx2);">1A_Prot + 1A_Meta</span></th>
-          <th style="width:26%;"><span class="slot-b">B</span> <span id="cr-b-label" style="font-weight:400;font-size:11px;color:var(--tx2);">2A_Prot + 1A_Meta</span></th>
-          <th style="width:8%;">Diff</th>
-        </tr></thead>
-        <tbody id="cr-inline-tbody"></tbody>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="gh-table" id="cr2-list-table" style="table-layout:fixed;width:100%;">
+        <colgroup><col style="width:140px;"><col style="width:130px;"><col><col style="width:88px;"></colgroup>
+        <thead><tr><th>Barcode</th><th>Date received</th><th>Combinations available</th><th>Status</th></tr></thead>
+        <tbody id="cr2-list-tbody"></tbody>
       </table>
     </div>
   </div>
+
+  <!-- Phase 2: Matrix + Comparison -->
+  <div id="cr2-phase2" style="display:none;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+      <button class="btn" onclick="cr2Back()" style="font-size:12px;padding:4px 10px;">← Change barcode</button>
+      <span style="color:var(--bd3);">·</span>
+      <span style="font-family:monospace;font-weight:700;font-size:14px;" id="cr2-hdr-barcode"></span>
+      <span style="color:var(--bd3);">·</span>
+      <span style="font-size:12px;color:var(--tx3);" id="cr2-hdr-date"></span>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="sl" style="margin-bottom:14px;">Select combinations</div>
+      <div id="cr2-matrix"></div>
+    </div>
+
+    <div id="cr2-empty-prompt" style="text-align:center;padding:36px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">
+      Select at least one combination above to view the comparison.
+    </div>
+    <div id="cr2-result-wrap" style="display:none;">
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="overflow-x:auto;">
+          <table class="gh-table" id="cr2-result-table" style="min-width:500px;">
+            <thead><tr id="cr2-result-thead"></tr></thead>
+            <tbody id="cr2-result-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- DATA VERSIONS -->
@@ -980,7 +974,7 @@ const PAGE_META={
 };
 function setPageHeader(panel){const m=PAGE_META[panel]||{title:panel,sub:null};document.getElementById('page-title').textContent=m.title;const activePanel=document.getElementById('panel-'+panel);if(activePanel){const sl=activePanel.querySelector('.sl');if(sl){if(m.sub){sl.textContent=m.sub;sl.style.display='block';}else{sl.style.display='none';}}}}
 function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const panel=el.dataset.panel;activatePanel(panel);setPageHeader(panel);}
-function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){buildCrInlineTable();applyRoleGating();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();}
+function activatePanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='allreports-v1')renderARV1();if(name==='buildreport'){setTimeout(()=>buildAcc('acc-build'),50);applyRoleGating();}if(name==='weights')setTimeout(renderWeightTree,50);if(name==='systems')setTimeout(renderFlowchart,50);if(name==='refrange')setTimeout(()=>renderRR(RR_DATA),50);if(name==='comparereports'){cr2Init();}if(name==='cmpprofiles')setTimeout(renderKdeChart,50);if(name==='assaycatalog')renderAssayCatalog();}
 function toggleGroup(id){const el=document.getElementById(id);const ch=document.getElementById('chev-'+id);const open=el.classList.contains('expanded');el.classList.toggle('collapsed',open);el.classList.toggle('expanded',!open);if(ch)ch.classList.toggle('open',!open);}
 function toggleEnv(){const b=document.getElementById('env-badge');const s=b.textContent.trim()==='Staging';b.textContent=s?'Production':'Staging';b.className='env-badge '+(s?'env-p':'env-s');}
 function showRREdit(){const c=document.getElementById('rr-edit-card');c.style.display='block';c.scrollIntoView({behavior:'smooth',block:'nearest'});}
@@ -1111,6 +1105,140 @@ function applyCrFilter(){
       ||(crActiveFilters.has('improved')&&tr.dataset.improved==='1')
       ||(crActiveFilters.has('declined')&&tr.dataset.declined==='1');
     tr.style.display=show?'':'none';
+  });
+}
+
+// ── COMPARE REPORTS (new two-phase design) ────────────────────────────────
+const CR2_BARCODES=[
+  {barcode:'463F345',receivedDate:'2026-03-04',status:'Complete',reports:[
+    {id:'cr2-r1',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Serum',rows:[
+      {biomarker:'LDL Cholesterol',value:'2.1',units:'mmol/L',score:78},
+      {biomarker:'HDL Cholesterol',value:'1.8',units:'mmol/L',score:82},
+      {biomarker:'hsCRP',value:'1.2',units:'mg/L',score:85},
+      {biomarker:'IL-6',value:'2.4',units:'pg/mL',score:71},
+      {biomarker:'Fibrinogen',value:'3.1',units:'g/L',score:74},
+    ]},
+    {id:'cr2-r2',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Plasma',rows:[
+      {biomarker:'LDL Cholesterol',value:'2.4',units:'mmol/L',score:65},
+      {biomarker:'HDL Cholesterol',value:'1.6',units:'mmol/L',score:75},
+      {biomarker:'hsCRP',value:'1.5',units:'mg/L',score:79},
+      {biomarker:'IL-6',value:'2.9',units:'pg/mL',score:62},
+      {biomarker:'Fibrinogen',value:'3.6',units:'g/L',score:67},
+    ]},
+    {id:'cr2-r3',assay:'1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',rows:[
+      {biomarker:'Glucose',value:'5.1',units:'mmol/L',score:88},
+      {biomarker:'HbA1c',value:'5.4',units:'%',score:72},
+      {biomarker:'Homocysteine',value:'8.2',units:'μM',score:81},
+      {biomarker:'Glutamine',value:'510',units:'μM',score:74},
+    ]},
+    {id:'cr2-r4',assay:'April 1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',rows:[
+      {biomarker:'Glucose',value:'5.3',units:'mmol/L',score:84},
+      {biomarker:'HbA1c',value:'5.5',units:'%',score:69},
+      {biomarker:'Homocysteine',value:'9.1',units:'μM',score:73},
+      {biomarker:'Glutamine',value:'490',units:'μM',score:70},
+    ]},
+  ]},
+  {barcode:'312B778',receivedDate:'2026-01-15',status:'Complete',reports:[
+    {id:'cr2-r5',assay:'1A_Proteomics (MRM 1.1 HQE)',biofluid:'Serum',rows:[
+      {biomarker:'LDL Cholesterol',value:'2.8',units:'mmol/L',score:65},
+      {biomarker:'HDL Cholesterol',value:'1.4',units:'mmol/L',score:68},
+      {biomarker:'hsCRP',value:'4.2',units:'mg/L',score:42},
+      {biomarker:'IL-6',value:'5.1',units:'pg/mL',score:35},
+    ]},
+  ]},
+];
+let cr2Selected=new Set(),cr2CurrentBarcode=null;
+function cr2Init(){cr2RenderList(CR2_BARCODES);}
+function cr2RenderList(data){
+  const tbody=document.getElementById('cr2-list-tbody');if(!tbody)return;tbody.innerHTML='';
+  data.forEach(bc=>{
+    const assaySet=new Set(bc.reports.map(r=>r.assay));
+    const fluidSet=new Set(bc.reports.map(r=>r.biofluid));
+    const combos=assaySet.size+' assay'+(assaySet.size!==1?'s':'')+' · '+fluidSet.size+' biofluid'+(fluidSet.size!==1?'s':'');
+    const sCls=bc.status==='Complete'?'d-complete':'d-incomplete';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><button onclick="cr2Select('${bc.barcode}')" style="font-family:monospace;font-size:13px;font-weight:700;background:none;border:none;color:var(--it);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">${bc.barcode}</button></td><td style="color:var(--tx2);">${bc.receivedDate}</td><td style="font-size:12px;color:var(--tx3);">${combos}</td><td><span class="ds ${sCls}">${bc.status}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function cr2Filter(){
+  const q=(document.getElementById('cr2-search')?.value||'').toLowerCase().trim();
+  cr2RenderList(CR2_BARCODES.filter(bc=>!q||bc.barcode.toLowerCase().includes(q)));
+}
+function cr2Select(barcode){
+  cr2CurrentBarcode=barcode;cr2Selected.clear();
+  document.getElementById('cr2-phase1').style.display='none';
+  document.getElementById('cr2-phase2').style.display='';
+  const bc=CR2_BARCODES.find(b=>b.barcode===barcode);
+  document.getElementById('cr2-hdr-barcode').textContent=barcode;
+  document.getElementById('cr2-hdr-date').textContent=bc?bc.receivedDate:'';
+  cr2RenderMatrix(bc);cr2RenderComparison(bc);
+}
+function cr2Back(){
+  cr2CurrentBarcode=null;cr2Selected.clear();
+  document.getElementById('cr2-phase2').style.display='none';
+  document.getElementById('cr2-phase1').style.display='';
+}
+function cr2RenderMatrix(bc){
+  const el=document.getElementById('cr2-matrix');if(!el||!bc)return;
+  const fluidOrder=['Serum','Plasma','Blood','Urine','Gut'];
+  const assayKeys=[],assaySet=new Set(),fluids=[],fluidSet=new Set();
+  bc.reports.forEach(r=>{
+    if(!assaySet.has(r.assay)){assayKeys.push(r.assay);assaySet.add(r.assay);}
+    if(!fluidSet.has(r.biofluid)){fluids.push(r.biofluid);fluidSet.add(r.biofluid);}
+  });
+  fluids.sort((a,b)=>{const ai=fluidOrder.indexOf(a),bi=fluidOrder.indexOf(b);return(ai<0?99:ai)-(bi<0?99:bi);});
+  const cellMap=new Map();bc.reports.forEach(r=>cellMap.set(r.assay+'|'+r.biofluid,r));
+  let html=`<table style="border-collapse:collapse;font-size:13px;"><thead><tr><th style="padding:0 28px 10px 0;text-align:left;font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;">Assay</th>`;
+  fluids.forEach(f=>{html+=`<th style="padding:0 0 10px 0;text-align:center;min-width:80px;font-size:11px;font-weight:600;color:var(--tx);">${f}</th>`;});
+  html+=`</tr></thead><tbody>`;
+  assayKeys.forEach(assay=>{
+    html+=`<tr style="border-top:0.5px solid var(--bd);"><td style="padding:10px 28px 10px 0;color:var(--tx2);">${assay}</td>`;
+    fluids.forEach(fluid=>{
+      const r=cellMap.get(assay+'|'+fluid);
+      if(r){
+        const on=cr2Selected.has(r.id);
+        const bg=on?'var(--my-dark)':'var(--bg)';const bc2=on?'var(--my-dark)':'var(--bd2)';
+        const check=on?`<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>`:'';
+        html+=`<td style="text-align:center;padding:10px 0;"><button id="cr2-cb-${r.id}" onclick="cr2Toggle('${r.id}')" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;border:1.5px solid ${bc2};background:${bg};cursor:pointer;color:#fff;transition:border-color .12s,background .12s;">${check}</button></td>`;
+      }else{
+        html+=`<td style="text-align:center;padding:10px 0;color:var(--bd3);font-size:15px;">—</td>`;
+      }
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table>`;
+  el.innerHTML=html;
+}
+function cr2Toggle(id){
+  if(cr2Selected.has(id))cr2Selected.delete(id);else cr2Selected.add(id);
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  cr2RenderMatrix(bc);cr2RenderComparison(bc);
+}
+function cr2ColLabel(r){return r.assay.replace(/\s*\([^)]*\)/,'').trim()+' · '+r.biofluid;}
+function cr2RenderComparison(bc){
+  const empty=document.getElementById('cr2-empty-prompt');
+  const wrap=document.getElementById('cr2-result-wrap');
+  if(!empty||!wrap||!bc)return;
+  const sel=bc.reports.filter(r=>cr2Selected.has(r.id));
+  if(!sel.length){empty.style.display='';wrap.style.display='none';return;}
+  empty.style.display='none';wrap.style.display='';
+  const bioOrder=[],bioSet=new Set();
+  sel.forEach(r=>r.rows.forEach(row=>{if(!bioSet.has(row.biomarker)){bioOrder.push(row.biomarker);bioSet.add(row.biomarker);}}));
+  document.getElementById('cr2-result-thead').innerHTML=
+    '<th style="font-size:12px;font-weight:600;min-width:160px;">Biomarker</th>'+
+    sel.map(r=>`<th style="text-align:center;font-size:12px;font-weight:600;white-space:nowrap;">${cr2ColLabel(r)}</th>`).join('');
+  const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
+  bioOrder.forEach(bm=>{
+    const tr=document.createElement('tr');
+    let cells=`<td style="font-size:13px;">${bm}</td>`;
+    sel.forEach(r=>{
+      const row=r.rows.find(x=>x.biomarker===bm);
+      cells+=row
+        ?`<td style="text-align:center;"><span class="sp ${sc(row.score)}">${row.score}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${row.value} ${row.units}</span></td>`
+        :`<td style="text-align:center;color:var(--tx3);">—</td>`;
+    });
+    tr.innerHTML=cells;tbody.appendChild(tr);
   });
 }
 let slotA=null,slotB=null;
