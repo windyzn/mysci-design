@@ -559,10 +559,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     <div id="cr2-result-wrap" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <span id="cr2-result-hdr-title" style="font-size:14px;font-weight:700;color:var(--tx);"></span>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx3);cursor:pointer;user-select:none;" title="Prototype toggle — simulate admin session"><input type="checkbox" id="cr2-admin-toggle" onchange="cr2ToggleAdmin(this.checked)" style="cursor:pointer;margin:0;"> Admin</label>
-          <button class="btn" id="cr2-send-btn" onclick="cr2SendToMyhi()" style="font-size:12px;opacity:0.45;cursor:not-allowed;" title="Admin access required">🔒 Send to MYHI</button>
-        </div>
+        <button class="btn" id="cr2-send-btn" onclick="cr2SendToMyhi()" style="font-size:12px;">Send to MYHI ↗</button>
       </div>
       <div class="card" style="padding:0;overflow:hidden;">
         <div style="overflow-x:auto;">
@@ -1209,7 +1206,7 @@ const CR2_BARCODES=[
     ]},
   ]},
 ];
-let cr2Selected=new Set(),cr2CurrentBarcode=null,cr2IsAdmin=false;
+let cr2Selected=new Set(),cr2CurrentBarcode=null,cr2IsAdmin=true;
 function cr2Init(){cr2RenderList(CR2_BARCODES);}
 function cr2RenderList(data){
   const tbody=document.getElementById('cr2-list-tbody');if(!tbody)return;tbody.innerHTML='';
@@ -1255,28 +1252,49 @@ function cr2RenderMatrix(bc){
   fluids.sort((a,b)=>{const ai=fluidOrder.indexOf(a),bi=fluidOrder.indexOf(b);return(ai<0?99:ai)-(bi<0?99:bi);});
   const cellMap=new Map();bc.reports.forEach(r=>cellMap.set(r.assay+'|'+r.biofluid,r));
   const thMeta='padding:0 20px 10px 0;text-align:left;font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;';
-  let html=`<table style="border-collapse:collapse;font-size:13px;"><thead><tr><th style="${thMeta}">Assay</th><th style="${thMeta}">Received</th><th style="${thMeta}">Data version</th>`;
+  const omicOf=a=>/proteomics/i.test(a)?'Proteomics':/metabolomics/i.test(a)?'Metabolomics':/microbiomics/i.test(a)?'Microbiomics':/exposomics/i.test(a)?'Exposomics':'Other';
+  const groups=new Map();
+  assayKeys.forEach(a=>{const t=omicOf(a);if(!groups.has(t))groups.set(t,[]);groups.get(t).push(a);});
+  const totalCols=3+fluids.length;
+  let html=`<table style="border-collapse:collapse;font-size:13px;width:100%;"><thead><tr><th style="${thMeta}">Assay</th><th style="${thMeta}">Received</th><th style="${thMeta}">Data version</th>`;
   fluids.forEach(f=>{html+=`<th style="padding:0 0 10px 0;text-align:center;min-width:80px;font-size:11px;font-weight:600;color:var(--tx);">${f}</th>`;});
   html+=`</tr></thead><tbody>`;
-  assayKeys.forEach(assay=>{
-    const firstR=bc.reports.find(r=>r.assay===assay);
-    const dvBadge=firstR&&firstR.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:1px 5px;">${firstR.dataVersion}</span>`:'—';
-    html+=`<tr style="border-top:0.5px solid var(--bd);"><td style="padding:10px 20px 10px 0;color:var(--tx2);">${assay}</td><td style="padding:10px 20px 10px 0;font-size:12px;color:var(--tx3);white-space:nowrap;">${bc.receivedDate}</td><td style="padding:10px 20px 10px 0;">${dvBadge}</td>`;
-    fluids.forEach(fluid=>{
-      const r=cellMap.get(assay+'|'+fluid);
-      if(r){
-        const on=cr2Selected.has(r.id);
-        const bg=on?'var(--my-dark)':'var(--bg)';const bc2=on?'var(--my-dark)':'var(--bd2)';
-        const check=on?`<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>`:'';
-        html+=`<td style="text-align:center;padding:10px 0;"><button id="cr2-cb-${r.id}" onclick="cr2Toggle('${r.id}')" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;border:1.5px solid ${bc2};background:${bg};cursor:pointer;color:#fff;transition:border-color .12s,background .12s;">${check}</button></td>`;
-      }else{
-        html+=`<td style="text-align:center;padding:10px 0;color:var(--bd3);font-size:15px;">—</td>`;
-      }
+  let firstGroup=true;
+  groups.forEach((assays,groupName)=>{
+    html+=`<tr><td colspan="${totalCols}" style="padding:${firstGroup?'4px':'16px'} 0 6px;font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em;${firstGroup?'':'border-top:1.5px solid var(--bd);'}">${groupName}</td></tr>`;
+    firstGroup=false;
+    assays.forEach(assay=>{
+      const firstR=bc.reports.find(r=>r.assay===assay);
+      const dvBadge=firstR&&firstR.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:1px 5px;">${firstR.dataVersion}</span>`:'—';
+      html+=`<tr style="border-top:0.5px solid var(--bd);"><td style="padding:10px 20px 10px 0;color:var(--tx2);">${assay}</td><td style="padding:10px 20px 10px 0;font-size:12px;color:var(--tx3);white-space:nowrap;">${bc.receivedDate}</td><td style="padding:10px 20px 10px 0;">${dvBadge}</td>`;
+      fluids.forEach(fluid=>{
+        const r=cellMap.get(assay+'|'+fluid);
+        if(r){
+          const on=cr2Selected.has(r.id);
+          const bg=on?'var(--my-dark)':'var(--bg)';const bc2=on?'var(--my-dark)':'var(--bd2)';
+          const check=on?`<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>`:'';
+          html+=`<td style="text-align:center;padding:10px 0;"><button id="cr2-cb-${r.id}" onclick="cr2Toggle('${r.id}')" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;border:1.5px solid ${bc2};background:${bg};cursor:pointer;color:#fff;transition:border-color .12s,background .12s;">${check}</button></td>`;
+        }else{
+          html+=`<td style="text-align:center;padding:10px 0;color:var(--bd3);font-size:15px;">—</td>`;
+        }
+      });
+      html+=`</tr>`;
     });
-    html+=`</tr>`;
   });
-  html+=`</tbody></table>`;
+  html+=`</tbody></table><div id="cr2-matrix-nudge" style="display:none;margin-top:12px;font-size:12px;color:var(--it);padding:8px 12px;background:rgba(0,130,130,0.06);border-left:3px solid rgba(0,130,130,0.25);border-radius:0 4px 4px 0;"></div>`;
   el.innerHTML=html;
+  cr2CheckNudge(bc);
+}
+function cr2CheckNudge(bc){
+  const nudge=document.getElementById('cr2-matrix-nudge');
+  if(!nudge||!bc)return;
+  const sel=bc.reports.filter(r=>cr2Selected.has(r.id));
+  if(!sel.length){nudge.style.display='none';return;}
+  const hasP=sel.some(r=>/proteomics/i.test(r.assay));
+  const hasM=sel.some(r=>/metabolomics/i.test(r.assay));
+  if(hasP&&hasM){nudge.style.display='none';return;}
+  nudge.style.display='';
+  nudge.textContent=hasP?'Add a metabolomics combination for a complete multi-omic score.':'Add a proteomics combination for a complete multi-omic score.';
 }
 function cr2Toggle(id){
   if(cr2Selected.has(id))cr2Selected.delete(id);else cr2Selected.add(id);
