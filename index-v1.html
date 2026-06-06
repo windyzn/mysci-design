@@ -1261,13 +1261,14 @@ function cr2RenderSlots(bc){
       const on=selectedId===r.id;
       const dvBadge=r.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 4px;margin-left:5px;">${r.dataVersion}</span>`:'';
       const method=(r.assay.match(/\(([^)]+)\)/)||[])[1]||'';
-      return`<label style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:0.5px solid ${on?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${on?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="radio" name="cr2-slot-${slotIdx}-${groupType}" value="${r.id}" ${on?'checked':''} onclick="cr2SlotChange(${slotIdx},'${groupType}',${on?"''":"'"+r.id+"'"})" style="margin-top:2px;cursor:pointer;flex-shrink:0;"><div><div style="font-size:12px;font-weight:600;color:var(--tx);">${r.assay.replace(/\s*\([^)]*\)/,'').trim()}${method?' · '+method:''}${dvBadge}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${r.biofluid} · received ${bc.receivedDate}</div></div></label>`;
+      const regenBtn=`<button onclick="event.preventDefault();event.stopPropagation();cr2Regenerate('${r.id}')" style="font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;margin-left:6px;" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button>`;
+      return`<label style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:0.5px solid ${on?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${on?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="radio" name="cr2-slot-${slotIdx}-${groupType}" value="${r.id}" ${on?'checked':''} onclick="cr2SlotChange(${slotIdx},'${groupType}',${on?"''":"'"+r.id+"'"})" style="margin-top:2px;cursor:pointer;flex-shrink:0;"><div><div style="display:flex;align-items:center;flex-wrap:wrap;gap:0;font-size:12px;font-weight:600;color:var(--tx);">${r.assay.replace(/\s*\([^)]*\)/,'').trim()}${method?' · '+method:''}${dvBadge}${regenBtn}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${r.biofluid} · received ${bc.receivedDate}</div></div></label>`;
     }).join('');
   }
   el.innerHTML=cr2Slots.map((slot,i)=>{
     const lbl=labels[i]||String(i+1);
     const canRemove=cr2Slots.length>1;
-    return`<div style="flex:1;min-width:260px;border:0.5px solid var(--bd2);border-radius:8px;padding:16px;background:var(--bg);"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-size:13px;font-weight:700;color:var(--tx);">Report ${lbl}</span>${canRemove?`<button onclick="cr2RemoveSlot(${i})" style="background:none;border:none;font-size:18px;color:var(--tx3);cursor:pointer;line-height:1;padding:0;" title="Remove">×</button>`:''}</div><div style="margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Proteomics</div>${makeOptions(proteoReports,'proteomics',i,slot.proteomicsId)}</div><div style="border-top:0.5px solid var(--bd);padding-top:14px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Metabolomics</div>${makeOptions(metaboReports,'metabolomics',i,slot.metabolomicsId)}</div></div>`;
+    return`<div style="flex:1;min-width:260px;border:0.5px solid var(--bd2);border-radius:8px;padding:16px;background:var(--bg);"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-size:13px;font-weight:700;color:var(--tx);">Report ${lbl}</span>${canRemove?`<button onclick="cr2RemoveSlot(${i})" style="background:none;border:none;font-size:18px;color:var(--tx3);cursor:pointer;line-height:1;padding:0;" title="Remove">×</button>`:''}</div><div style="margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Proteomics</div>${makeOptions(proteoReports,'proteomics',i,slot.proteomicsId)}</div><div style="padding-top:14px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Metabolomics</div>${makeOptions(metaboReports,'metabolomics',i,slot.metabolomicsId)}</div></div>`;
   }).join('');
   cr2CheckNudge(bc);
 }
@@ -1349,8 +1350,7 @@ function cr2RenderComparison(bc){
     '<th style="min-width:220px;padding:10px 8px;"></th>'+
     sel.map((r,i)=>{
       const assayLabel=r._isMerged?r.assay:r.assay.replace(/\s*\([^)]*\)/,'').trim();
-      const regenBtn=r._isMerged?'':`<button onclick="cr2Regenerate('${r.id}')" style="font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button>`;
-      return `<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${assayLabel.toUpperCase()}</div><div style="display:flex;align-items:center;gap:8px;margin-top:3px;white-space:nowrap;"><span style="font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</span>${regenBtn}</div></th>`;
+      return `<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${assayLabel.toUpperCase()}</div><div style="margin-top:3px;"><span style="font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</span></div></th>`;
     }).join('')+
     (twoCol?'<th style="text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;min-width:72px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
   const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
@@ -1418,7 +1418,7 @@ function cr2MyhiConfirm(){
   document.getElementById('cr2-myhi-success-msg').textContent=lbl+' for barcode '+cr2CurrentBarcode+' has been sent to the MYHI portal.';
   document.getElementById('cr2-myhi-step2').style.display='none';
   document.getElementById('cr2-myhi-step3').style.display='';
-  document.getElementById('cr2-myhi-title').textContent='Sent ✓';
+  document.getElementById('cr2-myhi-title').textContent='Send to MYHI';
 }
 function cr2MyhiClose(){document.getElementById('cr2-myhi-overlay').style.display='none';}
 function cr2Regenerate(id){
@@ -1929,10 +1929,13 @@ document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){
     </div>
     <!-- Step 2: confirm -->
     <div id="cr2-myhi-step2" style="display:none;">
-      <div class="cr2-myhi-body">
-        <div style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:8px;">Confirm send</div>
-        <div style="font-size:13px;color:var(--tx2);">Send <strong id="cr2-myhi-selected-label"></strong> for barcode <strong id="cr2-myhi-selected-barcode"></strong> to MYHI?</div>
-        <div style="font-size:11px;color:var(--tx3);margin-top:8px;">Once sent, this report will be visible in the MYHI portal. This action cannot be undone.</div>
+      <div class="cr2-myhi-body" style="padding:24px 24px 20px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;">
+          <span style="font-size:15px;line-height:1;">⚠️</span>
+          <span style="font-size:13px;font-weight:600;color:var(--tx);">Confirm send</span>
+        </div>
+        <div style="font-size:13px;color:var(--tx2);line-height:1.6;">Send <strong id="cr2-myhi-selected-label"></strong> for barcode <strong id="cr2-myhi-selected-barcode"></strong> to MYHI?</div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:12px;line-height:1.6;">Once sent, this report will be visible in the MYHI portal. This action cannot be undone.</div>
       </div>
       <div class="cr2-myhi-foot">
         <button class="btn" onclick="cr2MyhiBack()" style="font-size:12px;background:var(--bg);color:var(--tx2);border-color:var(--bd2);">← Back</button>
