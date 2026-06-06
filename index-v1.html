@@ -1257,19 +1257,17 @@ function cr2RenderSlots(bc){
   const labels=['A','B','C','D'];
   function makeOptions(reports,groupType,slotIdx,selectedId){
     if(!reports.length)return`<div style="font-size:12px;color:var(--tx3);padding:4px 0;font-style:italic;">No ${groupType} datasets available.</div>`;
-    const opts=reports.map(r=>{
+    return reports.map(r=>{
       const on=selectedId===r.id;
       const dvBadge=r.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 4px;margin-left:5px;">${r.dataVersion}</span>`:'';
       const method=(r.assay.match(/\(([^)]+)\)/)||[])[1]||'';
-      return`<label style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:0.5px solid ${on?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${on?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="radio" name="cr2-slot-${slotIdx}-${groupType}" value="${r.id}" ${on?'checked':''} onchange="cr2SlotChange(${slotIdx},'${groupType}','${r.id}')" style="margin-top:2px;cursor:pointer;flex-shrink:0;"><div><div style="font-size:12px;font-weight:600;color:var(--tx);">${r.assay.replace(/\s*\([^)]*\)/,'').trim()} · ${r.biofluid}${dvBadge}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${method?method+' · ':''}received ${bc.receivedDate}</div></div></label>`;
+      return`<label style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:0.5px solid ${on?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${on?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="radio" name="cr2-slot-${slotIdx}-${groupType}" value="${r.id}" ${on?'checked':''} onclick="cr2SlotChange(${slotIdx},'${groupType}',${on?"''":"'"+r.id+"'"})" style="margin-top:2px;cursor:pointer;flex-shrink:0;"><div><div style="font-size:12px;font-weight:600;color:var(--tx);">${r.assay.replace(/\s*\([^)]*\)/,'').trim()}${method?' · '+method:''}${dvBadge}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${r.biofluid} · received ${bc.receivedDate}</div></div></label>`;
     }).join('');
-    const clearBtn=selectedId?`<button onclick="cr2SlotChange(${slotIdx},'${groupType}','')" style="font-size:11px;color:var(--tx3);background:none;border:none;cursor:pointer;padding:0;margin-top:2px;text-decoration:underline;text-underline-offset:2px;">Clear</button>`:'';
-    return opts+clearBtn;
   }
   el.innerHTML=cr2Slots.map((slot,i)=>{
     const lbl=labels[i]||String(i+1);
     const canRemove=cr2Slots.length>1;
-    return`<div style="flex:1;min-width:260px;border:0.5px solid var(--bd2);border-radius:8px;padding:16px;background:var(--bg);"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-size:13px;font-weight:700;color:var(--tx);">Report ${lbl}</span>${canRemove?`<button onclick="cr2RemoveSlot(${i})" style="background:none;border:none;font-size:18px;color:var(--tx3);cursor:pointer;line-height:1;padding:0;" title="Remove">×</button>`:''}</div><div style="margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Proteomics</div>${makeOptions(proteoReports,'proteomics',i,slot.proteomicsId)}<div style="font-size:11px;color:var(--tx3);margin-top:4px;font-style:italic;">Optional</div></div><div style="border-top:0.5px solid var(--bd);padding-top:14px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Metabolomics</div>${makeOptions(metaboReports,'metabolomics',i,slot.metabolomicsId)}<div style="font-size:11px;color:var(--tx3);margin-top:4px;font-style:italic;">Optional</div></div></div>`;
+    return`<div style="flex:1;min-width:260px;border:0.5px solid var(--bd2);border-radius:8px;padding:16px;background:var(--bg);"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-size:13px;font-weight:700;color:var(--tx);">Report ${lbl}</span>${canRemove?`<button onclick="cr2RemoveSlot(${i})" style="background:none;border:none;font-size:18px;color:var(--tx3);cursor:pointer;line-height:1;padding:0;" title="Remove">×</button>`:''}</div><div style="margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Proteomics</div>${makeOptions(proteoReports,'proteomics',i,slot.proteomicsId)}</div><div style="border-top:0.5px solid var(--bd);padding-top:14px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Metabolomics</div>${makeOptions(metaboReports,'metabolomics',i,slot.metabolomicsId)}</div></div>`;
   }).join('');
   cr2CheckNudge(bc);
 }
@@ -1309,7 +1307,8 @@ function cr2BuildSlotReport(bc,slot,lbl){
       });
     }else{merged.push(JSON.parse(JSON.stringify(s2)));}
   });
-  return{id:'slot-'+lbl,assay:proteoR.assay.replace(/\s*\([^)]*\)/,'').trim()+' + '+metaboR.assay.replace(/\s*\([^)]*\)/,'').trim(),biofluid:[...new Set([proteoR.biofluid,metaboR.biofluid])].join(' / '),dataVersion:proteoR.dataVersion,systems:merged,_slotLabel:lbl,_isMerged:true};
+  const _fullLabel=proteoR.assay+' · '+proteoR.biofluid+' + '+metaboR.assay+' · '+metaboR.biofluid;
+  return{id:'slot-'+lbl,assay:proteoR.assay.replace(/\s*\([^)]*\)/,'').trim()+' + '+metaboR.assay.replace(/\s*\([^)]*\)/,'').trim(),biofluid:[...new Set([proteoR.biofluid,metaboR.biofluid])].join(' / '),dataVersion:proteoR.dataVersion,systems:merged,_slotLabel:lbl,_isMerged:true,_fullLabel};
 }
 function cr2CheckNudge(bc){
   const nudge=document.getElementById('cr2-matrix-nudge');if(!nudge||!bc)return;
@@ -1396,7 +1395,7 @@ function cr2SendToMyhi(){
   cr2MyhiSel=cr2Slots.map((slot,i)=>cr2BuildSlotReport(bc,slot,['A','B','C','D'][i]||String(i+1))).filter(Boolean);
   if(!cr2MyhiSel.length)return;
   const optEl=document.getElementById('cr2-myhi-options');
-  optEl.innerHTML=cr2MyhiSel.map((r,i)=>`<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--bd2);border-radius:6px;cursor:pointer;font-size:13px;"><input type="radio" name="cr2-myhi-rpt" value="${i}" ${i===0?'checked':''} style="cursor:pointer;margin:0;"><span><strong>${r.assay}</strong> · ${r.biofluid}</span></label>`).join('');
+  optEl.innerHTML=cr2MyhiSel.map((r,i)=>`<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--bd2);border-radius:6px;cursor:pointer;font-size:13px;"><input type="radio" name="cr2-myhi-rpt" value="${i}" ${i===0?'checked':''} style="cursor:pointer;margin:0;flex-shrink:0;"><span>${r._fullLabel||r.assay+' · '+r.biofluid}</span></label>`).join('');
   document.getElementById('cr2-myhi-step1').style.display='';
   document.getElementById('cr2-myhi-step2').style.display='none';
   document.getElementById('cr2-myhi-step3').style.display='none';
@@ -1406,7 +1405,7 @@ function cr2SendToMyhi(){
 function cr2MyhiStep2(){
   const selEl=document.querySelector('input[name="cr2-myhi-rpt"]:checked');if(!selEl)return;
   const r=cr2MyhiSel[parseInt(selEl.value)];if(!r)return;
-  document.getElementById('cr2-myhi-selected-label').textContent=r.assay+' · '+r.biofluid;
+  document.getElementById('cr2-myhi-selected-label').textContent=r._fullLabel||r.assay+' · '+r.biofluid;
   document.getElementById('cr2-myhi-selected-barcode').textContent=cr2CurrentBarcode;
   document.getElementById('cr2-myhi-step1').style.display='none';
   document.getElementById('cr2-myhi-step2').style.display='';
@@ -1415,7 +1414,7 @@ function cr2MyhiBack(){document.getElementById('cr2-myhi-step1').style.display='
 function cr2MyhiConfirm(){
   const selEl=document.querySelector('input[name="cr2-myhi-rpt"]:checked');
   const r=selEl&&cr2MyhiSel[parseInt(selEl.value)];
-  const lbl=r?r.assay+' · '+r.biofluid:'report';
+  const lbl=r?(r._fullLabel||r.assay+' · '+r.biofluid):'report';
   document.getElementById('cr2-myhi-success-msg').textContent=lbl+' for barcode '+cr2CurrentBarcode+' has been sent to the MYHI portal.';
   document.getElementById('cr2-myhi-step2').style.display='none';
   document.getElementById('cr2-myhi-step3').style.display='';
@@ -1931,14 +1930,9 @@ document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){
     <!-- Step 2: confirm -->
     <div id="cr2-myhi-step2" style="display:none;">
       <div class="cr2-myhi-body">
-        <div style="display:flex;align-items:flex-start;gap:12px;background:var(--bg3);border:0.5px solid var(--bd);border-radius:8px;padding:14px 16px;">
-          <span style="font-size:18px;line-height:1.5;flex-shrink:0;">⚠️</span>
-          <div>
-            <div style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:5px;">Confirm send</div>
-            <div style="font-size:13px;color:var(--tx2);">Send <strong id="cr2-myhi-selected-label"></strong> for barcode <strong id="cr2-myhi-selected-barcode"></strong> to MYHI?</div>
-            <div style="font-size:11px;color:var(--tx3);margin-top:7px;">Once sent, this report will be visible in the MYHI portal. This action cannot be undone.</div>
-          </div>
-        </div>
+        <div style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:8px;">Confirm send</div>
+        <div style="font-size:13px;color:var(--tx2);">Send <strong id="cr2-myhi-selected-label"></strong> for barcode <strong id="cr2-myhi-selected-barcode"></strong> to MYHI?</div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:8px;">Once sent, this report will be visible in the MYHI portal. This action cannot be undone.</div>
       </div>
       <div class="cr2-myhi-foot">
         <button class="btn" onclick="cr2MyhiBack()" style="font-size:12px;background:var(--bg);color:var(--tx2);border-color:var(--bd2);">← Back</button>
