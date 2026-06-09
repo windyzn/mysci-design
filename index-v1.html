@@ -1355,9 +1355,7 @@ function cr2RenderComparison(bc){
     sel.map((r,i)=>{
       const assayLabel=r._isMerged?r.assay:r.assay.replace(/\s*\([^)]*\)/,'').trim();
       const btnStyle='font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;margin-left:6px;';
-      const regenBtns=r._isMerged
-        ?`<button onclick="cr2Regenerate('${r._proteomicsId}')" style="${btnStyle}" title="Regenerate proteomics report">↻ Proteomics</button><button onclick="cr2Regenerate('${r._metabolomicsId}')" style="${btnStyle}" title="Regenerate metabolomics report">↻ Metabolomics</button>`
-        :`<button onclick="cr2Regenerate('${r.id}')" style="${btnStyle}" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button>`;
+      const regenBtns=`<button onclick="cr2Regenerate('${r.id}')" style="${btnStyle}" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button>`;
       return `<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${assayLabel.toUpperCase()}</div><div style="margin-top:3px;display:flex;align-items:center;flex-wrap:wrap;gap:0;"><span style="font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</span>${regenBtns}</div></th>`;
     }).join('')+
     (twoCol?'<th style="text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;min-width:72px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
