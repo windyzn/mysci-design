@@ -1266,8 +1266,7 @@ function cr2RenderSlots(bc){
       const on=selectedId===r.id;
       const dvBadge=r.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 4px;margin-left:5px;">${r.dataVersion}</span>`:'';
       const method=(r.assay.match(/\(([^)]+)\)/)||[])[1]||'';
-      const regenBtn=`<button onclick="event.preventDefault();event.stopPropagation();cr2Regenerate('${r.id}')" style="font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;margin-left:6px;" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button>`;
-      return`<label style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:0.5px solid ${on?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${on?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="radio" name="cr2-slot-${slotIdx}-${groupType}" value="${r.id}" ${on?'checked':''} onclick="cr2SlotChange(${slotIdx},'${groupType}',${on?"''":"'"+r.id+"'"})" style="margin-top:2px;cursor:pointer;flex-shrink:0;"><div><div style="display:flex;align-items:center;flex-wrap:wrap;gap:0;font-size:12px;font-weight:600;color:var(--tx);">${r.assay.replace(/\s*\([^)]*\)/,'').trim()}${method?' · '+method:''}${dvBadge}${regenBtn}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${r.biofluid} · received ${bc.receivedDate}</div></div></label>`;
+      return`<label style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:0.5px solid ${on?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${on?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="radio" name="cr2-slot-${slotIdx}-${groupType}" value="${r.id}" ${on?'checked':''} onclick="cr2SlotChange(${slotIdx},'${groupType}',${on?"''":"'"+r.id+"'"})" style="margin-top:2px;cursor:pointer;flex-shrink:0;"><div><div style="display:flex;align-items:center;flex-wrap:wrap;gap:0;font-size:12px;font-weight:600;color:var(--tx);">${r.assay.replace(/\s*\([^)]*\)/,'').trim()}${method?' · '+method:''}${dvBadge}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${r.biofluid} · received ${bc.receivedDate}</div></div></label>`;
     }).join('');
   }
   el.innerHTML=cr2Slots.map((slot,i)=>{
@@ -1314,7 +1313,7 @@ function cr2BuildSlotReport(bc,slot,lbl){
     }else{merged.push(JSON.parse(JSON.stringify(s2)));}
   });
   const _fullLabel=proteoR.assay+' · '+proteoR.biofluid+' + '+metaboR.assay+' · '+metaboR.biofluid;
-  return{id:'slot-'+lbl,assay:proteoR.assay.replace(/\s*\([^)]*\)/,'').trim()+' + '+metaboR.assay.replace(/\s*\([^)]*\)/,'').trim(),biofluid:[...new Set([proteoR.biofluid,metaboR.biofluid])].join(' / '),dataVersion:proteoR.dataVersion,systems:merged,_slotLabel:lbl,_isMerged:true,_fullLabel};
+  return{id:'slot-'+lbl,assay:proteoR.assay.replace(/\s*\([^)]*\)/,'').trim()+' + '+metaboR.assay.replace(/\s*\([^)]*\)/,'').trim(),biofluid:[...new Set([proteoR.biofluid,metaboR.biofluid])].join(' / '),dataVersion:proteoR.dataVersion,systems:merged,_slotLabel:lbl,_isMerged:true,_fullLabel,_proteomicsId:proteoR.id,_metabolomicsId:metaboR.id};
 }
 function cr2CheckNudge(bc){
   const nudge=document.getElementById('cr2-matrix-nudge');if(!nudge||!bc)return;
@@ -1355,7 +1354,11 @@ function cr2RenderComparison(bc){
     '<th style="min-width:220px;padding:10px 8px;"></th>'+
     sel.map((r,i)=>{
       const assayLabel=r._isMerged?r.assay:r.assay.replace(/\s*\([^)]*\)/,'').trim();
-      return `<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${assayLabel.toUpperCase()}</div><div style="margin-top:3px;"><span style="font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</span></div></th>`;
+      const btnStyle='font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;margin-left:6px;';
+      const regenBtns=r._isMerged
+        ?`<button onclick="cr2Regenerate('${r._proteomicsId}')" style="${btnStyle}" title="Regenerate proteomics report">↻ Proteomics</button><button onclick="cr2Regenerate('${r._metabolomicsId}')" style="${btnStyle}" title="Regenerate metabolomics report">↻ Metabolomics</button>`
+        :`<button onclick="cr2Regenerate('${r.id}')" style="${btnStyle}" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button>`;
+      return `<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${assayLabel.toUpperCase()}</div><div style="margin-top:3px;display:flex;align-items:center;flex-wrap:wrap;gap:0;"><span style="font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</span>${regenBtns}</div></th>`;
     }).join('')+
     (twoCol?'<th style="text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;min-width:72px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
   const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
