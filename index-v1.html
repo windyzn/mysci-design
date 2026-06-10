@@ -527,9 +527,22 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
   <!-- Phase 1: Barcode list -->
   <div id="cr2-phase1">
-    <div style="margin-bottom:14px;">
-      <div class="sl" style="margin-bottom:2px;">Compare reports</div>
-      <div style="font-size:12px;color:var(--tx3);">Select a barcode to compare its lab combinations.</div>
+    <!-- Step indicator -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--it);color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">1</span>
+        <span style="font-size:12px;font-weight:700;color:var(--it);">Select barcode</span>
+      </div>
+      <span style="color:var(--bd2);font-size:13px;margin:0 1px;">→</span>
+      <div style="display:flex;align-items:center;gap:7px;">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd);color:var(--tx3);font-size:11px;font-weight:700;flex-shrink:0;">2</span>
+        <span style="font-size:12px;color:var(--tx3);">Build reports</span>
+      </div>
+      <span style="color:var(--bd2);font-size:13px;margin:0 1px;">→</span>
+      <div style="display:flex;align-items:center;gap:7px;">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd);color:var(--tx3);font-size:11px;font-weight:700;flex-shrink:0;">3</span>
+        <span style="font-size:12px;color:var(--tx3);">Select to compare</span>
+      </div>
     </div>
     <div style="margin-bottom:12px;">
       <input class="fi" id="cr2-search" placeholder="Search by barcode…" style="max-width:280px;font-size:13px;" oninput="cr2Filter()"/>
