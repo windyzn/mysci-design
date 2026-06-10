@@ -581,15 +581,13 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <div class="sl" style="margin-bottom:4px;">Build a report</div>
       <div style="font-size:12px;color:var(--tx3);margin-bottom:16px;">Select sample assays to include. You can create multiple reports with different combinations.</div>
       <div id="cr2-sa-picker"></div>
-      <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
-        <button id="cr2-create-btn" onclick="cr2CreateReport()" class="btn" style="font-size:12px;" disabled>Select sample assays above</button>
-      </div>
       <div id="cr2-session-rpts" style="display:none;margin-top:20px;">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px;">Created this session</div>
         <div id="cr2-session-rpts-list"></div>
       </div>
-      <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--bd);">
-        <button onclick="cr2GoToStep(3)" class="btn btn-fill" style="font-size:12px;">Next: Select reports to compare →</button>
+      <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;">
+        <button id="cr2-create-btn" onclick="cr2CreateReport()" class="btn" style="font-size:12px;" disabled>Select sample assays above</button>
+        <button onclick="cr2GoToStep(3)" class="btn btn-fill" style="font-size:12px;">View reports to compare →</button>
       </div>
     </div>
 
@@ -1357,7 +1355,7 @@ function cr2UpdateCreateBtn(){
   const btn=document.getElementById('cr2-create-btn');if(!btn)return;
   const n=cr2BuildSel.size;
   btn.textContent=n?`Create report from ${n} selected →`:'Select sample assays above';
-  btn.disabled=!n;btn.classList.toggle('btn-fill',!!n);
+  btn.disabled=!n;btn.classList.toggle('btn-p',!!n);
 }
 function cr2CreateReport(){
   const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
@@ -1369,7 +1367,7 @@ function cr2CreateReport(){
   cr2SessionRpts.push({id:'cr2-sess-'+idx,label,sampleAssayIds:saIds,dataVersion:dvs[0]||'—',createdAt:'just now',isDefault:false});
   cr2BuildSel=new Set();
   const btn=document.getElementById('cr2-create-btn');
-  if(btn){btn.textContent='Creating report…';btn.disabled=true;btn.classList.remove('btn-fill');}
+  if(btn){btn.textContent='Creating report…';btn.disabled=true;btn.classList.remove('btn-p');}
   setTimeout(()=>{const bcc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);cr2RenderSAPicker(bcc);},900);
 }
 function cr2UpdateSessionRptsUI(bc){
