@@ -587,7 +587,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       </div>
       <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;">
         <button id="cr2-create-btn" onclick="cr2CreateReport()" class="btn" style="font-size:12px;" disabled>Select sample assays above</button>
-        <button onclick="cr2GoToStep(3)" class="btn btn-fill" style="font-size:12px;">View reports to compare →</button>
+        <button onclick="cr2GoToStep(3)" class="btn btn-fill" style="font-size:12px;">Compare and view reports →</button>
       </div>
     </div>
 
@@ -1273,7 +1273,7 @@ const CR2_BARCODES=[
    },
   },
 ];
-let cr2CurrentBarcode=null,cr2Step=2,cr2BuildSel=new Set(),cr2SessionRpts=[],cr2CompareSel=new Set(),cr2MyhiSel=[];
+let cr2CurrentBarcode=null,cr2Step=2,cr2BuildSel=new Set(),cr2SessionRptsMap=new Map(),cr2CompareSel=new Set(),cr2MyhiSel=[];
 function cr2Init(){cr2RenderList(CR2_BARCODES);}
 function cr2RenderList(data){
   const tbody=document.getElementById('cr2-list-tbody');if(!tbody)return;tbody.innerHTML='';
@@ -1300,7 +1300,7 @@ function cr2Filter(){
   cr2RenderList(CR2_BARCODES.filter(bc=>!q||bc.barcode.toLowerCase().includes(q)));
 }
 function cr2Select(barcode){
-  cr2CurrentBarcode=barcode;cr2Step=2;cr2BuildSel=new Set();cr2SessionRpts=[];cr2CompareSel=new Set();
+  cr2CurrentBarcode=barcode;cr2Step=2;cr2BuildSel=new Set();cr2CompareSel=new Set();
   document.getElementById('cr2-phase1').style.display='none';
   document.getElementById('cr2-phase2').style.display='';
   document.getElementById('cr2-hdr-barcode').textContent=barcode;
@@ -1362,9 +1362,10 @@ function cr2CreateReport(){
   if(!cr2BuildSel.size||!bc)return;
   const saIds=[...cr2BuildSel];
   const dvs=saIds.map(id=>bc.srcData[id]&&bc.srcData[id].dataVersion).filter(Boolean).sort().reverse();
-  const idx=cr2SessionRpts.length;
+  const existing=cr2SessionRptsMap.get(cr2CurrentBarcode)||[];
+  const idx=existing.length;
   const label='Custom report '+String.fromCharCode(65+idx);
-  cr2SessionRpts.push({id:'cr2-sess-'+idx,label,sampleAssayIds:saIds,dataVersion:dvs[0]||'—',createdAt:'just now',isDefault:false});
+  cr2SessionRptsMap.set(cr2CurrentBarcode,[...existing,{id:'cr2-sess-'+cr2CurrentBarcode+'-'+idx,label,sampleAssayIds:saIds,dataVersion:dvs[0]||'—',createdAt:'just now',isDefault:false}]);
   cr2BuildSel=new Set();
   const btn=document.getElementById('cr2-create-btn');
   if(btn){btn.textContent='Creating report…';btn.disabled=true;btn.classList.remove('btn-p');}
@@ -1374,16 +1375,17 @@ function cr2UpdateSessionRptsUI(bc){
   const wrap=document.getElementById('cr2-session-rpts');
   const list=document.getElementById('cr2-session-rpts-list');
   if(!wrap||!list)return;
-  if(!cr2SessionRpts.length){wrap.style.display='none';return;}
+  const sessionRpts=cr2SessionRptsMap.get(cr2CurrentBarcode)||[];
+  if(!sessionRpts.length){wrap.style.display='none';return;}
   wrap.style.display='';
-  list.innerHTML=cr2SessionRpts.map(rpt=>{
+  list.innerHTML=sessionRpts.map(rpt=>{
     const saLabels=rpt.sampleAssayIds.map(id=>{const sa=bc.sampleAssays.find(s=>s.id===id);return sa?sa.assay.replace(/\s*\([^)]*\)/,'').trim()+' · '+sa.biofluid:id;}).join(' + ');
-    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:0.5px solid var(--bd2);border-radius:6px;margin-bottom:6px;background:var(--bg);"><div><div style="font-size:12px;font-weight:600;color:var(--tx);">${rpt.label}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${saLabels}</div></div><span style="font-size:11px;color:var(--sg,#2a7a4f);">✓ Created</span></div>`;
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:0.5px solid var(--bd2);border-radius:6px;margin-bottom:6px;background:var(--bg);"><div><div style="font-size:12px;font-weight:600;color:var(--tx);">${rpt.label}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${saLabels}</div></div><div style="display:flex;align-items:center;gap:10px;flex-shrink:0;"><span style="font-size:11px;color:var(--sg,#2a7a4f);">✓ Created</span><button onclick="cr2DeleteSessionRpt('${rpt.id}')" style="background:none;border:none;padding:2px 4px;font-size:13px;color:var(--tx3);cursor:pointer;line-height:1;" title="Delete this report">×</button></div></div>`;
   }).join('');
 }
 function cr2RenderStep3(){
   const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);if(!bc)return;
-  const allRpts=[...bc.reports,...cr2SessionRpts];
+  const allRpts=[...bc.reports,...(cr2SessionRptsMap.get(cr2CurrentBarcode)||[])];
   const el=document.getElementById('cr2-step3-reports');if(!el)return;
   const btnS='font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;margin-left:6px;';
   el.innerHTML=allRpts.map(rpt=>{
@@ -1392,12 +1394,21 @@ function cr2RenderStep3(){
     const defBadge=rpt.isDefault?`<span style="font-size:10px;background:rgba(0,130,130,0.09);color:var(--it);border-radius:10px;padding:1px 7px;margin-left:6px;">Default</span>`:'';
     const dvBadge=rpt.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 3px;margin-left:5px;">${rpt.dataVersion}</span>`:'';
     const dateStr=rpt.isDefault?`Generated ${rpt.createdAt}`:`Created ${rpt.createdAt}`;
-    return`<label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:0.5px solid ${checked?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:8px;background:${checked?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="checkbox" ${checked?'checked':''} onchange="cr2ToggleCompare('${rpt.id}')" style="margin-top:3px;cursor:pointer;flex-shrink:0;accent-color:var(--it);"><div style="flex:1;"><div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;font-size:12px;font-weight:600;color:var(--tx);">${rpt.label}${defBadge}${dvBadge}<button onclick="event.preventDefault();event.stopPropagation();cr2Regenerate('${rpt.id}')" style="${btnS}" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button></div><div style="font-size:11px;color:var(--tx3);margin-top:3px;">${saLabels}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${dateStr}</div></div></label>`;
+    const delBtn=rpt.isDefault?'':` <button onclick="event.preventDefault();event.stopPropagation();cr2DeleteSessionRpt('${rpt.id}')" style="font-size:10px;padding:1px 6px;border:0.5px solid var(--rbr);border-radius:3px;background:var(--bg);color:var(--rt);cursor:pointer;line-height:1.6;font-weight:400;margin-left:4px;" title="Delete this report">Delete</button>`;
+    return`<label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:0.5px solid ${checked?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:8px;background:${checked?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="checkbox" ${checked?'checked':''} onchange="cr2ToggleCompare('${rpt.id}')" style="margin-top:3px;cursor:pointer;flex-shrink:0;accent-color:var(--it);"><div style="flex:1;"><div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;font-size:12px;font-weight:600;color:var(--tx);">${rpt.label}${defBadge}${dvBadge}<button onclick="event.preventDefault();event.stopPropagation();cr2Regenerate('${rpt.id}')" style="${btnS}" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button>${delBtn}</div><div style="font-size:11px;color:var(--tx3);margin-top:3px;">${saLabels}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${dateStr}</div></div></label>`;
   }).join('');
 }
 function cr2ToggleCompare(id){
   if(cr2CompareSel.has(id))cr2CompareSel.delete(id);else cr2CompareSel.add(id);
   cr2RenderStep3();cr2RunComparison();
+}
+function cr2DeleteSessionRpt(id){
+  const existing=cr2SessionRptsMap.get(cr2CurrentBarcode)||[];
+  cr2SessionRptsMap.set(cr2CurrentBarcode,existing.filter(r=>r.id!==id));
+  cr2CompareSel.delete(id);
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  cr2RenderSAPicker(bc);
+  if(cr2Step===3){cr2RenderStep3();cr2RunComparison();}
 }
 function cr2BuildReportForComparison(bc,rptConfig){
   const saIds=rptConfig.sampleAssayIds;
@@ -1425,7 +1436,7 @@ function cr2BuildReportForComparison(bc,rptConfig){
 }
 function cr2RunComparison(){
   const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);if(!bc)return;
-  const allRpts=[...bc.reports,...cr2SessionRpts];
+  const allRpts=[...bc.reports,...(cr2SessionRptsMap.get(cr2CurrentBarcode)||[])];
   const sel=allRpts.filter(r=>cr2CompareSel.has(r.id)).map(cfg=>cr2BuildReportForComparison(bc,cfg)).filter(Boolean);
   const empty=document.getElementById('cr2-empty-prompt');
   const wrap=document.getElementById('cr2-result-wrap');
@@ -1502,7 +1513,7 @@ function cr2RunComparison(){
 function cr2SendToMyhi(){
   if(currentRole!=='admin')return;
   const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);if(!bc)return;
-  const allRpts=[...bc.reports,...cr2SessionRpts];
+  const allRpts=[...bc.reports,...(cr2SessionRptsMap.get(cr2CurrentBarcode)||[])];
   cr2MyhiSel=allRpts.filter(r=>cr2CompareSel.has(r.id)).map(cfg=>cr2BuildReportForComparison(bc,cfg)).filter(Boolean);
   if(!cr2MyhiSel.length)return;
   const optEl=document.getElementById('cr2-myhi-options');
