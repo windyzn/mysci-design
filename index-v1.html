@@ -541,40 +541,66 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     </div>
   </div>
 
-  <!-- Phase 2: Matrix + Comparison -->
+  <!-- Phase 2: Steps 2 & 3 -->
   <div id="cr2-phase2" style="display:none;">
-    <div style="margin-bottom:16px;">
+    <div style="margin-bottom:20px;">
       <div style="font-family:monospace;font-size:20px;font-weight:700;color:var(--tx);letter-spacing:.04em;" id="cr2-hdr-barcode"></div>
       <button onclick="cr2Back()" style="background:none;border:none;padding:0;margin-top:5px;font-size:12px;color:var(--tx3);cursor:pointer;text-decoration:underline;text-underline-offset:2px;">← Change barcode</button>
     </div>
 
-    <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px;">
-        <div>
-          <div class="sl" style="margin-bottom:3px;">Configure reports to compare</div>
-          <div style="font-size:12px;color:var(--tx3);">Select datasets per report — combine proteomics + metabolomics for a multi-omic score.</div>
-        </div>
-        <button onclick="cr2AddSlot()" style="font-size:11px;padding:4px 10px;border:0.5px solid var(--bd2);border-radius:5px;background:var(--bg);color:var(--tx2);cursor:pointer;white-space:nowrap;flex-shrink:0;">+ Add report</button>
+    <!-- Step indicator -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="cr2GoToStep(2)">
+        <span id="cr2-stp2-circle" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--it);color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
+        <span id="cr2-stp2-lbl" style="font-size:12px;font-weight:700;color:var(--it);">Build reports</span>
       </div>
-      <div id="cr2-slots" style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;"></div>
-      <div id="cr2-matrix-nudge" style="display:none;margin-top:12px;font-size:12px;color:var(--it);padding:8px 12px;background:rgba(0,130,130,0.06);border-left:3px solid rgba(0,130,130,0.25);border-radius:0 4px 4px 0;"></div>
+      <span style="color:var(--bd2);font-size:16px;margin:0 2px;">→</span>
+      <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="cr2GoToStep(3)">
+        <span id="cr2-stp3-circle" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd);color:var(--tx3);font-size:11px;font-weight:700;flex-shrink:0;">3</span>
+        <span id="cr2-stp3-lbl" style="font-size:12px;color:var(--tx3);">Select to compare</span>
+      </div>
     </div>
 
-    <div id="cr2-empty-prompt" style="text-align:center;padding:36px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">
-      Configure at least one report above to view the comparison.
+    <!-- Step 2: Build a report -->
+    <div id="cr2-step2-content">
+      <div class="sl" style="margin-bottom:4px;">Build a report</div>
+      <div style="font-size:12px;color:var(--tx3);margin-bottom:16px;">Select sample assays to include. You can create multiple reports with different combinations.</div>
+      <div id="cr2-sa-picker"></div>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
+        <button id="cr2-create-btn" onclick="cr2CreateReport()" class="btn" style="font-size:12px;" disabled>Select sample assays above</button>
+      </div>
+      <div id="cr2-session-rpts" style="display:none;margin-top:20px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px;">Created this session</div>
+        <div id="cr2-session-rpts-list"></div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--bd);">
+        <button onclick="cr2GoToStep(3)" class="btn btn-p" style="font-size:12px;">Next: Select reports to compare →</button>
+      </div>
     </div>
-    <div id="cr2-result-wrap" style="display:none;">
+
+    <!-- Step 3: Select & compare -->
+    <div id="cr2-step3-content" style="display:none;">
+      <div class="sl" style="margin-bottom:4px;">Select reports to compare</div>
+      <div style="font-size:12px;color:var(--tx3);margin-bottom:14px;">Choose two or more reports. The comparison updates automatically.</div>
+      <div class="card" style="padding:14px 16px;margin-bottom:16px;">
+        <div id="cr2-step3-reports"></div>
+      </div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <span id="cr2-result-hdr-title" style="font-size:14px;font-weight:700;color:var(--tx);"></span>
-        <button class="btn" id="cr2-send-btn" onclick="cr2SendToMyhi()" style="font-size:12px;">Send to MYHI ↗</button>
-        <span id="cr2-send-locked" style="font-size:11px;color:var(--tx3);display:none;">🔒 Admin only</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="btn" id="cr2-send-btn" onclick="cr2SendToMyhi()" style="font-size:12px;display:none;">Send to MYHI ↗</button>
+          <span id="cr2-send-locked" style="font-size:11px;color:var(--tx3);display:none;">🔒 Admin only</span>
+        </div>
       </div>
-      <div class="card" style="padding:0;overflow:hidden;">
-        <div style="overflow-x:auto;">
-          <table class="gh-table" id="cr2-result-table" style="min-width:500px;">
-            <thead><tr id="cr2-result-thead"></tr></thead>
-            <tbody id="cr2-result-tbody"></tbody>
-          </table>
+      <div id="cr2-empty-prompt" style="text-align:center;padding:36px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">Select at least one report above to view the comparison.</div>
+      <div id="cr2-result-wrap" style="display:none;">
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div style="overflow-x:auto;">
+            <table class="gh-table" id="cr2-result-table" style="min-width:500px;">
+              <thead><tr id="cr2-result-thead"></tr></thead>
+              <tbody id="cr2-result-tbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -1125,113 +1151,135 @@ function applyCrFilter(){
   });
 }
 
-// ── COMPARE REPORTS (new two-phase design) ────────────────────────────────
+// ── COMPARE REPORTS ───────────────────────────────────────────────────────
 const CR2_BARCODES=[
-  {barcode:'463F345',receivedDate:'2026-03-04',status:'Complete',reports:[
-    {id:'cr2-r1',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Serum',dataVersion:'6.21.1',receivedDate:'2026-03-04',systems:[
-      {name:'Cardiovascular Health',score:74,healthAreas:[
-        {name:'Lipid Metabolism',score:70,biomarkers:[
-          {biomarker:'LDL Cholesterol',value:'2.1',units:'mmol/L',ref:'<2.6',score:78},
-          {biomarker:'HDL Cholesterol',value:'1.8',units:'mmol/L',ref:'>1.0',score:82},
-          {biomarker:'Triglycerides',value:'1.1',units:'mmol/L',ref:'<1.7',score:88},
-        ]},
-        {name:'Vascular Inflammation',score:78,biomarkers:[
-          {biomarker:'hsCRP',value:'1.2',units:'mg/L',ref:'<3.0',score:85},
-          {biomarker:'IL-6',value:'2.4',units:'pg/mL',ref:'<5.9',score:71},
-          {biomarker:'Fibrinogen',value:'3.1',units:'g/L',ref:'2–4',score:74},
-        ]},
-      ]},
-      {name:'Metabolic Health',score:65,healthAreas:[
-        {name:'Glucose Regulation',score:60,biomarkers:[
-          {biomarker:'Insulin',value:'8.2',units:'mU/L',ref:'2–25',score:72},
-          {biomarker:'HOMA-IR',value:'1.9',units:'',ref:'<2.0',score:68},
-        ]},
-      ]},
-    ]},
-    {id:'cr2-r2',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Plasma',dataVersion:'6.21.1',receivedDate:'2026-03-04',systems:[
-      {name:'Cardiovascular Health',score:71,healthAreas:[
-        {name:'Lipid Metabolism',score:68,biomarkers:[
-          {biomarker:'LDL Cholesterol',value:'2.4',units:'mmol/L',ref:'<2.6',score:65},
-          {biomarker:'HDL Cholesterol',value:'1.6',units:'mmol/L',ref:'>1.0',score:75},
-          {biomarker:'Triglycerides',value:'1.3',units:'mmol/L',ref:'<1.7',score:84},
-        ]},
-        {name:'Vascular Inflammation',score:74,biomarkers:[
-          {biomarker:'hsCRP',value:'1.5',units:'mg/L',ref:'<3.0',score:79},
-          {biomarker:'IL-6',value:'2.9',units:'pg/mL',ref:'<5.9',score:62},
-          {biomarker:'Fibrinogen',value:'3.6',units:'g/L',ref:'2–4',score:67},
-        ]},
-      ]},
-      {name:'Metabolic Health',score:62,healthAreas:[
-        {name:'Glucose Regulation',score:58,biomarkers:[
-          {biomarker:'Insulin',value:'9.1',units:'mU/L',ref:'2–25',score:66},
-          {biomarker:'HOMA-IR',value:'2.2',units:'',ref:'<2.0',score:59},
-        ]},
-      ]},
-    ]},
-    {id:'cr2-r3',assay:'1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',dataVersion:'6.23.3',receivedDate:'2026-03-04',systems:[
-      {name:'Metabolic Health',score:82,healthAreas:[
-        {name:'Glucose Regulation',score:79,biomarkers:[
-          {biomarker:'Glucose',value:'5.1',units:'mmol/L',ref:'3.9–5.6',score:88},
-          {biomarker:'HbA1c',value:'5.4',units:'%',ref:'4.8–5.6',score:72},
-          {biomarker:'Homocysteine',value:'8.2',units:'μM',ref:'<15',score:81},
-          {biomarker:'Glutamine',value:'510',units:'μM',ref:'400–700',score:74},
-        ]},
-      ]},
-      {name:'Inflammation',score:58,healthAreas:[
-        {name:'Oxidative Stress',score:55,biomarkers:[
-          {biomarker:'MDA',value:'2.1',units:'μM',ref:'<3.5',score:76},
-          {biomarker:'8-OHdG',value:'18',units:'ng/mg',ref:'<30',score:71},
-        ]},
-      ]},
-    ]},
-    {id:'cr2-r4',assay:'April 1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',dataVersion:'6.23.3',receivedDate:'2026-04-02',systems:[
-      {name:'Metabolic Health',score:78,healthAreas:[
-        {name:'Glucose Regulation',score:74,biomarkers:[
-          {biomarker:'Glucose',value:'5.3',units:'mmol/L',ref:'3.9–5.6',score:84},
-          {biomarker:'HbA1c',value:'5.5',units:'%',ref:'4.8–5.6',score:69},
-          {biomarker:'Homocysteine',value:'9.1',units:'μM',ref:'<15',score:73},
-          {biomarker:'Glutamine',value:'490',units:'μM',ref:'400–700',score:70},
-        ]},
-      ]},
-      {name:'Inflammation',score:53,healthAreas:[
-        {name:'Oxidative Stress',score:51,biomarkers:[
-          {biomarker:'MDA',value:'2.4',units:'μM',ref:'<3.5',score:71},
-          {biomarker:'8-OHdG',value:'22',units:'ng/mg',ref:'<30',score:65},
-        ]},
-      ]},
-    ]},
-  ]},
-  {barcode:'312B778',receivedDate:'2026-01-15',status:'Complete',reports:[
-    {id:'cr2-r5',assay:'1A_Proteomics (MRM 1.1 HQE)',biofluid:'Serum',dataVersion:'6.20.0',receivedDate:'2026-01-15',systems:[
-      {name:'Cardiovascular Health',score:58,healthAreas:[
-        {name:'Lipid Metabolism',score:55,biomarkers:[
-          {biomarker:'LDL Cholesterol',value:'2.8',units:'mmol/L',ref:'<2.6',score:48},
-          {biomarker:'HDL Cholesterol',value:'1.4',units:'mmol/L',ref:'>1.0',score:68},
-          {biomarker:'Triglycerides',value:'2.1',units:'mmol/L',ref:'<1.7',score:52},
-        ]},
-        {name:'Vascular Inflammation',score:42,biomarkers:[
-          {biomarker:'hsCRP',value:'4.2',units:'mg/L',ref:'<3.0',score:35},
-          {biomarker:'IL-6',value:'5.1',units:'pg/mL',ref:'<5.9',score:42},
-        ]},
-      ]},
-    ]},
-  ]},
+  {barcode:'463F345',status:'Complete',
+   sampleAssays:[
+     {id:'463-sa-1',omicType:'proteomics',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Serum',lab:'TMIC',receivedDate:'2026-03-04'},
+     {id:'463-sa-2',omicType:'proteomics',assay:'1A_Proteomics (MRM 1.1)',biofluid:'Plasma',lab:'TMIC',receivedDate:'2026-03-04'},
+     {id:'463-sa-3',omicType:'metabolomics',assay:'1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',lab:'TMIC',receivedDate:'2026-03-04'},
+     {id:'463-sa-4',omicType:'metabolomics',assay:'April 1A_Metabolomics (MYCO 1.2)',biofluid:'Serum',lab:'TMIC',receivedDate:'2026-04-02'},
+   ],
+   reports:[
+     {id:'cr2-rpt-463-def',label:'Default report',sampleAssayIds:['463-sa-1','463-sa-3'],dataVersion:'6.21.1',createdAt:'2026-03-10',isDefault:true},
+   ],
+   srcData:{
+     '463-sa-1':{dataVersion:'6.21.1',systems:[
+       {name:'Cardiovascular Health',score:74,healthAreas:[
+         {name:'Lipid Metabolism',score:70,biomarkers:[
+           {biomarker:'LDL Cholesterol',value:'2.1',units:'mmol/L',ref:'<2.6',score:78},
+           {biomarker:'HDL Cholesterol',value:'1.8',units:'mmol/L',ref:'>1.0',score:82},
+           {biomarker:'Triglycerides',value:'1.1',units:'mmol/L',ref:'<1.7',score:88},
+         ]},
+         {name:'Vascular Inflammation',score:78,biomarkers:[
+           {biomarker:'hsCRP',value:'1.2',units:'mg/L',ref:'<3.0',score:85},
+           {biomarker:'IL-6',value:'2.4',units:'pg/mL',ref:'<5.9',score:71},
+           {biomarker:'Fibrinogen',value:'3.1',units:'g/L',ref:'2–4',score:74},
+         ]},
+       ]},
+       {name:'Metabolic Health',score:65,healthAreas:[
+         {name:'Glucose Regulation',score:60,biomarkers:[
+           {biomarker:'Insulin',value:'8.2',units:'mU/L',ref:'2–25',score:72},
+           {biomarker:'HOMA-IR',value:'1.9',units:'',ref:'<2.0',score:68},
+         ]},
+       ]},
+     ]},
+     '463-sa-2':{dataVersion:'6.21.1',systems:[
+       {name:'Cardiovascular Health',score:71,healthAreas:[
+         {name:'Lipid Metabolism',score:68,biomarkers:[
+           {biomarker:'LDL Cholesterol',value:'2.4',units:'mmol/L',ref:'<2.6',score:65},
+           {biomarker:'HDL Cholesterol',value:'1.6',units:'mmol/L',ref:'>1.0',score:75},
+           {biomarker:'Triglycerides',value:'1.3',units:'mmol/L',ref:'<1.7',score:84},
+         ]},
+         {name:'Vascular Inflammation',score:74,biomarkers:[
+           {biomarker:'hsCRP',value:'1.5',units:'mg/L',ref:'<3.0',score:79},
+           {biomarker:'IL-6',value:'2.9',units:'pg/mL',ref:'<5.9',score:62},
+           {biomarker:'Fibrinogen',value:'3.6',units:'g/L',ref:'2–4',score:67},
+         ]},
+       ]},
+       {name:'Metabolic Health',score:62,healthAreas:[
+         {name:'Glucose Regulation',score:58,biomarkers:[
+           {biomarker:'Insulin',value:'9.1',units:'mU/L',ref:'2–25',score:66},
+           {biomarker:'HOMA-IR',value:'2.2',units:'',ref:'<2.0',score:59},
+         ]},
+       ]},
+     ]},
+     '463-sa-3':{dataVersion:'6.23.3',systems:[
+       {name:'Metabolic Health',score:82,healthAreas:[
+         {name:'Glucose Regulation',score:79,biomarkers:[
+           {biomarker:'Glucose',value:'5.1',units:'mmol/L',ref:'3.9–5.6',score:88},
+           {biomarker:'HbA1c',value:'5.4',units:'%',ref:'4.8–5.6',score:72},
+           {biomarker:'Homocysteine',value:'8.2',units:'μM',ref:'<15',score:81},
+           {biomarker:'Glutamine',value:'510',units:'μM',ref:'400–700',score:74},
+         ]},
+       ]},
+       {name:'Inflammation',score:58,healthAreas:[
+         {name:'Oxidative Stress',score:55,biomarkers:[
+           {biomarker:'MDA',value:'2.1',units:'μM',ref:'<3.5',score:76},
+           {biomarker:'8-OHdG',value:'18',units:'ng/mg',ref:'<30',score:71},
+         ]},
+       ]},
+     ]},
+     '463-sa-4':{dataVersion:'6.23.3',systems:[
+       {name:'Metabolic Health',score:78,healthAreas:[
+         {name:'Glucose Regulation',score:74,biomarkers:[
+           {biomarker:'Glucose',value:'5.3',units:'mmol/L',ref:'3.9–5.6',score:84},
+           {biomarker:'HbA1c',value:'5.5',units:'%',ref:'4.8–5.6',score:69},
+           {biomarker:'Homocysteine',value:'9.1',units:'μM',ref:'<15',score:73},
+           {biomarker:'Glutamine',value:'490',units:'μM',ref:'400–700',score:70},
+         ]},
+       ]},
+       {name:'Inflammation',score:53,healthAreas:[
+         {name:'Oxidative Stress',score:51,biomarkers:[
+           {biomarker:'MDA',value:'2.4',units:'μM',ref:'<3.5',score:71},
+           {biomarker:'8-OHdG',value:'22',units:'ng/mg',ref:'<30',score:65},
+         ]},
+       ]},
+     ]},
+   },
+  },
+  {barcode:'312B778',status:'Complete',
+   sampleAssays:[
+     {id:'312-sa-1',omicType:'proteomics',assay:'1A_Proteomics (MRM 1.1 HQE)',biofluid:'Serum',lab:'TMIC',receivedDate:'2026-01-15'},
+   ],
+   reports:[
+     {id:'cr2-rpt-312-def',label:'Default report',sampleAssayIds:['312-sa-1'],dataVersion:'6.20.0',createdAt:'2026-01-20',isDefault:true},
+   ],
+   srcData:{
+     '312-sa-1':{dataVersion:'6.20.0',systems:[
+       {name:'Cardiovascular Health',score:58,healthAreas:[
+         {name:'Lipid Metabolism',score:55,biomarkers:[
+           {biomarker:'LDL Cholesterol',value:'2.8',units:'mmol/L',ref:'<2.6',score:48},
+           {biomarker:'HDL Cholesterol',value:'1.4',units:'mmol/L',ref:'>1.0',score:68},
+           {biomarker:'Triglycerides',value:'2.1',units:'mmol/L',ref:'<1.7',score:52},
+         ]},
+         {name:'Vascular Inflammation',score:42,biomarkers:[
+           {biomarker:'hsCRP',value:'4.2',units:'mg/L',ref:'<3.0',score:35},
+           {biomarker:'IL-6',value:'5.1',units:'pg/mL',ref:'<5.9',score:42},
+         ]},
+       ]},
+     ]},
+   },
+  },
 ];
-let cr2Slots=[{proteomicsId:null,metabolomicsId:null},{proteomicsId:null,metabolomicsId:null}],cr2CurrentBarcode=null,cr2MyhiSel=[];
+let cr2CurrentBarcode=null,cr2Step=2,cr2BuildSel=new Set(),cr2SessionRpts=[],cr2CompareSel=new Set(),cr2MyhiSel=[];
 function cr2Init(){cr2RenderList(CR2_BARCODES);}
 function cr2RenderList(data){
   const tbody=document.getElementById('cr2-list-tbody');if(!tbody)return;tbody.innerHTML='';
   const pillA='display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:500;margin:1px 2px;';
   data.forEach(bc=>{
-    const assaySet=new Set(bc.reports.map(r=>r.assay));
-    const fluidSet=new Set(bc.reports.map(r=>r.biofluid));
-    const assayTypes=new Set();
-    assaySet.forEach(a=>{if(/proteomics/i.test(a))assayTypes.add('Proteomics');if(/metabolomics/i.test(a))assayTypes.add('Metabolomics');});
+    const assayTypes=new Set(),fluidSet=new Set();
+    bc.sampleAssays.forEach(sa=>{
+      if(sa.omicType==='proteomics')assayTypes.add('Proteomics');
+      else if(sa.omicType==='metabolomics')assayTypes.add('Metabolomics');
+      else assayTypes.add('Other');
+      fluidSet.add(sa.biofluid);
+    });
     const assayPills=[...assayTypes].map(t=>`<span style="${pillA}background:rgba(0,130,130,0.09);color:var(--it);">${t}</span>`).join('');
     const fluidPills=[...fluidSet].map(f=>`<span style="${pillA}background:rgba(0,130,130,0.09);color:var(--it);">${f}</span>`).join('');
     const sCls=bc.status==='Complete'?'d-complete':'d-incomplete';
+    const latestDate=bc.sampleAssays.map(sa=>sa.receivedDate).filter(Boolean).sort().reverse()[0]||'';
     const tr=document.createElement('tr');
-    const latestDate=bc.reports.map(r=>r.receivedDate).filter(Boolean).sort().reverse()[0]||bc.receivedDate||'';
     tr.innerHTML=`<td style="padding:10px 14px 10px 28px;"><button onclick="cr2Select('${bc.barcode}')" style="font-family:monospace;font-size:13px;font-weight:700;background:none;border:none;color:var(--it);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">${bc.barcode}</button></td><td style="padding:10px 14px;font-size:12px;color:var(--tx2);">${latestDate}</td><td style="padding:10px 14px;font-size:12px;">${assayPills}${fluidPills}</td><td style="padding:10px 28px 10px 14px;text-align:right;"><span class="ds ${sCls}">${bc.status}</span></td>`;
     tbody.appendChild(tr);
   });
@@ -1240,98 +1288,147 @@ function cr2Filter(){
   const q=(document.getElementById('cr2-search')?.value||'').toLowerCase().trim();
   cr2RenderList(CR2_BARCODES.filter(bc=>!q||bc.barcode.toLowerCase().includes(q)));
 }
-function cr2ResetSlots(){cr2Slots=[{proteomicsId:null,metabolomicsId:null},{proteomicsId:null,metabolomicsId:null}];}
 function cr2Select(barcode){
-  cr2CurrentBarcode=barcode;cr2ResetSlots();
+  cr2CurrentBarcode=barcode;cr2Step=2;cr2BuildSel=new Set();cr2SessionRpts=[];cr2CompareSel=new Set();
   document.getElementById('cr2-phase1').style.display='none';
   document.getElementById('cr2-phase2').style.display='';
-  const bc=CR2_BARCODES.find(b=>b.barcode===barcode);
   document.getElementById('cr2-hdr-barcode').textContent=barcode;
-  cr2RenderSlots(bc);cr2RenderComparison(bc);
+  cr2GoToStep(2);
 }
 function cr2Back(){
-  cr2CurrentBarcode=null;cr2ResetSlots();
+  cr2CurrentBarcode=null;
   document.getElementById('cr2-phase2').style.display='none';
   document.getElementById('cr2-phase1').style.display='';
 }
-function cr2RenderSlots(bc){
-  const el=document.getElementById('cr2-slots');if(!el||!bc)return;
-  const omicOf=a=>/proteomics/i.test(a)?'proteomics':/metabolomics/i.test(a)?'metabolomics':null;
-  const proteoReports=bc.reports.filter(r=>omicOf(r.assay)==='proteomics');
-  const metaboReports=bc.reports.filter(r=>omicOf(r.assay)==='metabolomics');
-  const labels=['A','B','C','D'];
-  function makeOptions(reports,groupType,slotIdx,selectedId){
-    if(!reports.length)return`<div style="font-size:12px;color:var(--tx3);padding:4px 0;font-style:italic;">No ${groupType} datasets available.</div>`;
-    return reports.map(r=>{
-      const on=selectedId===r.id;
-      const dvBadge=r.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 4px;margin-left:5px;">${r.dataVersion}</span>`:'';
-      const method=(r.assay.match(/\(([^)]+)\)/)||[])[1]||'';
-      return`<label style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:0.5px solid ${on?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${on?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="radio" name="cr2-slot-${slotIdx}-${groupType}" value="${r.id}" ${on?'checked':''} onclick="cr2SlotChange(${slotIdx},'${groupType}',${on?"''":"'"+r.id+"'"})" style="margin-top:2px;cursor:pointer;flex-shrink:0;"><div><div style="display:flex;align-items:center;flex-wrap:wrap;gap:0;font-size:12px;font-weight:600;color:var(--tx);">${r.assay.replace(/\s*\([^)]*\)/,'').trim()}${method?' · '+method:''}${dvBadge}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${r.biofluid} · received ${bc.receivedDate}</div></div></label>`;
-    }).join('');
-  }
-  el.innerHTML=cr2Slots.map((slot,i)=>{
-    const lbl=labels[i]||String(i+1);
-    const canRemove=cr2Slots.length>1;
-    return`<div style="flex:1;min-width:260px;border:0.5px solid var(--bd2);border-radius:8px;padding:16px;background:var(--bg);"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-size:13px;font-weight:700;color:var(--tx);">Report ${lbl}</span>${canRemove?`<button onclick="cr2RemoveSlot(${i})" style="background:none;border:none;font-size:18px;color:var(--tx3);cursor:pointer;line-height:1;padding:0;" title="Remove">×</button>`:''}</div><div style="margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Proteomics</div>${makeOptions(proteoReports,'proteomics',i,slot.proteomicsId)}</div><div style="padding-top:14px;"><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Metabolomics</div>${makeOptions(metaboReports,'metabolomics',i,slot.metabolomicsId)}</div></div>`;
+function cr2GoToStep(n){
+  cr2Step=n;
+  document.getElementById('cr2-step2-content').style.display=n===2?'':'none';
+  document.getElementById('cr2-step3-content').style.display=n===3?'':'none';
+  const c2=document.getElementById('cr2-stp2-circle'),l2=document.getElementById('cr2-stp2-lbl');
+  const c3=document.getElementById('cr2-stp3-circle'),l3=document.getElementById('cr2-stp3-lbl');
+  if(c2){c2.style.background=n===2?'var(--it)':'var(--tx3)';}
+  if(l2){l2.style.color=n===2?'var(--it)':'var(--tx3)';l2.style.fontWeight=n===2?'700':'400';}
+  if(c3){c3.style.background=n===3?'var(--it)':'var(--bd)';c3.style.color=n===3?'#fff':'var(--tx3)';}
+  if(l3){l3.style.color=n===3?'var(--it)':'var(--tx3)';l3.style.fontWeight=n===3?'700':'400';}
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  if(n===2)cr2RenderSAPicker(bc);
+  if(n===3){cr2RenderStep3();cr2RunComparison();}
+}
+function cr2RenderSAPicker(bc){
+  const el=document.getElementById('cr2-sa-picker');if(!el||!bc)return;
+  const groups=[['proteomics','Proteomics'],['metabolomics','Metabolomics'],['other','Other panels']];
+  const grouped={proteomics:[],metabolomics:[],other:[]};
+  bc.sampleAssays.forEach(sa=>{const k=sa.omicType==='proteomics'||sa.omicType==='metabolomics'?sa.omicType:'other';grouped[k].push(sa);});
+  el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">'+groups.map(([type,label])=>{
+    const sas=grouped[type];
+    const items=!sas.length
+      ?`<div style="font-size:12px;color:var(--tx3);font-style:italic;padding:4px 0;">No ${label.toLowerCase()} datasets available.</div>`
+      :sas.map(sa=>{
+        const sel=cr2BuildSel.has(sa.id);
+        const method=(sa.assay.match(/\(([^)]+)\)/)||[])[1]||'';
+        const assayShort=sa.assay.replace(/\s*\([^)]*\)/,'').trim();
+        const srcDv=bc.srcData[sa.id]&&bc.srcData[sa.id].dataVersion;
+        const dvBadge=srcDv?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 4px;margin-left:4px;">${srcDv}</span>`:'';
+        return`<label style="display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border:0.5px solid ${sel?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${sel?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="checkbox" ${sel?'checked':''} onchange="cr2ToggleSA('${sa.id}')" style="margin-top:3px;cursor:pointer;flex-shrink:0;accent-color:var(--it);"><div><div style="display:flex;align-items:center;flex-wrap:wrap;font-size:12px;font-weight:600;color:var(--tx);">${assayShort}${method?' · '+method:''}${dvBadge}</div><div style="font-size:11px;color:var(--tx3);margin-top:2px;">${sa.biofluid} · ${sa.lab} · received ${sa.receivedDate}</div></div></label>`;
+      }).join('');
+    return`<div><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">${label}</div><div style="background:var(--bg2);border:0.5px solid var(--bd2);border-radius:8px;padding:12px 12px 6px;">${items}</div></div>`;
+  }).join('')+'</div>';
+  cr2UpdateCreateBtn();
+  cr2UpdateSessionRptsUI(bc);
+}
+function cr2ToggleSA(saId){
+  if(cr2BuildSel.has(saId))cr2BuildSel.delete(saId);else cr2BuildSel.add(saId);
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);cr2RenderSAPicker(bc);
+}
+function cr2UpdateCreateBtn(){
+  const btn=document.getElementById('cr2-create-btn');if(!btn)return;
+  const n=cr2BuildSel.size;
+  btn.textContent=n?`Create report from ${n} selected →`:'Select sample assays above';
+  btn.disabled=!n;btn.classList.toggle('btn-p',!!n);
+}
+function cr2CreateReport(){
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  if(!cr2BuildSel.size||!bc)return;
+  const saIds=[...cr2BuildSel];
+  const dvs=saIds.map(id=>bc.srcData[id]&&bc.srcData[id].dataVersion).filter(Boolean).sort().reverse();
+  const idx=cr2SessionRpts.length;
+  const label='Custom report '+String.fromCharCode(65+idx);
+  cr2SessionRpts.push({id:'cr2-sess-'+idx,label,sampleAssayIds:saIds,dataVersion:dvs[0]||'—',createdAt:'just now',isDefault:false});
+  cr2BuildSel=new Set();
+  const btn=document.getElementById('cr2-create-btn');
+  if(btn){btn.textContent='Creating report…';btn.disabled=true;btn.classList.remove('btn-p');}
+  setTimeout(()=>{const bcc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);cr2RenderSAPicker(bcc);},900);
+}
+function cr2UpdateSessionRptsUI(bc){
+  const wrap=document.getElementById('cr2-session-rpts');
+  const list=document.getElementById('cr2-session-rpts-list');
+  if(!wrap||!list)return;
+  if(!cr2SessionRpts.length){wrap.style.display='none';return;}
+  wrap.style.display='';
+  list.innerHTML=cr2SessionRpts.map(rpt=>{
+    const saLabels=rpt.sampleAssayIds.map(id=>{const sa=bc.sampleAssays.find(s=>s.id===id);return sa?sa.assay.replace(/\s*\([^)]*\)/,'').trim()+' · '+sa.biofluid:id;}).join(' + ');
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:0.5px solid var(--bd2);border-radius:6px;margin-bottom:6px;background:var(--bg);"><div><div style="font-size:12px;font-weight:600;color:var(--tx);">${rpt.label}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${saLabels}</div></div><span style="font-size:11px;color:var(--sg,#2a7a4f);">✓ Created</span></div>`;
   }).join('');
-  cr2CheckNudge(bc);
 }
-function cr2SlotChange(slotIdx,omicType,reportId){
-  if(omicType==='proteomics')cr2Slots[slotIdx].proteomicsId=reportId||null;
-  else cr2Slots[slotIdx].metabolomicsId=reportId||null;
-  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
-  cr2RenderSlots(bc);cr2RenderComparison(bc);
+function cr2RenderStep3(){
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);if(!bc)return;
+  const allRpts=[...bc.reports,...cr2SessionRpts];
+  const el=document.getElementById('cr2-step3-reports');if(!el)return;
+  const btnS='font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;margin-left:6px;';
+  el.innerHTML=allRpts.map(rpt=>{
+    const saLabels=rpt.sampleAssayIds.map(id=>{const sa=bc.sampleAssays.find(s=>s.id===id);return sa?sa.assay.replace(/\s*\([^)]*\)/,'').trim()+' · '+sa.biofluid:id;}).join(' + ');
+    const checked=cr2CompareSel.has(rpt.id);
+    const defBadge=rpt.isDefault?`<span style="font-size:10px;background:rgba(0,130,130,0.09);color:var(--it);border-radius:10px;padding:1px 7px;margin-left:6px;">Default</span>`:'';
+    const dvBadge=rpt.dataVersion?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 3px;margin-left:5px;">${rpt.dataVersion}</span>`:'';
+    const dateStr=rpt.isDefault?`Generated ${rpt.createdAt}`:`Created ${rpt.createdAt}`;
+    return`<label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:0.5px solid ${checked?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:8px;background:${checked?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="checkbox" ${checked?'checked':''} onchange="cr2ToggleCompare('${rpt.id}')" style="margin-top:3px;cursor:pointer;flex-shrink:0;accent-color:var(--it);"><div style="flex:1;"><div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;font-size:12px;font-weight:600;color:var(--tx);">${rpt.label}${defBadge}${dvBadge}<button onclick="event.preventDefault();event.stopPropagation();cr2Regenerate('${rpt.id}')" style="${btnS}" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button></div><div style="font-size:11px;color:var(--tx3);margin-top:3px;">${saLabels}</div><div style="font-size:11px;color:var(--tx3);margin-top:1px;">${dateStr}</div></div></label>`;
+  }).join('');
 }
-function cr2AddSlot(){
-  if(cr2Slots.length>=4)return;
-  cr2Slots.push({proteomicsId:null,metabolomicsId:null});
-  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
-  cr2RenderSlots(bc);cr2RenderComparison(bc);
+function cr2ToggleCompare(id){
+  if(cr2CompareSel.has(id))cr2CompareSel.delete(id);else cr2CompareSel.add(id);
+  cr2RenderStep3();cr2RunComparison();
 }
-function cr2RemoveSlot(idx){
-  if(cr2Slots.length<=1)return;
-  cr2Slots.splice(idx,1);
-  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
-  cr2RenderSlots(bc);cr2RenderComparison(bc);
+function cr2BuildReportForComparison(bc,rptConfig){
+  const saIds=rptConfig.sampleAssayIds;
+  const assays=saIds.map(id=>bc.sampleAssays.find(sa=>sa.id===id)).filter(Boolean);
+  const srcList=saIds.map(id=>bc.srcData[id]).filter(Boolean);
+  if(!srcList.length)return null;
+  const merged=JSON.parse(JSON.stringify(srcList[0].systems));
+  for(let i=1;i<srcList.length;i++){
+    srcList[i].systems.forEach(s2=>{
+      const ex=merged.find(s=>s.name===s2.name);
+      if(ex){
+        ex.score=Math.round((ex.score+s2.score)/2);
+        s2.healthAreas.forEach(ha2=>{
+          const exHA=ex.healthAreas.find(h=>h.name===ha2.name);
+          if(exHA){exHA.score=Math.round((exHA.score+ha2.score)/2);ha2.biomarkers.forEach(bm2=>{if(!exHA.biomarkers.find(b=>b.biomarker===bm2.biomarker))exHA.biomarkers.push(bm2);});}
+          else ex.healthAreas.push(JSON.parse(JSON.stringify(ha2)));
+        });
+      }else{merged.push(JSON.parse(JSON.stringify(s2)));}
+    });
+  }
+  const assayLabel=assays.map(a=>a.assay.replace(/\s*\([^)]*\)/,'').trim()).join(' + ');
+  const biofluids=[...new Set(assays.map(a=>a.biofluid))].join(' / ');
+  const _fullLabel=assays.map(a=>a.assay+' · '+a.biofluid).join(' + ');
+  return{id:rptConfig.id,assay:assayLabel,biofluid:biofluids,systems:merged,_fullLabel,_isMerged:assays.length>1,label:rptConfig.label};
 }
-function cr2BuildSlotReport(bc,slot,lbl){
-  const proteoR=slot.proteomicsId?bc.reports.find(r=>r.id===slot.proteomicsId):null;
-  const metaboR=slot.metabolomicsId?bc.reports.find(r=>r.id===slot.metabolomicsId):null;
-  if(!proteoR&&!metaboR)return null;
-  if(!metaboR)return Object.assign({},proteoR,{_slotLabel:lbl,_isMerged:false});
-  if(!proteoR)return Object.assign({},metaboR,{_slotLabel:lbl,_isMerged:false});
-  const merged=JSON.parse(JSON.stringify(proteoR.systems));
-  metaboR.systems.forEach(s2=>{
-    const ex=merged.find(s=>s.name===s2.name);
-    if(ex){
-      ex.score=Math.round((ex.score+s2.score)/2);
-      s2.healthAreas.forEach(ha2=>{
-        const exHA=ex.healthAreas.find(h=>h.name===ha2.name);
-        if(exHA){exHA.score=Math.round((exHA.score+ha2.score)/2);ha2.biomarkers.forEach(bm2=>{if(!exHA.biomarkers.find(b=>b.biomarker===bm2.biomarker))exHA.biomarkers.push(bm2);});}
-        else ex.healthAreas.push(JSON.parse(JSON.stringify(ha2)));
-      });
-    }else{merged.push(JSON.parse(JSON.stringify(s2)));}
-  });
-  const _fullLabel=proteoR.assay+' · '+proteoR.biofluid+' + '+metaboR.assay+' · '+metaboR.biofluid;
-  return{id:'slot-'+lbl,assay:proteoR.assay.replace(/\s*\([^)]*\)/,'').trim()+' + '+metaboR.assay.replace(/\s*\([^)]*\)/,'').trim(),biofluid:[...new Set([proteoR.biofluid,metaboR.biofluid])].join(' / '),dataVersion:proteoR.dataVersion,systems:merged,_slotLabel:lbl,_isMerged:true,_fullLabel,_proteomicsId:proteoR.id,_metabolomicsId:metaboR.id};
-}
-function cr2CheckNudge(bc){
-  const nudge=document.getElementById('cr2-matrix-nudge');if(!nudge||!bc)return;
-  const active=cr2Slots.filter(s=>s.proteomicsId||s.metabolomicsId);
-  if(!active.length){nudge.style.display='none';return;}
-  const singleOmic=active.some(s=>!(s.proteomicsId&&s.metabolomicsId));
-  if(!singleOmic){nudge.style.display='none';return;}
-  nudge.style.display='';
-  nudge.textContent='For a complete multi-omic score, select both a proteomics and metabolomics dataset in each report.';
-}
-function cr2ColLabel(r){return r.assay.replace(/\s*\([^)]*\)/,'').trim()+' · '+r.biofluid;}
-function cr2RenderComparison(bc){
+function cr2RunComparison(){
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);if(!bc)return;
+  const allRpts=[...bc.reports,...cr2SessionRpts];
+  const sel=allRpts.filter(r=>cr2CompareSel.has(r.id)).map(cfg=>cr2BuildReportForComparison(bc,cfg)).filter(Boolean);
   const empty=document.getElementById('cr2-empty-prompt');
   const wrap=document.getElementById('cr2-result-wrap');
-  if(!empty||!wrap||!bc)return;
-  const sel=cr2Slots.map((slot,i)=>cr2BuildSlotReport(bc,slot,['A','B','C','D'][i]||String(i+1))).filter(Boolean);
-  if(!sel.length){empty.style.display='';wrap.style.display='none';return;}
+  if(!empty||!wrap)return;
+  const sendBtn=document.getElementById('cr2-send-btn');
+  const sendLocked=document.getElementById('cr2-send-locked');
+  if(!sel.length){
+    empty.style.display='';wrap.style.display='none';
+    if(sendBtn)sendBtn.style.display='none';if(sendLocked)sendLocked.style.display='none';
+    return;
+  }
   empty.style.display='none';wrap.style.display='';
+  if(sendBtn)sendBtn.style.display=currentRole==='admin'?'inline-block':'none';
+  if(sendLocked)sendLocked.style.display=currentRole==='admin'?'none':'inline-block';
   const hdrTitle=document.getElementById('cr2-result-hdr-title');
   if(hdrTitle)hdrTitle.textContent='Comparing — '+bc.barcode;
   const rSys=(r,sn)=>r.systems.find(s=>s.name===sn);
@@ -1352,11 +1449,9 @@ function cr2RenderComparison(bc){
   const twoCol=sel.length===2;
   document.getElementById('cr2-result-thead').innerHTML=
     '<th style="min-width:220px;padding:10px 8px;"></th>'+
-    sel.map((r,i)=>{
+    sel.map(r=>{
       const assayLabel=r._isMerged?r.assay:r.assay.replace(/\s*\([^)]*\)/,'').trim();
-      const btnStyle='font-size:10px;padding:1px 7px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bg);color:var(--tx2);cursor:pointer;line-height:1.6;font-weight:400;margin-left:6px;';
-      const regenBtns=`<button onclick="cr2Regenerate('${r.id}')" style="${btnStyle}" title="Rebuild this report using the latest best-matching reference ranges">↻ Regenerate</button>`;
-      return `<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${assayLabel.toUpperCase()}</div><div style="margin-top:3px;display:flex;align-items:center;flex-wrap:wrap;gap:0;"><span style="font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</span>${regenBtns}</div></th>`;
+      return`<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${assayLabel.toUpperCase()}</div><div style="margin-top:3px;font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</div></th>`;
     }).join('')+
     (twoCol?'<th style="text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;min-width:72px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
   const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
@@ -1395,9 +1490,9 @@ function cr2RenderComparison(bc){
 }
 function cr2SendToMyhi(){
   if(currentRole!=='admin')return;
-  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
-  if(!bc)return;
-  cr2MyhiSel=cr2Slots.map((slot,i)=>cr2BuildSlotReport(bc,slot,['A','B','C','D'][i]||String(i+1))).filter(Boolean);
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);if(!bc)return;
+  const allRpts=[...bc.reports,...cr2SessionRpts];
+  cr2MyhiSel=allRpts.filter(r=>cr2CompareSel.has(r.id)).map(cfg=>cr2BuildReportForComparison(bc,cfg)).filter(Boolean);
   if(!cr2MyhiSel.length)return;
   const optEl=document.getElementById('cr2-myhi-options');
   optEl.innerHTML=cr2MyhiSel.map((r,i)=>`<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--bd2);border-radius:6px;cursor:pointer;font-size:13px;"><input type="radio" name="cr2-myhi-rpt" value="${i}" ${i===0?'checked':''} style="cursor:pointer;margin:0;flex-shrink:0;"><span>${r._fullLabel||r.assay+' · '+r.biofluid}</span></label>`).join('');
@@ -1427,10 +1522,7 @@ function cr2MyhiConfirm(){
 }
 function cr2MyhiClose(){document.getElementById('cr2-myhi-overlay').style.display='none';}
 function cr2Regenerate(id){
-  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
-  const r=bc&&bc.reports.find(x=>x.id===id);
-  if(!r)return;
-  const btn=document.querySelector(`button[onclick="cr2Regenerate('${id}')"]`);
+  const btn=document.querySelector(`button[onclick*="cr2Regenerate('${id}')"]`);
   if(btn){btn.textContent='Regenerating…';btn.disabled=true;btn.style.color='var(--tx3)';}
   setTimeout(()=>{if(btn){btn.textContent='✓ Done';btn.style.color='var(--sg,#2a7a4f)';}setTimeout(()=>{if(btn){btn.textContent='↻ Regenerate';btn.disabled=false;btn.style.color='var(--tx2)';}},2000);},1800);
 }
