@@ -132,6 +132,8 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .btn-rej:hover{background:var(--rb);}
 .btn-p{border-color:var(--ibr);color:var(--it);}
 .btn-p:hover{background:var(--ib);}
+.btn-fill{background:var(--it);color:#fff;border-color:var(--it);}
+.btn-fill:hover:not(:disabled){background:var(--tx);border-color:var(--tx);}
 .fi{border:0.5px solid var(--bd2);border-radius:var(--r);padding:7px 10px;font-size:13px;width:100%;color:var(--tx);background:var(--bg);}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
@@ -543,18 +545,18 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
   <!-- Phase 2: Steps 2 & 3 -->
   <div id="cr2-phase2" style="display:none;">
-    <div style="margin-bottom:20px;">
-      <div style="font-family:monospace;font-size:20px;font-weight:700;color:var(--tx);letter-spacing:.04em;" id="cr2-hdr-barcode"></div>
-      <button onclick="cr2Back()" style="background:none;border:none;padding:0;margin-top:5px;font-size:12px;color:var(--tx3);cursor:pointer;text-decoration:underline;text-underline-offset:2px;">← Change barcode</button>
-    </div>
-
-    <!-- Step indicator -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
+    <!-- Step indicator (1 → 2 → 3) -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="cr2Back()">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd2);color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">1</span>
+        <span id="cr2-hdr-barcode" style="font-family:monospace;font-size:12px;font-weight:700;color:var(--tx3);"></span>
+      </div>
+      <span style="color:var(--bd2);font-size:13px;margin:0 1px;">→</span>
       <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="cr2GoToStep(2)">
         <span id="cr2-stp2-circle" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--it);color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
         <span id="cr2-stp2-lbl" style="font-size:12px;font-weight:700;color:var(--it);">Build reports</span>
       </div>
-      <span style="color:var(--bd2);font-size:16px;margin:0 2px;">→</span>
+      <span style="color:var(--bd2);font-size:13px;margin:0 1px;">→</span>
       <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="cr2GoToStep(3)">
         <span id="cr2-stp3-circle" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd);color:var(--tx3);font-size:11px;font-weight:700;flex-shrink:0;">3</span>
         <span id="cr2-stp3-lbl" style="font-size:12px;color:var(--tx3);">Select to compare</span>
@@ -574,7 +576,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <div id="cr2-session-rpts-list"></div>
       </div>
       <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--bd);">
-        <button onclick="cr2GoToStep(3)" class="btn btn-p" style="font-size:12px;">Next: Select reports to compare →</button>
+        <button onclick="cr2GoToStep(3)" class="btn btn-fill" style="font-size:12px;">Next: Select reports to compare →</button>
       </div>
     </div>
 
@@ -582,13 +584,11 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
     <div id="cr2-step3-content" style="display:none;">
       <div class="sl" style="margin-bottom:4px;">Select reports to compare</div>
       <div style="font-size:12px;color:var(--tx3);margin-bottom:14px;">Choose two or more reports. The comparison updates automatically.</div>
-      <div class="card" style="padding:14px 16px;margin-bottom:16px;">
-        <div id="cr2-step3-reports"></div>
-      </div>
+      <div id="cr2-step3-reports" style="margin-bottom:16px;"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <span id="cr2-result-hdr-title" style="font-size:14px;font-weight:700;color:var(--tx);"></span>
         <div style="display:flex;align-items:center;gap:8px;">
-          <button class="btn" id="cr2-send-btn" onclick="cr2SendToMyhi()" style="font-size:12px;display:none;">Send to MYHI ↗</button>
+          <button class="btn btn-fill" id="cr2-send-btn" onclick="cr2SendToMyhi()" style="font-size:12px;display:none;">Send to MYHI ↗</button>
           <span id="cr2-send-locked" style="font-size:11px;color:var(--tx3);display:none;">🔒 Admin only</span>
         </div>
       </div>
@@ -596,7 +596,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <div id="cr2-result-wrap" style="display:none;">
         <div class="card" style="padding:0;overflow:hidden;">
           <div style="overflow-x:auto;">
-            <table class="gh-table" id="cr2-result-table" style="min-width:500px;">
+            <table class="gh-table" id="cr2-result-table" style="table-layout:fixed;width:100%;">
               <thead><tr id="cr2-result-thead"></tr></thead>
               <tbody id="cr2-result-tbody"></tbody>
             </table>
@@ -1331,7 +1331,7 @@ function cr2RenderSAPicker(bc){
         const dvBadge=srcDv?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 4px;margin-left:4px;">${srcDv}</span>`:'';
         return`<label style="display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border:0.5px solid ${sel?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${sel?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="checkbox" ${sel?'checked':''} onchange="cr2ToggleSA('${sa.id}')" style="margin-top:3px;cursor:pointer;flex-shrink:0;accent-color:var(--it);"><div><div style="display:flex;align-items:center;flex-wrap:wrap;font-size:12px;font-weight:600;color:var(--tx);">${assayShort}${method?' · '+method:''}${dvBadge}</div><div style="font-size:11px;color:var(--tx3);margin-top:2px;">${sa.biofluid} · ${sa.lab} · received ${sa.receivedDate}</div></div></label>`;
       }).join('');
-    return`<div><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">${label}</div><div style="background:var(--bg2);border:0.5px solid var(--bd2);border-radius:8px;padding:12px 12px 6px;">${items}</div></div>`;
+    return`<div><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">${label}</div><div>${items}</div></div>`;
   }).join('')+'</div>';
   cr2UpdateCreateBtn();
   cr2UpdateSessionRptsUI(bc);
@@ -1344,7 +1344,7 @@ function cr2UpdateCreateBtn(){
   const btn=document.getElementById('cr2-create-btn');if(!btn)return;
   const n=cr2BuildSel.size;
   btn.textContent=n?`Create report from ${n} selected →`:'Select sample assays above';
-  btn.disabled=!n;btn.classList.toggle('btn-p',!!n);
+  btn.disabled=!n;btn.classList.toggle('btn-fill',!!n);
 }
 function cr2CreateReport(){
   const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
@@ -1356,7 +1356,7 @@ function cr2CreateReport(){
   cr2SessionRpts.push({id:'cr2-sess-'+idx,label,sampleAssayIds:saIds,dataVersion:dvs[0]||'—',createdAt:'just now',isDefault:false});
   cr2BuildSel=new Set();
   const btn=document.getElementById('cr2-create-btn');
-  if(btn){btn.textContent='Creating report…';btn.disabled=true;btn.classList.remove('btn-p');}
+  if(btn){btn.textContent='Creating report…';btn.disabled=true;btn.classList.remove('btn-fill');}
   setTimeout(()=>{const bcc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);cr2RenderSAPicker(bcc);},900);
 }
 function cr2UpdateSessionRptsUI(bc){
@@ -1448,12 +1448,12 @@ function cr2RunComparison(){
   }));
   const twoCol=sel.length===2;
   document.getElementById('cr2-result-thead').innerHTML=
-    '<th style="min-width:220px;padding:10px 8px;"></th>'+
+    '<th style="width:200px;padding:10px 8px;"></th>'+
     sel.map(r=>{
-      const assayLabel=r._isMerged?r.assay:r.assay.replace(/\s*\([^)]*\)/,'').trim();
-      return`<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="white-space:nowrap;">${assayLabel.toUpperCase()}</div><div style="margin-top:3px;font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</div></th>`;
+      const assayShort=r.assay.length>30?r.assay.slice(0,28)+'…':r.assay;
+      return`<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="line-height:1.3;">${r.label}</div><div style="margin-top:2px;font-size:11px;color:var(--tx3);font-weight:400;line-height:1.3;word-break:break-word;">${assayShort}</div><div style="margin-top:1px;font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</div></th>`;
     }).join('')+
-    (twoCol?'<th style="text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;min-width:72px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
+    (twoCol?'<th style="width:64px;text-align:right;font-size:11px;font-weight:600;color:var(--tx3);padding:8px 14px;text-transform:uppercase;letter-spacing:.05em;">Diff</th>':'');
   const tbody=document.getElementById('cr2-result-tbody');tbody.innerHTML='';
   function diffCell(vals){if(!twoCol||vals[0]==null||vals[1]==null)return twoCol?'<td></td>':'';const d=vals[1]-vals[0];const cls=d>0?'dp':d<0?'dm':'dz';return`<td style="text-align:right;padding:6px 14px;font-size:12px;"><span class="${cls}">${d>0?'+'+d:d===0?'0':String(d)}</span></td>`;}
   function rowBg(bands){const valid=bands.filter(Boolean);return valid.length>1&&new Set(valid).size>1?'border-left:3px solid #c9844a;':'border-left:3px solid transparent;';}
