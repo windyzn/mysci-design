@@ -1515,7 +1515,7 @@ function cr2RunComparison(){
   }));
   const twoCol=sel.length===2;
   const tbl=document.getElementById('cr2-result-table');
-  if(tbl){if(sel.length===1){tbl.style.tableLayout='auto';tbl.style.width='auto';tbl.style.marginLeft='auto';tbl.style.marginRight='auto';}else{tbl.style.tableLayout='fixed';tbl.style.width='100%';tbl.style.marginLeft='';tbl.style.marginRight='';}}
+  if(tbl){tbl.style.tableLayout='fixed';tbl.style.width='100%';tbl.style.marginLeft='';tbl.style.marginRight='';}
   document.getElementById('cr2-result-thead').innerHTML=
     '<th style="width:200px;padding:10px 8px;position:sticky;left:0;z-index:3;background:var(--bg);"></th>'+
     sel.map(r=>{
