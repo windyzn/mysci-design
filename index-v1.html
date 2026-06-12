@@ -536,12 +536,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <span style="color:var(--bd2);font-size:13px;margin:0 1px;">→</span>
       <div style="display:flex;align-items:center;gap:7px;">
         <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd);color:var(--tx3);font-size:11px;font-weight:700;flex-shrink:0;">2</span>
-        <span style="font-size:12px;color:var(--tx3);">Build reports</span>
-      </div>
-      <span style="color:var(--bd2);font-size:13px;margin:0 1px;">→</span>
-      <div style="display:flex;align-items:center;gap:7px;">
-        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd);color:var(--tx3);font-size:11px;font-weight:700;flex-shrink:0;">3</span>
-        <span style="font-size:12px;color:var(--tx3);">Select to compare</span>
+        <span style="font-size:12px;color:var(--tx3);">View and compare reports</span>
       </div>
     </div>
     <div style="margin-bottom:12px;">
@@ -558,46 +553,28 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
   <!-- Phase 2: Steps 2 & 3 -->
   <div id="cr2-phase2" style="display:none;">
-    <!-- Step indicator (1 → 2 → 3) -->
+    <!-- Step indicator (1 → 2) -->
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
       <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="cr2Back()">
         <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd2);color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">1</span>
         <span id="cr2-hdr-barcode" style="font-family:monospace;font-size:12px;font-weight:700;color:var(--tx3);"></span>
       </div>
       <span style="color:var(--bd2);font-size:13px;margin:0 1px;">→</span>
-      <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="cr2GoToStep(2)">
-        <span id="cr2-stp2-circle" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--it);color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
-        <span id="cr2-stp2-lbl" style="font-size:12px;font-weight:700;color:var(--it);">Build reports</span>
-      </div>
-      <span style="color:var(--bd2);font-size:13px;margin:0 1px;">→</span>
-      <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="cr2GoToStep(3)">
-        <span id="cr2-stp3-circle" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--bd);color:var(--tx3);font-size:11px;font-weight:700;flex-shrink:0;">3</span>
-        <span id="cr2-stp3-lbl" style="font-size:12px;color:var(--tx3);">Select to compare</span>
+      <div style="display:flex;align-items:center;gap:7px;">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--it);color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
+        <span style="font-size:12px;font-weight:700;color:var(--it);">View and compare reports</span>
       </div>
     </div>
 
-    <!-- Step 2: Build a report -->
+    <!-- Step 2: View & compare -->
     <div id="cr2-step2-content">
-      <div class="sl" style="margin-bottom:4px;">Build a report</div>
-      <div style="font-size:12px;color:var(--tx3);margin-bottom:16px;">Select sample assays to include. You can create multiple reports with different combinations.</div>
-      <div id="cr2-sa-picker"></div>
-      <div id="cr2-session-rpts" style="display:none;margin-top:20px;">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px;">Created this session</div>
-        <div id="cr2-session-rpts-list"></div>
-      </div>
-      <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <button id="cr2-create-btn" onclick="cr2CreateReport()" class="btn" style="font-size:12px;" disabled>Select sample assays above</button>
-          <button id="cr2-cancel-edit" onclick="cr2CancelEdit()" style="display:none;background:none;border:none;font-size:11px;color:var(--tx3);cursor:pointer;text-decoration:underline;padding:0;">Cancel</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div>
+          <div class="sl" style="margin-bottom:2px;">View and compare reports</div>
+          <div style="font-size:12px;color:var(--tx3);">Choose two or more reports. The comparison updates automatically.</div>
         </div>
-        <button onclick="cr2GoToStep(3)" class="btn btn-fill" style="font-size:12px;">Compare and view reports →</button>
+        <button onclick="cr2OpenBuildModal()" class="btn btn-p" style="font-size:12px;flex-shrink:0;margin-left:16px;">+ Create report</button>
       </div>
-    </div>
-
-    <!-- Step 3: Select & compare -->
-    <div id="cr2-step3-content" style="display:none;">
-      <div class="sl" style="margin-bottom:4px;">Select reports to compare</div>
-      <div style="font-size:12px;color:var(--tx3);margin-bottom:14px;">Choose two or more reports. The comparison updates automatically.</div>
       <div id="cr2-step3-reports" style="margin-bottom:16px;"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <span id="cr2-result-hdr-title" style="font-size:14px;font-weight:700;color:var(--tx);"></span>
@@ -616,6 +593,29 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
             </table>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Build report modal -->
+  <div id="cr2-build-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;" onclick="if(event.target===this)cr2CloseBuildModal()">
+    <div style="background:var(--bg);border-radius:var(--rl);padding:24px;width:720px;max-width:92vw;max-height:85vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="sl" id="cr2-modal-title">Build a report</div>
+        <button onclick="cr2CloseBuildModal()" style="background:none;border:none;font-size:20px;color:var(--tx3);cursor:pointer;padding:2px 6px;line-height:1;">×</button>
+      </div>
+      <div style="font-size:12px;color:var(--tx3);margin-bottom:16px;">Select sample assays to include. You can create multiple reports with different combinations.</div>
+      <div id="cr2-sa-picker"></div>
+      <div id="cr2-session-rpts" style="display:none;margin-top:20px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px;">Created this session</div>
+        <div id="cr2-session-rpts-list"></div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button id="cr2-create-btn" onclick="cr2CreateReport()" class="btn" style="font-size:12px;" disabled>Select sample assays above</button>
+          <button id="cr2-cancel-edit" onclick="cr2CancelEdit()" style="display:none;background:none;border:none;font-size:11px;color:var(--tx3);cursor:pointer;text-decoration:underline;padding:0;">Cancel</button>
+        </div>
+        <button onclick="cr2CloseBuildModal()" class="btn" style="font-size:12px;">Done</button>
       </div>
     </div>
   </div>
@@ -1307,7 +1307,7 @@ function cr2Select(barcode){
   document.getElementById('cr2-phase1').style.display='none';
   document.getElementById('cr2-phase2').style.display='';
   document.getElementById('cr2-hdr-barcode').textContent=barcode;
-  cr2GoToStep(2);
+  cr2RenderStep3();cr2RunComparison();
 }
 function cr2Back(){
   cr2CurrentBarcode=null;cr2EditingId=null;
@@ -1316,18 +1316,7 @@ function cr2Back(){
 }
 function cr2GoToStep(n){
   cr2Step=n;
-  document.getElementById('cr2-step2-content').style.display=n===2?'':'none';
-  document.getElementById('cr2-step3-content').style.display=n===3?'':'none';
-  const c2=document.getElementById('cr2-stp2-circle'),l2=document.getElementById('cr2-stp2-lbl');
-  const c3=document.getElementById('cr2-stp3-circle'),l3=document.getElementById('cr2-stp3-lbl');
-  if(c2){c2.style.background=n===2?'var(--it)':'var(--tx3)';}
-  if(l2){l2.style.color=n===2?'var(--it)':'var(--tx3)';l2.style.fontWeight=n===2?'700':'400';}
-  if(c3){c3.style.background=n===3?'var(--it)':'var(--bd)';c3.style.color=n===3?'#fff':'var(--tx3)';}
-  if(l3){l3.style.color=n===3?'var(--it)':'var(--tx3)';l3.style.fontWeight=n===3?'700':'400';}
-  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
-  if(n===3){cr2EditingId=null;cr2BuildSel=new Set();}
-  if(n===2)cr2RenderSAPicker(bc);
-  if(n===3){cr2RenderStep3();cr2RunComparison();}
+  cr2RenderStep3();cr2RunComparison();
 }
 function cr2RenderSAPicker(bc){
   const el=document.getElementById('cr2-sa-picker');if(!el||!bc)return;
@@ -1427,8 +1416,9 @@ function cr2DeleteSessionRpt(id){
   cr2SessionRptsMap.set(cr2CurrentBarcode,existing.filter(r=>r.id!==id));
   cr2CompareSel.delete(id);
   const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
-  cr2RenderSAPicker(bc);
-  if(cr2Step===3){cr2RenderStep3();cr2RunComparison();}
+  const modal=document.getElementById('cr2-build-modal');
+  if(modal&&modal.style.display==='flex')cr2RenderSAPicker(bc);
+  cr2RenderStep3();cr2RunComparison();
 }
 function cr2EditSessionRpt(id){
   const existing=cr2SessionRptsMap.get(cr2CurrentBarcode)||[];
@@ -1436,13 +1426,29 @@ function cr2EditSessionRpt(id){
   if(!rpt)return;
   cr2EditingId=id;
   cr2BuildSel=new Set(rpt.sampleAssayIds);
-  cr2GoToStep(2);
+  cr2ShowBuildModal();
 }
 function cr2CancelEdit(){
   cr2EditingId=null;
   cr2BuildSel=new Set();
   const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
   cr2RenderSAPicker(bc);
+}
+function cr2OpenBuildModal(){
+  cr2EditingId=null;cr2BuildSel=new Set();
+  cr2ShowBuildModal();
+}
+function cr2ShowBuildModal(){
+  const modal=document.getElementById('cr2-build-modal');
+  if(modal)modal.style.display='flex';
+  const bc=CR2_BARCODES.find(b=>b.barcode===cr2CurrentBarcode);
+  cr2RenderSAPicker(bc);
+}
+function cr2CloseBuildModal(){
+  const modal=document.getElementById('cr2-build-modal');
+  if(modal)modal.style.display='none';
+  cr2EditingId=null;cr2BuildSel=new Set();
+  cr2RenderStep3();cr2RunComparison();
 }
 function cr2BuildReportForComparison(bc,rptConfig){
   const saIds=rptConfig.sampleAssayIds;
@@ -1503,6 +1509,8 @@ function cr2RunComparison(){
     });
   }));
   const twoCol=sel.length===2;
+  const tbl=document.getElementById('cr2-result-table');
+  if(tbl){if(sel.length===1){tbl.style.tableLayout='auto';tbl.style.width='auto';tbl.style.marginLeft='auto';tbl.style.marginRight='auto';}else{tbl.style.tableLayout='fixed';tbl.style.width='100%';tbl.style.marginLeft='';tbl.style.marginRight='';}}
   document.getElementById('cr2-result-thead').innerHTML=
     '<th style="width:200px;padding:10px 8px;"></th>'+
     sel.map(r=>{
