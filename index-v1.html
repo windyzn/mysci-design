@@ -573,7 +573,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
           <div class="sl" style="margin-bottom:2px;">View and compare reports</div>
           <div style="font-size:12px;color:var(--tx3);">Choose two or more reports. The comparison updates automatically.</div>
         </div>
-        <button onclick="cr2OpenBuildModal()" class="btn btn-p" style="font-size:12px;flex-shrink:0;margin-left:16px;">+ Create report</button>
+        <button onclick="cr2OpenBuildModal()" class="btn btn-fill" style="font-size:12px;flex-shrink:0;margin-left:16px;">+ Create report</button>
       </div>
       <div id="cr2-step3-reports" style="margin-bottom:16px;"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -599,7 +599,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
   <!-- Build report modal -->
   <div id="cr2-build-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;" onclick="if(event.target===this)cr2CloseBuildModal()">
-    <div style="background:var(--bg);border-radius:var(--rl);padding:24px;width:720px;max-width:92vw;max-height:85vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+    <div style="background:var(--bg);border-radius:var(--rl);padding:28px 32px;width:1100px;max-width:96vw;max-height:88vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <div class="sl" id="cr2-modal-title">Build a report</div>
         <button onclick="cr2CloseBuildModal()" style="background:none;border:none;font-size:20px;color:var(--tx3);cursor:pointer;padding:2px 6px;line-height:1;">×</button>
