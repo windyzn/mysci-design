@@ -183,6 +183,9 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 .gh-table td{padding:7px 10px;border-bottom:0.5px solid var(--bd);}
 .gh-table tr:last-child td{border-bottom:none;}
 .gh-table tbody tr:hover td{background:var(--bg3);cursor:pointer;}
+.cr2-sc{position:sticky;left:0;z-index:2;background:var(--bg);}
+.cr2-sc-sys{position:sticky;left:0;z-index:2;background:#f5f8fa;}
+.gh-table tbody tr:hover .cr2-sc,.gh-table tbody tr:hover .cr2-sc-sys{background:var(--bg3);}
 .fb{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
 .acc-system{border-bottom:0.5px solid var(--bd);}
 .acc-system:last-child{border-bottom:none;}
@@ -1323,8 +1326,10 @@ function cr2RenderSAPicker(bc){
   const groups=[['proteomics','Proteomics'],['metabolomics','Metabolomics'],['other','Other panels']];
   const grouped={proteomics:[],metabolomics:[],other:[]};
   bc.sampleAssays.forEach(sa=>{const k=sa.omicType==='proteomics'||sa.omicType==='metabolomics'?sa.omicType:'other';grouped[k].push(sa);});
+  const colStyle={proteomics:{hd:'#4A6FA5',bg:'rgba(74,111,165,0.05)',bd:'rgba(74,111,165,0.22)'},metabolomics:{hd:'#2E8569',bg:'rgba(46,133,105,0.05)',bd:'rgba(46,133,105,0.22)'},other:{hd:'var(--tx3)',bg:'var(--bg2)',bd:'var(--bd)'}};
   el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">'+groups.map(([type,label])=>{
     const sas=grouped[type];
+    const cs=colStyle[type]||colStyle.other;
     const items=!sas.length
       ?`<div style="font-size:12px;color:var(--tx3);font-style:italic;padding:4px 0;">No ${label.toLowerCase()} datasets available.</div>`
       :sas.map(sa=>{
@@ -1335,7 +1340,7 @@ function cr2RenderSAPicker(bc){
         const dvBadge=srcDv?`<span style="font-family:monospace;font-size:10px;background:var(--bg3);color:var(--tx2);border:0.5px solid var(--bd);border-radius:3px;padding:0 4px;margin-left:4px;">${srcDv}</span>`:'';
         return`<label style="display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border:0.5px solid ${sel?'var(--it)':'var(--bd2)'};border-radius:6px;cursor:pointer;margin-bottom:6px;background:${sel?'rgba(0,130,130,0.04)':'var(--bg)'};"><input type="checkbox" ${sel?'checked':''} onchange="cr2ToggleSA('${sa.id}')" style="margin-top:3px;cursor:pointer;flex-shrink:0;accent-color:var(--it);"><div><div style="display:flex;align-items:center;flex-wrap:wrap;font-size:12px;font-weight:600;color:var(--tx);">${assayShort}${method?' · '+method:''}${dvBadge}</div><div style="font-size:11px;color:var(--tx3);margin-top:2px;">${sa.biofluid} · ${sa.lab} · received ${sa.receivedDate}</div></div></label>`;
       }).join('');
-    return`<div><div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">${label}</div><div>${items}</div></div>`;
+    return`<div style="border:0.5px solid ${cs.bd};border-radius:8px;background:${cs.bg};padding:10px 12px;"><div style="font-size:11px;font-weight:700;color:${cs.hd};text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">${label}</div><div>${items}</div></div>`;
   }).join('')+'</div>';
   cr2UpdateCreateBtn();
   cr2UpdateSessionRptsUI(bc);
@@ -1512,7 +1517,7 @@ function cr2RunComparison(){
   const tbl=document.getElementById('cr2-result-table');
   if(tbl){if(sel.length===1){tbl.style.tableLayout='auto';tbl.style.width='auto';tbl.style.marginLeft='auto';tbl.style.marginRight='auto';}else{tbl.style.tableLayout='fixed';tbl.style.width='100%';tbl.style.marginLeft='';tbl.style.marginRight='';}}
   document.getElementById('cr2-result-thead').innerHTML=
-    '<th style="width:200px;padding:10px 8px;"></th>'+
+    '<th style="width:200px;padding:10px 8px;position:sticky;left:0;z-index:3;background:var(--bg);"></th>'+
     sel.map(r=>{
       const assayShort=r.assay.length>30?r.assay.slice(0,28)+'…':r.assay;
       return`<th style="text-align:left;font-size:12px;font-weight:600;padding:8px 14px;"><div style="line-height:1.3;">${r.label}</div><div style="margin-top:2px;font-size:11px;color:var(--tx3);font-weight:400;line-height:1.3;word-break:break-word;">${assayShort}</div><div style="margin-top:1px;font-size:11px;color:var(--tx3);font-weight:400;">${r.biofluid}</div></th>`;
@@ -1526,7 +1531,7 @@ function cr2RunComparison(){
     const sBands=sVals.map(v=>v!=null?sc(v):null);
     const sTr=document.createElement('tr');
     sTr.style.cssText='border-top:1.5px solid var(--bd);background:var(--bg2);'+rowBg(sBands);
-    let cells=`<td style="padding:9px 8px;font-size:13px;font-weight:700;">${sn}</td>`;
+    let cells=`<td class="cr2-sc-sys" style="padding:9px 8px;font-size:13px;font-weight:700;">${sn}</td>`;
     sVals.forEach(v=>{cells+=v!=null?`<td style="text-align:left;padding:9px 14px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="padding:9px 14px;color:var(--bd3);">—</td>`;});
     cells+=diffCell(sVals);
     sTr.innerHTML=cells;tbody.appendChild(sTr);
@@ -1535,7 +1540,7 @@ function cr2RunComparison(){
       const hBands=hVals.map(v=>v!=null?sc(v):null);
       const hTr=document.createElement('tr');
       hTr.style.cssText='border-top:0.5px solid var(--bd);'+rowBg(hBands);
-      let hCells=`<td style="padding:7px 8px 7px 22px;font-size:12px;color:var(--tx2);">${hn}</td>`;
+      let hCells=`<td class="cr2-sc" style="padding:7px 8px 7px 22px;font-size:12px;color:var(--tx2);">${hn}</td>`;
       hVals.forEach(v=>{hCells+=v!=null?`<td style="text-align:left;padding:7px 14px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="padding:7px 14px;color:var(--bd3);">—</td>`;});
       hCells+=diffCell(hVals);
       hTr.innerHTML=hCells;tbody.appendChild(hTr);
@@ -1544,7 +1549,7 @@ function cr2RunComparison(){
         const bmBands=bmData.map(bm=>bm?sc(bm.score):null);
         const bTr=document.createElement('tr');
         bTr.style.cssText='border-top:0.5px solid var(--bd);'+rowBg(bmBands);
-        let bCells=`<td style="padding:6px 8px 6px 38px;"><div style="font-size:12px;color:var(--tx3);">${bn}</div></td>`;
+        let bCells=`<td class="cr2-sc" style="padding:6px 8px 6px 38px;"><div style="font-size:12px;color:var(--tx3);">${bn}</div></td>`;
         bmData.forEach(bm=>{const refTxt=bm&&bm.ref?`<span style="font-size:10px;color:var(--bd3);margin-left:6px;">ref ${bm.ref}</span>`:'';bCells+=bm?`<td style="text-align:left;padding:6px 14px;white-space:nowrap;"><span class="sp ${sc(bm.score)}" style="font-size:11px;">${bm.score}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${bm.value}${bm.units?' '+bm.units:''}</span>${refTxt}</td>`:`<td style="padding:6px 14px;color:var(--bd3);font-size:13px;">—</td>`;});
         bCells+=diffCell(bmData.map(bm=>bm?bm.score:null));
         bTr.innerHTML=bCells;tbody.appendChild(bTr);
