@@ -1055,13 +1055,10 @@ function switchAssocTab(which,btn){
 function exportCSV(){alert('CSV export (wireframe — simulated download)');}
 function loadKitIntoBuild(bc){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  activatePanel('buildreport');setPageHeader('buildreport');
-  document.getElementById('br-kit-title').textContent='Building report for '+bc;
-  document.getElementById('br-kit-sub').textContent='Select datasets below, then generate scores';
-  document.getElementById('br-scores-section').style.display='none';
-  document.getElementById('br-loading').style.display='none';
-  document.getElementById('br-confirm-row').style.display='flex';
-  document.getElementById('acc-build').innerHTML='';
+  const navEl=document.querySelector('[data-panel="comparereports"]');
+  if(navEl)navEl.classList.add('active');
+  activatePanel('comparereports');setPageHeader('comparereports');
+  cr2Select(bc);
 }
 function backToAllReports(){
   activatePanel('allreports-v1');setPageHeader('allreports-v1');
