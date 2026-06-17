@@ -414,18 +414,25 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       </button>
     </div>
   </div>
+  <div id="arv1-batch-bar" style="display:none;background:var(--ib);border:0.5px solid var(--ibr);border-radius:var(--r);padding:9px 14px;margin-bottom:10px;align-items:center;gap:10px;">
+    <span id="arv1-batch-count" style="font-size:13px;font-weight:600;color:var(--it);flex:1;"></span>
+    <button class="btn btn-fill" style="font-size:12px;" onclick="pdfGenBatch()">↓ Generate PDFs</button>
+    <button class="btn" style="font-size:12px;" onclick="arv1ClearSelection()">Clear selection</button>
+  </div>
   <div class="card" style="padding:0;overflow:hidden;">
     <table class="gh-table" id="arv1-table" style="table-layout:fixed;width:100%;">
       <colgroup>
+        <col style="width:28px;">
         <col style="width:32px;">
         <col style="width:110px;">
         <col>
         <col style="width:120px;">
         <col style="width:110px;">
-        <col style="width:120px;">
+        <col style="width:160px;">
       </colgroup>
       <thead>
         <tr>
+          <th style="padding:0 8px 0 14px;"><input type="checkbox" id="arv1-chk-all" onclick="arv1SelectAll(this)" style="cursor:pointer;" title="Select all"></th>
           <th></th>
           <th><span class="col-tip">Barcode<i class="col-tip-i">i</i><span class="col-tip-text">Sample kit identifier. Each barcode can have multiple reports built from different dataset combinations.</span></span></th>
           <th><span class="col-tip">Batches<i class="col-tip-i">i</i><span class="col-tip-text">Assay batches included in this report. Expand the row to see individual batches.</span></span></th>
@@ -1644,6 +1651,7 @@ function renderARV1(){
   const tbody=document.getElementById('arv1-tbody');
   if(!tbody)return;
   tbody.innerHTML='';
+  arv1ClearSelection();
   ARV1_DATA.forEach((r,idx)=>{
     const grp='arv1-c-'+idx;
     const chevId='arv1-chev-'+idx;
@@ -1652,6 +1660,10 @@ function renderARV1(){
     const typeCounts={};r.datasets.forEach(d=>{typeCounts[d.assay]=(typeCounts[d.assay]||0)+1;});
     const typeOrder=['Proteomics','Metabolomics','Exposomics','Microbiomics','Cellular','Genomics'];
     const dsPill=`<span style="font-size:12px;color:var(--tx2);">${typeOrder.filter(t=>typeCounts[t]).map(t=>`${typeCounts[t]} ${t.toLowerCase()}`).join(' · ')}</span>`;
+    const chkCell=r.reportable
+      ?`<td style="padding:0 8px 0 14px;" onclick="event.stopPropagation()"><input type="checkbox" class="arv1-chk" data-bc="${r.barcode}" onchange="arv1CheckChanged()" style="cursor:pointer;"></td>`
+      :`<td></td>`;
+    const pdfBtn=r.reportable?`<button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();pdfGenSingle('${r.barcode}')">↓ PDF</button>`:'';
     // Parent row
     const parentTr=document.createElement('tr');
     parentTr.style.cursor='pointer';
@@ -1663,12 +1675,13 @@ function renderARV1(){
       chev.textContent=isOpen?'▶':'▼';
     };
     parentTr.innerHTML=`
+      ${chkCell}
       <td style="width:30px;font-size:11px;color:var(--tx3);" id="${chevId}">▶</td>
       <td style="font-family:monospace;font-weight:700;">${r.barcode}</td>
       <td>${dsPill}</td>
       <td style="font-size:12px;color:var(--tx2);">${latestDate}</td>
       <td><span class="ds ${statusCls}">${r.status}</span></td>
-      <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();loadKitIntoBuild('${r.barcode}')">Build report</button></td>`;
+      <td style="white-space:nowrap;">${pdfBtn}<button class="btn" style="font-size:11px;padding:3px 8px;${pdfBtn?'margin-left:4px;':''}" onclick="event.stopPropagation();loadKitIntoBuild('${r.barcode}')">View report</button></td>`;
     tbody.appendChild(parentTr);
     // Child rows — same columns, blank where not applicable
     r.datasets.forEach(ds=>{
@@ -1677,6 +1690,7 @@ function renderARV1(){
       childTr.style.display='none';
       const assayCls=typePillCls(ds.assay);
       childTr.innerHTML=`
+        <td></td>
         <td></td>
         <td></td>
         <td style="padding-left:16px;font-size:12px;color:var(--tx2);">${ds.name}&ensp;<span class="tag ${assayCls}">${ds.assay}</span></td>
@@ -1927,6 +1941,35 @@ function filterARV1(){
   });
 }
 
+// ── PDF GENERATION ──
+function arv1CheckChanged(){
+  const checked=[...document.querySelectorAll('.arv1-chk:checked')];
+  const all=[...document.querySelectorAll('.arv1-chk')];
+  const bar=document.getElementById('arv1-batch-bar');
+  const count=document.getElementById('arv1-batch-count');
+  if(bar){bar.style.display=checked.length?'flex':'none';}
+  if(count){count.textContent=checked.length+' barcode'+(checked.length===1?'':'s')+' selected';}
+  const allChk=document.getElementById('arv1-chk-all');
+  if(allChk){allChk.indeterminate=checked.length>0&&checked.length<all.length;allChk.checked=all.length>0&&checked.length===all.length;}
+}
+function arv1SelectAll(chk){
+  document.querySelectorAll('.arv1-chk').forEach(c=>c.checked=chk.checked);
+  arv1CheckChanged();
+}
+function arv1ClearSelection(){
+  document.querySelectorAll('.arv1-chk').forEach(c=>c.checked=false);
+  const allChk=document.getElementById('arv1-chk-all');
+  if(allChk){allChk.checked=false;allChk.indeterminate=false;}
+  const bar=document.getElementById('arv1-batch-bar');
+  if(bar)bar.style.display='none';
+}
+function pdfGenSingle(bc){alert('PDF generation (wireframe — simulated)\n\nGenerating PDF for barcode '+bc+'…');}
+function pdfGenBatch(){
+  const barcodes=[...document.querySelectorAll('.arv1-chk:checked')].map(c=>c.getAttribute('data-bc'));
+  if(!barcodes.length)return;
+  alert('PDF generation (wireframe — simulated)\n\nQueuing PDFs for '+barcodes.length+' barcode'+(barcodes.length===1?'':'s')+':\n'+barcodes.join(', '));
+  arv1ClearSelection();
+}
 // ── ASSAY CATALOG SEARCH ──
 function toggleACSearch(){
   const input=document.getElementById('ac-search');
