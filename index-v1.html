@@ -405,14 +405,24 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
 
 <!-- ALL REPORTS V1 — two-level nested table -->
 <div class="panel" id="panel-allreports-v1">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <div class="sl" style="margin:0;">All kits</div>
-    <div style="display:flex;align-items:center;gap:4px;">
-      <input class="fi" id="arv1-search" placeholder="Search barcode, batch, assay…" style="display:none;width:220px;font-size:12px;padding:5px 8px;" oninput="filterARV1()"/>
-      <button class="btn" onclick="toggleARV1Search()" id="arv1-search-btn" title="Search" style="padding:5px 8px;display:flex;align-items:center;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
-    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+    <input class="fi" id="arv1-search" placeholder="Search barcode or assay…" style="width:210px;font-size:12px;" oninput="filterARV1()"/>
+    <select class="fi" id="arv1-filter-status" style="width:auto;font-size:12px;" onchange="filterARV1()">
+      <option value="">All statuses</option>
+      <option>Complete</option>
+      <option>Incomplete</option>
+      <option>Reprocessing</option>
+      <option>Compromised</option>
+    </select>
+    <select class="fi" id="arv1-sort" style="width:auto;font-size:12px;" onchange="filterARV1()">
+      <option value="bc-asc">Barcode A → Z</option>
+      <option value="bc-desc">Barcode Z → A</option>
+      <option value="date-desc">Date newest first</option>
+      <option value="date-asc">Date oldest first</option>
+    </select>
   </div>
   <div id="arv1-batch-bar" style="display:none;background:var(--ib);border:0.5px solid var(--ibr);border-radius:var(--r);padding:9px 14px;margin-bottom:10px;align-items:center;gap:10px;">
     <span id="arv1-batch-count" style="font-size:13px;font-weight:600;color:var(--it);flex:1;"></span>
@@ -428,7 +438,8 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         <col>
         <col style="width:120px;">
         <col style="width:110px;">
-        <col style="width:160px;">
+        <col style="width:80px;">
+        <col style="width:100px;">
       </colgroup>
       <thead>
         <tr>
@@ -438,6 +449,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
           <th><span class="col-tip">Batches<i class="col-tip-i">i</i><span class="col-tip-text">Assay batches included in this report. Expand the row to see individual batches.</span></span></th>
           <th><span class="col-tip">Date received<i class="col-tip-i">i</i><span class="col-tip-text">Most recent batch received date. Expand to see per-dataset dates.</span></span></th>
           <th>Status</th>
+          <th></th>
           <th></th>
         </tr>
       </thead>
@@ -1641,18 +1653,47 @@ const ARV1_DATA=[
      {name:'1A_Cellular (CELL 1.0)',assay:'Cellular',date_received:'2026-04-10'},
      {name:'1A_Genomics (WGS 3.0)',assay:'Genomics',date_received:'2026-04-10'},
    ]},
+  {barcode:'718A056',reportable:true,status:'Complete',
+   datasets:[
+     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-04-15'},
+     {name:'1A_Metabolomics (MYCO 1.2)',assay:'Metabolomics',date_received:'2026-04-16'},
+   ]},
+  {barcode:'224D891',reportable:false,status:'Incomplete',
+   datasets:[
+     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-04-20'},
+   ]},
+  {barcode:'635G123',reportable:true,status:'Complete',
+   datasets:[
+     {name:'1A_Proteomics (MRM 1.1 HQE)',assay:'Proteomics',date_received:'2026-05-01'},
+     {name:'1A_Metabolomics (MYCO 1.2 HQE)',assay:'Metabolomics',date_received:'2026-05-01'},
+   ]},
+  {barcode:'102F567',reportable:true,status:'Reprocessing',
+   datasets:[
+     {name:'1A_Proteomics (MRM 1.1)',assay:'Proteomics',date_received:'2026-03-18'},
+     {name:'2A_Metabolomics (MYCO 1.2)',assay:'Metabolomics',date_received:'2026-03-20'},
+   ]},
+  {barcode:'774B302',reportable:true,status:'Complete',
+   datasets:[
+     {name:'1A_Microbiomics (MB-SEQ 1.0)',assay:'Microbiomics',date_received:'2026-05-10'},
+     {name:'1A_Genomics (WGS 3.0)',assay:'Genomics',date_received:'2026-05-10'},
+   ]},
+  {barcode:'903C448',reportable:false,status:'Compromised',
+   datasets:[
+     {name:'1A_Metabolomics (MYCO 1.2)',assay:'Metabolomics',date_received:'2026-02-14'},
+   ]},
 ];
 
 function typePillCls(t){
   return {Proteomics:'tag-prot',Metabolomics:'tag-meta',Exposomics:'tag-expo',Microbiomics:'tag-micro',Cellular:'tag-cell',Genomics:'tag-geno'}[t]||'tag-ops';
 }
 
-function renderARV1(){
+function renderARV1(data){
+  data=data||ARV1_DATA;
   const tbody=document.getElementById('arv1-tbody');
   if(!tbody)return;
   tbody.innerHTML='';
   arv1ClearSelection();
-  ARV1_DATA.forEach((r,idx)=>{
+  data.forEach((r,idx)=>{
     const grp='arv1-c-'+idx;
     const chevId='arv1-chev-'+idx;
     const latestDate=r.datasets.map(d=>d.date_received).sort().reverse()[0]||'';
@@ -1663,7 +1704,9 @@ function renderARV1(){
     const chkCell=r.reportable
       ?`<td style="padding:0 8px 0 14px;" onclick="event.stopPropagation()"><input type="checkbox" class="arv1-chk" data-bc="${r.barcode}" onchange="arv1CheckChanged()" style="cursor:pointer;"></td>`
       :`<td></td>`;
-    const pdfBtn=r.reportable?`<button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();pdfGenSingle('${r.barcode}')">↓ PDF</button>`:'';
+    const pdfCell=r.reportable
+      ?`<td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();pdfGenSingle('${r.barcode}')">↓ PDF</button></td>`
+      :`<td></td>`;
     // Parent row
     const parentTr=document.createElement('tr');
     parentTr.style.cursor='pointer';
@@ -1681,9 +1724,10 @@ function renderARV1(){
       <td>${dsPill}</td>
       <td style="font-size:12px;color:var(--tx2);">${latestDate}</td>
       <td><span class="ds ${statusCls}">${r.status}</span></td>
-      <td style="white-space:nowrap;">${pdfBtn}<button class="btn" style="font-size:11px;padding:3px 8px;${pdfBtn?'margin-left:4px;':''}" onclick="event.stopPropagation();loadKitIntoBuild('${r.barcode}')">View report</button></td>`;
+      ${pdfCell}
+      <td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="event.stopPropagation();loadKitIntoBuild('${r.barcode}')">View report</button></td>`;
     tbody.appendChild(parentTr);
-    // Child rows — same columns, blank where not applicable
+    // Child rows
     r.datasets.forEach(ds=>{
       const childTr=document.createElement('tr');
       childTr.className=grp;
@@ -1695,6 +1739,7 @@ function renderARV1(){
         <td></td>
         <td style="padding-left:16px;font-size:12px;color:var(--tx2);">${ds.name}&ensp;<span class="tag ${assayCls}">${ds.assay}</span></td>
         <td style="font-size:12px;color:var(--tx2);">${ds.date_received}</td>
+        <td></td>
         <td></td>
         <td></td>`;
       tbody.appendChild(childTr);
@@ -1923,22 +1968,20 @@ document.querySelectorAll('#col-menu input[data-col]').forEach(cb=>{
 });
 /* ── AUDIT LOG (v2+) — moved to index.html, not in v1 ── */
 
-// ── ALL REPORTS SEARCH ──
-function toggleARV1Search(){
-  const input=document.getElementById('arv1-search');
-  const visible=input.style.display!=='none';
-  input.style.display=visible?'none':'';
-  if(!visible){input.focus();}else{input.value='';filterARV1();}
-}
+// ── ALL KITS FILTER / SORT ──
 function filterARV1(){
   const q=(document.getElementById('arv1-search')?.value||'').toLowerCase().trim();
-  const tbody=document.getElementById('arv1-tbody');
-  if(!tbody)return;
-  if(!q){renderARV1();return;}
-  [...tbody.querySelectorAll('tr')].forEach(row=>{
-    if(/^arv1-c-\d+$/.test(row.className)){row.style.display='none';}
-    else{row.style.display=row.textContent.toLowerCase().includes(q)?'':'none';}
-  });
+  const status=(document.getElementById('arv1-filter-status')?.value||'');
+  const sort=(document.getElementById('arv1-sort')?.value||'bc-asc');
+  let data=[...ARV1_DATA];
+  if(q) data=data.filter(r=>r.barcode.toLowerCase().includes(q)||r.datasets.some(d=>d.name.toLowerCase().includes(q)||d.assay.toLowerCase().includes(q)));
+  if(status) data=data.filter(r=>r.status===status);
+  const latest=r=>r.datasets.map(d=>d.date_received).sort().reverse()[0]||'';
+  if(sort==='bc-asc')  data.sort((a,b)=>a.barcode.localeCompare(b.barcode));
+  if(sort==='bc-desc') data.sort((a,b)=>b.barcode.localeCompare(a.barcode));
+  if(sort==='date-desc') data.sort((a,b)=>latest(b).localeCompare(latest(a)));
+  if(sort==='date-asc')  data.sort((a,b)=>latest(a).localeCompare(latest(b)));
+  renderARV1(data);
 }
 
 // ── PDF GENERATION ──
