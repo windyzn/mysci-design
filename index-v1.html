@@ -354,7 +354,7 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
       <div class="nav-item gh" onclick="toggleGroup('g-reports')">Reports <span class="chev open" id="chev-g-reports">▶</span></div>
       <div class="gc expanded" id="g-reports">
         <div class="nav-item child" data-panel="allreports-v1" onclick="nav(this)">All kits</div>
-        <div class="nav-item child" data-panel="comparereports" onclick="nav(this)">Compare reports</div>
+        <div class="nav-item child" data-panel="comparereports" onclick="nav(this)">Reports</div>
       </div>
       <div class="nav-item" data-panel="assaycatalog" onclick="nav(this)">Assay catalog</div>
       <div class="nav-item" data-panel="refrange" onclick="nav(this)">Reference ranges</div>
@@ -606,6 +606,13 @@ body{font-family:'Lato',system-ui,sans-serif;font-size:14px;color:var(--tx);back
         </div>
       </div>
       <div id="cr2-empty-prompt" style="text-align:center;padding:36px;color:var(--tx3);font-size:13px;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);">Select at least one report above to view the comparison.</div>
+      <div id="cr2-result-filter-bar" style="display:none;margin-bottom:10px;align-items:center;gap:8px;flex-wrap:wrap;">
+        <input class="fi" id="cr2-result-search" placeholder="Search systems, areas, biomarkers…" style="width:260px;font-size:12px;" oninput="cr2FilterResult()"/>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2);cursor:pointer;">
+          <input type="checkbox" id="cr2-diff-only" onchange="cr2FilterResult()" style="cursor:pointer;accent-color:var(--it);margin:0;">
+          Differences only
+        </label>
+      </div>
       <div id="cr2-result-wrap" style="display:none;">
         <div class="card" style="padding:0;overflow:hidden;">
           <div style="overflow-x:auto;">
@@ -1036,7 +1043,7 @@ function doSwitchTeam(){document.getElementById('login-step-2').style.display=''
 const PAGE_META={
   'allreports-v1': {title:'Reports',               sub:'All kits'},
   'buildreport':   {title:'Reports',               sub:'Build a report'},
-  'comparereports':{title:'Reports',                sub:'Compare reports'},
+  'comparereports':{title:'Reports',                sub:'View report'},
   'assaycatalog':  {title:'Assay Catalog',          sub:null},
   'refrange':      {title:'Reference Ranges',       sub:null},
   'systems':       {title:'Science',                sub:'Associations'},
@@ -1504,12 +1511,15 @@ function cr2RunComparison(){
   if(!empty||!wrap)return;
   const sendBtn=document.getElementById('cr2-send-btn');
   const sendLocked=document.getElementById('cr2-send-locked');
+  const filterBar=document.getElementById('cr2-result-filter-bar');
   if(!sel.length){
     empty.style.display='';wrap.style.display='none';
+    if(filterBar)filterBar.style.display='none';
     if(sendBtn)sendBtn.style.display='none';if(sendLocked)sendLocked.style.display='none';
     return;
   }
   empty.style.display='none';wrap.style.display='';
+  if(filterBar){filterBar.style.display='flex';const si=document.getElementById('cr2-result-search');if(si)si.value='';const di=document.getElementById('cr2-diff-only');if(di)di.checked=false;}
   if(sendBtn)sendBtn.style.display=currentRole==='admin'?'inline-block':'none';
   if(sendLocked)sendLocked.style.display=currentRole==='admin'?'none':'inline-block';
   const hdrTitle=document.getElementById('cr2-result-hdr-title');
@@ -1545,8 +1555,10 @@ function cr2RunComparison(){
   uniqSys.forEach(sn=>{
     const sVals=sel.map(r=>{const s=rSys(r,sn);return s?s.score:null;});
     const sBands=sVals.map(v=>v!=null?sc(v):null);
+    const isDiffSys=sBands.filter(Boolean).length>1&&new Set(sBands.filter(Boolean)).size>1;
     const sTr=document.createElement('tr');
     sTr.style.cssText='border-top:1.5px solid var(--bd);background:var(--bg2);'+rowBg(sBands);
+    sTr.dataset.type='sys';sTr.dataset.sys=sn;sTr.dataset.diff=isDiffSys?'1':'0';
     let cells=`<td class="cr2-sc-sys" style="padding:9px 8px;font-size:13px;font-weight:700;">${sn}</td>`;
     sVals.forEach(v=>{cells+=v!=null?`<td style="text-align:left;padding:9px 14px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="padding:9px 14px;color:var(--bd3);">—</td>`;});
     cells+=diffCell(sVals);
@@ -1554,8 +1566,10 @@ function cr2RunComparison(){
     (uniqHA.get(sn)||[]).forEach(hn=>{
       const hVals=sel.map(r=>{const h=rHA(r,sn,hn);return h?h.score:null;});
       const hBands=hVals.map(v=>v!=null?sc(v):null);
+      const isDiffHA=hBands.filter(Boolean).length>1&&new Set(hBands.filter(Boolean)).size>1;
       const hTr=document.createElement('tr');
       hTr.style.cssText='border-top:0.5px solid var(--bd);'+rowBg(hBands);
+      hTr.dataset.type='ha';hTr.dataset.sys=sn;hTr.dataset.ha=hn;hTr.dataset.diff=isDiffHA?'1':'0';
       let hCells=`<td class="cr2-sc" style="padding:7px 8px 7px 22px;font-size:12px;color:var(--tx2);">${hn}</td>`;
       hVals.forEach(v=>{hCells+=v!=null?`<td style="text-align:left;padding:7px 14px;"><span class="sp ${sc(v)}">${v}</span></td>`:`<td style="padding:7px 14px;color:var(--bd3);">—</td>`;});
       hCells+=diffCell(hVals);
@@ -1563,14 +1577,43 @@ function cr2RunComparison(){
       (uniqBM.get(sn+'|'+hn)||[]).forEach(bn=>{
         const bmData=sel.map(r=>rBM(r,sn,hn,bn));
         const bmBands=bmData.map(bm=>bm?sc(bm.score):null);
+        const isDiffBM=bmBands.filter(Boolean).length>1&&new Set(bmBands.filter(Boolean)).size>1;
         const bTr=document.createElement('tr');
         bTr.style.cssText='border-top:0.5px solid var(--bd);'+rowBg(bmBands);
+        bTr.dataset.type='bm';bTr.dataset.sys=sn;bTr.dataset.ha=hn;bTr.dataset.bm=bn;bTr.dataset.diff=isDiffBM?'1':'0';
         let bCells=`<td class="cr2-sc" style="padding:6px 8px 6px 38px;"><div style="font-size:12px;color:var(--tx3);">${bn}</div></td>`;
         bmData.forEach(bm=>{const refTxt=bm&&bm.ref?`<span style="font-size:10px;color:var(--bd3);margin-left:6px;">ref ${bm.ref}</span>`:'';bCells+=bm?`<td style="text-align:left;padding:6px 14px;white-space:nowrap;"><span class="sp ${sc(bm.score)}" style="font-size:11px;">${bm.score}</span> <span style="font-size:12px;color:var(--tx2);font-family:monospace;">${bm.value}${bm.units?' '+bm.units:''}</span>${refTxt}</td>`:`<td style="padding:6px 14px;color:var(--bd3);font-size:13px;">—</td>`;});
         bCells+=diffCell(bmData.map(bm=>bm?bm.score:null));
         bTr.innerHTML=bCells;tbody.appendChild(bTr);
       });
     });
+  });
+}
+function cr2FilterResult(){
+  const q=(document.getElementById('cr2-result-search')?.value||'').toLowerCase().trim();
+  const diffOnly=document.getElementById('cr2-diff-only')?.checked||false;
+  const rows=[...document.querySelectorAll('#cr2-result-tbody tr')];
+  if(!q&&!diffOnly){rows.forEach(r=>r.style.display='');return;}
+  // Determine which systems and health areas have any visible descendant
+  const visSys=new Set(),visHA=new Set();
+  rows.forEach(r=>{
+    const type=r.dataset.type,sn=r.dataset.sys,hn=r.dataset.ha,bn=r.dataset.bm,diff=r.dataset.diff;
+    const text=[sn,hn,bn].filter(Boolean).join(' ').toLowerCase();
+    const nameMatch=!q||text.includes(q);
+    const diffMatch=!diffOnly||diff==='1';
+    if(nameMatch&&diffMatch){
+      visSys.add(sn);
+      if(hn)visHA.add(sn+'|'+hn);
+    }
+  });
+  rows.forEach(r=>{
+    const type=r.dataset.type,sn=r.dataset.sys,hn=r.dataset.ha,bn=r.dataset.bm,diff=r.dataset.diff;
+    const text=[sn,hn,bn].filter(Boolean).join(' ').toLowerCase();
+    const nameMatch=!q||text.includes(q);
+    const diffMatch=!diffOnly||diff==='1';
+    if(type==='sys') r.style.display=visSys.has(sn)?'':'none';
+    else if(type==='ha') r.style.display=visHA.has(sn+'|'+hn)?'':'none';
+    else r.style.display=(nameMatch&&diffMatch&&visHA.has(sn+'|'+hn))?'':'none';
   });
 }
 function cr2SendToMyhi(){
